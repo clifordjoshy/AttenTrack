@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">AttenTrack</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="startup_hello">Hello There.</string>
+    <string name="startup_welcome">Welcome to AttenTrack.</string>
+    <string name="startup_lets_get">Let\'s Get You Started!</string>
+    <string name="startup_session_title">Enter Session Timings</string>
+    <string name="session_time_start">Start</string>
+    <string name="session_time_end">End</string>
+    <string name="startup_subject_title">Enter Subjects</string>
+    <string name="startup_timetable_title">Enter Time Table</string>
+    <string name="monday_text">Monday</string>
+    <string name="tuesday_text">Tuesday</string>
+    <string name="wednesday_text">Wednesday</string>
+    <string name="thursday_text">Thursday</string>
+    <string name="friday_text">Friday</string>
+    <string name="saturday_text">Saturday</string>
+    <string name="sunday_text">Sunday</string>
+    <string name="required_attendance">Required Attendance (%):</string>
+    <string name="semester_text">Enter Semester Start and End Date</string>
+    <string name="blank_date">--/--/----</string>
+    <string name="empty_hyphen">-</string>
+    <string name="session_distr_title">Total Sessions</string>
+    <string name="startup_loading_text">Setting Up Your Schedule.</string>
+    <string name="dialog_date_text">Date:</string>
+    <string name="dialog_session_text">Session:</string>
+    <string name="dialog_subject_text">Subject:</string>
+    <string name="warning_text">WARNING: A class already exists in that time slot.
+        Press Okay again to overwrite class.</string>
+    <string name="hi_there">Hi There,</string>
+    <string name="todays_classes_text">Today\'s Classes</string>
+    <string name="cancel_all_warning">Would you like to cancel all of today\'s classes?</string>
+    <string name="time_table_title">Time Table</string>
+    <string name="time_table_edit">Time Table Editor</string>
+    <string name="time_table_edit_note">NOTE: Changes made to the Time Table will not change the total
+        class count. If there is a change in the total class count, a subject reset is advised.</string>
+    <string name="schedule_menu">Schedule</string>
+    <string name="edit_stats_menu">Edit Stats</string>
+    <string name="reset_menu">Reset Details</string>
+    <string name="toggle_menu">Toggle Dark Mode</string>
+    <string name="support_menu">Support</string>
+    <string name="notif_on_menu">Disable Notifications</string>
+    <string name="notif_off_menu">Enable Notifications</string>
+    <string name="subject_reset_mode_text">Welcome to Subject Reset Mode</string>
+    <string name="complete_reset_mode_text">Welcome to Complete Reset Mode</string>
+    <string name="support_message">
+        You might have noticed that there are no in-line ads in this app and there never will be.
+        However, I\'ll be beyond grateful if you could consider supporting me by watching a quick ad
+        or leaving a review by clicking either of the buttons below.\n
+        Thank you for using AttenTrack.\n
+        ( ^ ᗜ ^ )
+    </string>
+    <string name="warning_title">WARNING</string>
+    <string name="reset_warning">Subject Reset will reset the subjects and time table data
+        and is meant to be used at the end of a semester/term. Complete Reset will completely erase
+        all the data.</string>
+    <string name="edit_menu">Edit Time Table</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <item android:id="@+id/schedule_message"
+        android:icon="@drawable/icon_schedule"
+        android:title="@string/schedule_menu" />
+    <item android:id="@+id/time_table_message"
+        android:icon="@drawable/icon_timetable"
+        android:title="@string/time_table_title" />
+    <item android:id="@+id/missed_message"
+        android:icon="@drawable/icon_stats"
+        android:title="@string/edit_stats_menu" />
+    <item android:id="@+id/reset_message"
+        android:icon="@drawable/icon_reset"
+        android:title="@string/reset_menu" />
+    <item android:id="@+id/dark_message"
+        android:icon="@drawable/icon_darkmode"
+        android:title="@string/toggle_menu" />
+    <item android:id="@+id/notification_message"
+        android:icon="@drawable/icon_notification_on"
+        android:title="Turn Off Notifications" />
+    <group android:id="@+id/group2">
+        <item android:id="@+id/support_message"
+            android:icon="@drawable/icon_support"
+            android:title="@string/support_menu" />
+    </group>
+
+
+</menu>

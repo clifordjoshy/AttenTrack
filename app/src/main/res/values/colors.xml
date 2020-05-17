@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#272727</color>
+    <color name="colorAccent">#00609f</color>
+    <color name="dialogbg">#fffbdb</color>
+    <color name="startup_bg">#e2e2e2</color>
+    <color name="monday_color">#cf9eec</color>
+    <color name="tuesday_color">#94d5f6</color>
+    <color name="wednesday_color">#81f4dd</color>
+    <color name="thursday_color">#90f77f</color>
+    <color name="friday_color">#e5fb8a</color>
+    <color name="saturday_color">#ffdb85</color>
+    <color name="sunday_color">#ff8f8f</color>
+    <color name="dialog_warning">#d32f2f</color>
+</resources>

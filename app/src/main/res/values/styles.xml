@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name = "ToolBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="backgroundColor">?attr/bgColor</item>
+        <item name="android:textColorPrimary">?attr/textColor</item>
+<!--        <item name="actionMenuTextColor">?attr/textColor</item>-->
+    </style>
+
+    <style name="LightTheme" parent="AppTheme">
+        <item name="textColor">@color/colorPrimaryDark</item>
+        <item name="metaTextColor">#606060</item>
+        <item name="bgColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="textColor">@color/colorPrimary</item>
+        <item name="metaTextColor">#606060</item>
+        <item name="bgColor">@color/colorPrimaryDark</item>
+    </style>
+
+
+
+
+</resources>

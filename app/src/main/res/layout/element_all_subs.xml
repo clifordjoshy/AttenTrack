@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="10dp"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTintMode="multiply"
+    android:background="@drawable/curve_20dp"
+    app:layout_constraintStart_toStartOf="parent">
+
+    <TextView
+        android:id="@+id/percent_text"
+        android:layout_width="60dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center_vertical|end"
+        android:text="75%"
+        android:textColor="@color/colorPrimaryDark"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/subject_text"
+        app:layout_constraintEnd_toStartOf="@+id/minus_image"
+        app:layout_constraintTop_toTopOf="@+id/subject_text"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/subject_text"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Subject"
+        android:textColor="@color/colorPrimaryDark"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toStartOf="@+id/percent_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/minus_image"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/percent_text"
+        app:layout_constraintEnd_toStartOf="@+id/plus_image"
+        app:layout_constraintTop_toTopOf="@+id/percent_text"
+        app:srcCompat="@drawable/minus" />
+
+    <ImageView
+        android:id="@+id/plus_image"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/percent_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/percent_text"
+        app:srcCompat="@drawable/plus" />
+
+    <TextView
+        android:id="@+id/data_text"
+        android:layout_width="250dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:text="Total:53    Missed:4    Missable:5"
+        android:textColor="?attr/metaTextColor"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/cancel_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cancel_button" />
+
+    <ImageView
+        android:id="@+id/cancel_button"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/plus_image"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/plus_image"
+        app:layout_constraintTop_toBottomOf="@+id/plus_image"
+        app:srcCompat="@drawable/cancel2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

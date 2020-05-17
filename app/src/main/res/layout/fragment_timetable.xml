@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/time_table_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/bgColor"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/time_table_title"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        android:text="@string/time_table_title"
+        android:textColor="?attr/textColor"
+        android:fontFamily="@font/poppins_medium"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/edit_note"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="#808080"
+        android:visibility="gone"
+        android:text="@string/time_table_edit_note"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="@+id/time_table_title"
+        app:layout_constraintStart_toStartOf="@+id/time_table_title"
+        app:layout_constraintTop_toBottomOf="@+id/time_table_title" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/time_table_title"
+        app:layout_constraintStart_toStartOf="@+id/time_table_title"
+        app:layout_constraintTop_toBottomOf="@+id/edit_note">
+
+        <LinearLayout
+            android:id="@+id/linear_timetable"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_anim_pop_in"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/box_day_1"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/monday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/monday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toEndOf="@+id/time_table_title"
+                app:layout_constraintStart_toStartOf="@+id/time_table_title"
+                app:layout_constraintTop_toBottomOf="@+id/time_table_title" />
+
+            <TextView
+                android:id="@+id/box_day_2"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/tuesday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/tuesday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/box_day_3"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/wednesday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/wednesday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/box_day_4"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/thursday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/thursday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/box_day_5"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/friday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/friday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/box_day_6"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/saturday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/saturday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/box_day_7"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/curve_20dp"
+                android:backgroundTint="@color/sunday_color"
+                android:backgroundTintMode="multiply"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center"
+                android:paddingVertical="5dp"
+                android:text="@string/sunday_text"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

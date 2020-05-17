@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@color/startup_bg"
+    android:paddingTop="40dp"
+    android:paddingHorizontal="25dp"
+    android:fillViewport="true"
+    android:scrollbarStyle="outsideInset"
+    tools:context=".StartupActivity">
+
+    <LinearLayout
+        android:id="@+id/startup_main_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:animateLayoutChanges="true"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/startup_hello"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_hello"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"
+            />
+        <TextView
+            android:id="@+id/startup_hello2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:alpha="0"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_welcome"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"
+            />
+        <TextView
+            android:id="@+id/startup_hello3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_lets_get"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"
+            />
+
+        <TextView
+            android:id="@+id/startup_session_time"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_session_title"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <ImageView
+            android:id="@+id/session_plus"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:paddingVertical="5dp"
+            app:srcCompat="@drawable/plusw" />
+
+        <TextView
+            android:id="@+id/startup_subjects"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_subject_title"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <ImageView
+            android:id="@+id/subject_plus"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:paddingVertical="5dp"
+            app:srcCompat="@drawable/plusw" />
+
+        <TextView
+            android:id="@+id/startup_time_table"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_timetable_title"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/monday_color"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/monday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/tuesday_color"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/tuesday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_3"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/wednesday_color"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/wednesday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_4"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/thursday_color"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/thursday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_5"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/friday_color"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/friday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_6"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/saturday_color"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/saturday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <TextView
+            android:id="@+id/box_7"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/sunday_color"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:paddingVertical="5dp"
+            android:text="@string/sunday_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform" />
+
+        <LinearLayout
+            android:id="@+id/attendance_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/startup_attendance"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/required_attendance"
+                android:textColor="@color/colorPrimaryDark"
+                app:autoSizeTextType="uniform" />
+
+            <EditText
+                android:id="@+id/editText_attendance"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/curve_10dp"
+                android:layout_marginStart="5dp"
+                android:inputType="number"
+                android:paddingHorizontal="5dp"
+                app:autoSizeTextType="uniform" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/startup_working"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/semester_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"/>
+
+        <TextView
+            android:id="@+id/semester_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/startup_bg"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/blank_date"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"/>
+
+        <TextView
+            android:id="@+id/semester_hyphen"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/empty_hyphen"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"/>
+
+        <TextView
+            android:id="@+id/semester_end_date"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:background="@drawable/curve_10dp"
+            android:backgroundTint="@color/startup_bg"
+            android:gravity="center"
+            android:text="@string/blank_date"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"/>
+
+
+        <TextView
+            android:id="@+id/startup_distribution"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/session_distr_title"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/okay_btn_startup"
+                android:layout_width="90dp"
+                android:alpha="0"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:onClick="okay_button_pressed"
+                app:srcCompat="@drawable/okay" />
+
+            <ImageView
+                android:id="@+id/back_btn_startup"
+                android:layout_width="90dp"
+                android:visibility="gone"
+                android:alpha="0"
+                android:layout_alignParentStart="true"
+                android:layout_height="match_parent"
+                android:onClick="back_button_pressed"
+                app:srcCompat="@drawable/back" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/startup_loading"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:alpha="0"
+            android:gravity="center"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/startup_loading_text"
+            android:textColor="@color/colorPrimaryDark"
+            app:autoSizeTextType="uniform"
+            />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="40dp"
+            android:alpha="0"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </LinearLayout>
+</ScrollView>
