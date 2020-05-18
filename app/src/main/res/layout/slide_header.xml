@@ -4,7 +4,7 @@
     android:layout_height="176dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/curve_right_only_20dp"
-    app:backgroundTint="?attr/bgColor"
+    app:backgroundTint="#ffff00"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinkedList<int[]> extra_sessions = new LinkedList<>(), cancelled_sessions = new LinkedList<>(),
             missed_sessions = new LinkedList<>();
     static boolean dark_mode_on, is_male_avatar, is_notification_on;
+    private int current_fragment = 0;
     static String name;
     static int is_first_start;
 
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Implement Navigation Drawer and Fragments
         Toolbar toolbar = findViewById(R.id.toolbar);
-        ViewCompat.setElevation(toolbar,0);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
@@ -88,8 +90,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileAds.initialize(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new ScheduleFragment()).commit();
+        if(savedInstanceState != null)
+            current_fragment = savedInstanceState.getInt("current_fragment", 0);
+        Fragment go_to = null;
+        if (current_fragment == 0)
+            go_to = new ScheduleFragment();
+        else if (current_fragment == 1)
+            go_to = new TimetableFragment();
+        else if (current_fragment == 2)
+            go_to = new AllClassesFragment();
+        else if (current_fragment == 3)
+            go_to = new SupportFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, go_to).commit();
     }
 
     @Override
@@ -123,29 +135,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             to_write.append("\n");
             outputStreamWriter.write(to_write.toString());
 
-            for (int[] sess : extra_sessions) {
-                to_write = new StringBuilder("extra");
-                for (int val : sess)
-                    to_write.append("/").append(val);
-                to_write.append("\n");
-                outputStreamWriter.write(to_write.toString());
+            for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
+                for (int[] sess : sess_list) {
+                    to_write = new StringBuilder("extra");
+                    for (int val : sess)
+                        to_write.append("/").append(val);
+                    to_write.append("\n");
+                    outputStreamWriter.write(to_write.toString());
+                }
             }
 
-            for (int[] sess : cancelled_sessions) {
-                to_write = new StringBuilder("cancel");
-                for (int val : sess)
-                    to_write.append("/").append(val);
-                to_write.append("\n");
-                outputStreamWriter.write(to_write.toString());
-            }
-
-            for (int[] sess : missed_sessions) {
-                to_write = new StringBuilder("missed");
-                for (int val : sess)
-                    to_write.append("/").append(val);
-                to_write.append("\n");
-                outputStreamWriter.write(to_write.toString());
-            }
             outputStreamWriter.close();
 
         } catch (Exception e) {
@@ -199,34 +198,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Date today = Calendar.getInstance().getTime();
             today = string_format.parse(string_format.format(today));   //to get rid of time
 
-            //need to traverse backwards to prevent element upward shift
-            for (int i = extra_sessions.size() - 1; i >= 0; --i) {
-                int[] sess = extra_sessions.get(i);
-                String month = (sess[1] < 9 ? "0" : "") + sess[1];
-                String day = (sess[2] < 9 ? "0" : "") + sess[2];
-                Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
-                if (today.after(saved)) {
-                    extra_sessions.remove(i);
-                }
-            }
-
-            for (int i = cancelled_sessions.size() - 1; i >= 0; --i) {
-                int[] sess = cancelled_sessions.get(i);
-                String month = (sess[1] < 9 ? "0" : "") + sess[1];
-                String day = (sess[2] < 9 ? "0" : "") + sess[2];
-                Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
-                if (today.after(saved)) {
-                    cancelled_sessions.remove(i);
-                }
-            }
-
-            for (int i = missed_sessions.size() - 1; i >= 0; --i) {
-                int[] sess = missed_sessions.get(i);
-                String month = (sess[1] < 9 ? "0" : "") + sess[1];
-                String day = (sess[2] < 9 ? "0" : "") + sess[2];
-                Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
-                if (today.after(saved)) {
-                    missed_sessions.remove(i);
+            for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
+                //need to traverse backwards to prevent element upward shift
+                for (int i = sess_list.size() - 1; i >= 0; --i) {
+                    int[] sess = sess_list.get(i);
+                    String month = (sess[1] < 9 ? "0" : "") + sess[1];
+                    String day = (sess[2] < 9 ? "0" : "") + sess[2];
+                    Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
+                    if (today.after(saved)) {
+                        sess_list.remove(i);
+                    }
                 }
             }
 
@@ -256,14 +237,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.schedule_message:
+                current_fragment = 0;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ScheduleFragment()).commit();
                 break;
             case R.id.time_table_message:
+                current_fragment = 1;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new TimetableFragment()).commit();
                 break;
             case R.id.missed_message:
+                current_fragment = 2;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AllClassesFragment()).commit();
                 break;
@@ -308,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //Editing Typeface after dialog is shown. dialog.show() returns an AlertDialog
                 break;
             case R.id.support_message:
+                current_fragment = 3;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SupportFragment()).commit();
                 break;
@@ -345,5 +330,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             recreate();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt("current_fragment", current_fragment);
+        super.onSaveInstanceState(outState);
     }
 }

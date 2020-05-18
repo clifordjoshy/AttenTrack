@@ -38,6 +38,7 @@ public class TimetableFragment extends Fragment {
     private TextView title;
     private LinearLayout list;
     private ConstraintLayout root;
+    private Menu options_menu;
     private LinkedList<Subject> table;
     private Spinner[][] tt_spinners;
     private ArrayAdapter<String> spinner_options;
@@ -201,35 +202,45 @@ public class TimetableFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.timetable_options_menu, menu);
+        options_menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.edit_timetable_button) {
-            editing = !editing;
-            TransitionManager.beginDelayedTransition(root);
 
-            if (active_box != -1) {
-                list.removeViewAt(active_box + 1);
-                active_box = -1;
-            }
+        TransitionManager.beginDelayedTransition(root);
+        if (active_box != -1) {
+            list.removeViewAt(active_box + 1);
+            active_box = -1;
+        }
 
-            if (editing) {
+        switch(item.getItemId()){
+
+            case R.id.edit_timetable_button:
+                editing = true;
                 title.setText(R.string.time_table_edit);
                 root.findViewById(R.id.edit_note).setVisibility(View.VISIBLE);
-                item.setIcon(R.drawable.toolbar_icon_save);
+                item.setVisible(false);
+                options_menu.findItem(R.id.save_timetable_button).setVisible(true);
+                options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
                 tt_spinners = new Spinner[7][Subject.session_encoder.size()];
                 String[] spinner_options_array = new String[table.size() + 1];
                 spinner_options_array[0] = "<free>";
                 for (int i = 1; i < spinner_options_array.length; ++i)
                     spinner_options_array[i] = table.get(i - 1).name;
                 spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
+                break;
 
-            } else {
+            case R.id.save_timetable_button:
+                editing = false;
                 title.setText(R.string.time_table_title);
                 root.findViewById(R.id.edit_note).setVisibility(View.GONE);
-                item.setIcon(R.drawable.toolbar_icon_edit);
+
+                item.setVisible(false);
+                options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
+                options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
+
                 Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
 
                 for (int i = 0; i < tt_spinners.length; ++i) {
@@ -252,8 +263,73 @@ public class TimetableFragment extends Fragment {
 
                 tt_spinners = null;
                 spinner_options = null;
-            }
+                break;
+
+            case R.id.cancel_timetable_button:
+                editing = false;
+                title.setText(R.string.time_table_title);
+                root.findViewById(R.id.edit_note).setVisibility(View.GONE);
+
+                item.setVisible(false);
+                options_menu.findItem(R.id.save_timetable_button).setVisible(false);
+                options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
+
+                Toast.makeText(getContext(), "Edits Cancelled", Toast.LENGTH_SHORT).show();
+                tt_spinners = null;
+                spinner_options = null;
+                break;
         }
+
+
+
+//        if (item.getItemId() == R.id.edit_timetable_button) {
+//            editing = !editing;
+//            TransitionManager.beginDelayedTransition(root);
+
+//            if (active_box != -1) {
+//                list.removeViewAt(active_box + 1);
+//                active_box = -1;
+//            }
+//
+//            if (editing) {
+//                title.setText(R.string.time_table_edit);
+//                root.findViewById(R.id.edit_note).setVisibility(View.VISIBLE);
+//                item.setIcon(R.drawable.toolbar_icon_save);
+//                tt_spinners = new Spinner[7][Subject.session_encoder.size()];
+//                String[] spinner_options_array = new String[table.size() + 1];
+//                spinner_options_array[0] = "<free>";
+//                for (int i = 1; i < spinner_options_array.length; ++i)
+//                    spinner_options_array[i] = table.get(i - 1).name;
+//                spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
+
+//            } else {
+//                title.setText(R.string.time_table_title);
+//                root.findViewById(R.id.edit_note).setVisibility(View.GONE);
+//                item.setIcon(R.drawable.toolbar_icon_edit);
+//                Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
+//
+//                for (int i = 0; i < tt_spinners.length; ++i) {
+//                    for (int j = 0; j < tt_spinners[i].length; ++j) {
+//                        if (tt_spinners[i][j] != null) {
+//
+//                            //Remove the slot if it's already there
+//                            for(Subject k: table)
+//                                k.slots[i].remove(Integer.valueOf(j));
+//
+//                            try {
+//                                Subject to_edit = table.get(tt_spinners[i][j].getSelectedItemPosition() - 1);
+//                                to_edit.slots[i].add(j);
+//                            } catch(IndexOutOfBoundsException e){
+//                                //Free Slot
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                tt_spinners = null;
+//                spinner_options = null;
+//            }
+//        }
         return super.onOptionsItemSelected(item);
     }
 }

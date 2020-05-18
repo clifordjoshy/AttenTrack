@@ -29,9 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:layout_marginTop="10dp"
+        android:progress="0"
         android:progressDrawable="@drawable/progress_drawable"
         app:layout_constraintEnd_toEndOf="@+id/startup_scrollview"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/startup_scrollview"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -419,7 +419,7 @@
                 app:autoSizeTextType="uniform" />
 
             <ProgressBar
-                android:id="@+id/progress_bar"
+                android:id="@+id/loading_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

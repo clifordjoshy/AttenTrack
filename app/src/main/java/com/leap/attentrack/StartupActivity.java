@@ -7,9 +7,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
@@ -129,7 +132,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 intro[2].setText(R.string.subject_reset_mode_text);
                 condensed = true;
                 page = 1;   //jump to subjects
-                updateProgressBar();
                 sessions = Subject.session_encoder;
                 root.removeViewsInLayout(0, 2);
                 intro[2].animate().alpha(1f).setDuration(duration).setStartDelay(duration);
@@ -182,6 +184,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         switch (page) {
             case 0:     //sessions
             {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
                 root.removeViewsInLayout(0, 3);
                 INDEX_SESSIONS = 0;
                 TextView session_text = findViewById(R.id.startup_session_time);
@@ -259,7 +262,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
 
                 } else {
-                    root.removeViewsInLayout(0, 3);
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+                    root.removeViewsInLayout(0, 4);
                     INDEX_SUBJECTS = 0;
                 }
 
@@ -651,11 +655,13 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
                     data.get(i).missable = (100 - Subject.req_percentage) * data.get(i).total / 100;
                 }
+                ++page;
+                updateProgressBar();
 
                 for (int i = 0; i <= INDEX_DISTR + data.size() + 1; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
                 TextView loading_text = findViewById(R.id.startup_loading);
-                ProgressBar p = findViewById(R.id.progress_bar);
+                ProgressBar p = findViewById(R.id.loading_progress);
                 loading_text.setVisibility(View.VISIBLE);
                 p.setVisibility(View.VISIBLE);
                 loading_text.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
@@ -1064,7 +1070,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     public void updateProgressBar(){
-        int progress = ((page)*100)/6;
+        int progress = ((page)*100)/7;
         ProgressBar progress_bar = findViewById(R.id.startup_progress);
         ObjectAnimator.ofInt(progress_bar, "progress", progress)
                 .setDuration(500)
@@ -1075,6 +1081,16 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         imm.hideSoftInputFromWindow(root.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedState) {
+        super.onRestoreInstanceState(savedState);
     }
 
 }

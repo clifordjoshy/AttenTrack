@@ -5,4 +5,16 @@
         android:icon="@drawable/toolbar_icon_edit"
         android:title="@string/edit_menu"
         app:showAsAction="always" />
+
+    <item android:id="@+id/cancel_timetable_button"
+        android:icon="@drawable/toolbar_icon_cancel"
+        android:title="@string/edit_menu"
+        android:visible="false"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/save_timetable_button"
+        android:icon="@drawable/toolbar_icon_save"
+        android:title="@string/edit_menu"
+        android:visible="false"
+        app:showAsAction="always" />
 </menu>

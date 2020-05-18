@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/bgColor"
-            app:elevation="4dp"
+            app:elevation="0dp"
             android:theme="@style/ToolBarTheme" />
 
         <FrameLayout
@@ -34,7 +34,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/curve_right_only_20dp"
-        app:backgroundTint="?attr/bgColor"
         android:layout_gravity="start"
         app:itemTextColor="?attr/textColor"
         app:itemIconTint="?attr/textColor"
