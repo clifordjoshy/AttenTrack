@@ -6,6 +6,7 @@
     <string name="startup_welcome">Welcome to AttenTrack.</string>
     <string name="startup_lets_get">Let\'s Get You Started!</string>
     <string name="startup_session_title">Enter Session Timings</string>
+    <string name="startup_guide_text">Click To Add. Swipe to Delete.</string>
     <string name="session_time_start">Start</string>
     <string name="session_time_end">End</string>
     <string name="startup_subject_title">Enter Subjects</string>
@@ -56,4 +57,5 @@
         and is meant to be used at the end of a semester/term. Complete Reset will completely erase
         all the data.</string>
     <string name="edit_menu">Edit Time Table</string>
+    <string name="delete_slider_text">Delete</string>
 </resources>

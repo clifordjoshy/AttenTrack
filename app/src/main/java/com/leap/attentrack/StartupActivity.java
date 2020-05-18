@@ -2,6 +2,7 @@ package com.leap.attentrack;
 
 import android.animation.Animator;
 import android.animation.LayoutTransition;
+import android.animation.ObjectAnimator;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
+import androidx.transition.AutoTransition;
 import androidx.transition.Explode;
 import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
@@ -44,10 +47,11 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.TimeZone;
 
-public class StartupActivity extends AppCompatActivity implements View.OnTouchListener{
+public class StartupActivity extends AppCompatActivity implements View.OnTouchListener {
     //for ease of usage
     LinearLayout root;
     private ImageView session_plus, back_button;
+    private TextView delete_slide;
 
     //persistent through fn calls. (to read data)
     private EditText edit_attendance;
@@ -57,17 +61,16 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private LinkedList<String> subjects = new LinkedList<>();    //for spinner adapter
     private LinkedList<Spinner>[] tt_spinners;
     private boolean[] is_box_active;
-    private float touch_x, touch_y;
-    private int touch_pointer_id;
 
     //constants of sorts
-    private int page = -1, duration = 400, lag = 400, animation_offset, mode;
+    private int page = -1, duration = 400, lag = 400, animation_offset, mode, tab_margin;
     private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE, INDEX_DISTR;
-    private final LinkedList<Integer> colors = new LinkedList<>(Arrays.asList(0xffffbe93, 0xffbbf6bf,
-            0xffabecff, 0xfffcb1fa, 0xff88acfd, 0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2,
-            0xffb5dfff, 0xffe6c6ff));
+    private final Integer[] colors = {0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
+            0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2, 0xffb5dfff, 0xffe6c6ff};
     private float density;
-    private boolean condensed = false;
+    private int x_touch_origin, sess_guided = 0, sub_guided = 0, deleteActive = 0;
+    private boolean condensed = false, scrolling = true;
+    private View sliding_view;
 
     //required data
     LinkedList<String[]> sessions = new LinkedList<>();
@@ -80,14 +83,27 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
         //variables assignment
         density = this.getResources().getDisplayMetrics().density;
+        tab_margin = (int) (10 * density);
         root = findViewById(R.id.startup_main_linear);
         TextView[] intro = new TextView[]{findViewById(R.id.startup_hello),
                 findViewById(R.id.startup_hello2), findViewById(R.id.startup_hello3)};
         ImageView okay = findViewById(R.id.okay_btn_startup);
         back_button = findViewById(R.id.back_btn_startup);
-
+        delete_slide = findViewById(R.id.delete_slide);
         tt_spinners = new LinkedList[]{new LinkedList<>(), new LinkedList<>(), new LinkedList<>(),
                 new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>()};
+
+        findViewById(R.id.startup_scrollview).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //ScrollView consumes touch events while scrolling. So intercept them here and pass on.
+                if(sliding_view != null) {
+                    StartupActivity.this.onTouch(sliding_view, event);
+                    scrolling = true;
+                }
+                return false;
+            }
+        });
 
         //disable layout appear animation. custom animation given
         LayoutTransition expand_transition = new LayoutTransition();
@@ -95,16 +111,25 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         expand_transition.setDuration(duration);
         root.setLayoutTransition(expand_transition);
 
+        // Capture the width once it is laid out.
+        delete_slide.post(new Runnable() {
+            @Override
+            public void run() {
+                delete_slide.setVisibility(View.GONE);  //Initial Width is 0 if view starts as Gone. Need for swipe.
+            }
+        });
+
         mode = getIntent().getIntExtra("mode", 0);
-        switch(mode){
-            case 0 :    //First Start
+        switch (mode) {
+            case 0:    //First Start
                 condensed = false;
                 break;
 
-            case 1 :    //Subject Reset Mode
+            case 1:    //Subject Reset Mode
                 intro[2].setText(R.string.subject_reset_mode_text);
                 condensed = true;
                 page = 1;   //jump to subjects
+                updateProgressBar();
                 sessions = Subject.session_encoder;
                 root.removeViewsInLayout(0, 2);
                 intro[2].animate().alpha(1f).setDuration(duration).setStartDelay(duration);
@@ -118,7 +143,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 intro[2].setVisibility(View.GONE);
                 intro[1].animate().alpha(1f).setDuration(duration).setStartDelay(duration);
                 okay.animate().alpha(1f).setDuration(duration).setStartDelay(2 * duration + lag);
-                page++;
+                ++page;
+                updateProgressBar();
                 return;     //no hello for menu reset
         }
 
@@ -146,7 +172,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     @Override
 
                     public void onAnimationEnd(Animator animation) {
-                        page++;
+                        ++page;
+                        updateProgressBar();
                     }
                 });
     }
@@ -154,6 +181,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     public void okay_button_pressed(View view) {
         switch (page) {
             case 0:     //sessions
+            {
                 root.removeViewsInLayout(0, 3);
                 INDEX_SESSIONS = 0;
                 TextView session_text = findViewById(R.id.startup_session_time);
@@ -164,10 +192,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 session_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                 session_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
                 handle_session_input();
-                page++;
+                ++page;
+                updateProgressBar();
                 break;
-
-            case 1:     //subjects
+            }
+            case 1:      //subjects
+            {
                 if (!condensed) {
                     boolean okay = sessions.size() != 0;
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -175,7 +205,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
                     try {
                         //Selection Sort
-                        for (int i = 0; i < sessions.size() -1; ++i) {
+                        for (int i = 0; i < sessions.size() - 1; ++i) {
                             int small = i;
                             time1 = sdf.parse(sessions.get(i)[0]);  //get start time
                             for (int j = i + 1; j < sessions.size(); ++j) {
@@ -186,7 +216,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                                 }
                             }
                             if (small != i) {
-                                TransitionManager.beginDelayedTransition(root);
+//                                TransitionManager.beginDelayedTransition(root);
                                 Collections.swap(sessions, i, small);
                                 View temp1 = root.getChildAt(INDEX_SESSIONS + 1 + i),
                                         temp2 = root.getChildAt(INDEX_SESSIONS + small + 1);
@@ -200,7 +230,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         for (int i = 0; i < sessions.size(); ++i) {
                             time1 = sdf.parse(sessions.get(i)[0]);
 
-                            if(i > 0 && time2.after(time1)) {       //previous time2 [overlap check]
+                            if (i > 0 && time2.after(time1)) {       //previous time2 [overlap check]
                                 okay = false;
                                 break;
                             }
@@ -223,7 +253,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         return;
                     }
 
-                    INDEX_SUBJECTS = INDEX_SESSIONS + sessions.size() + 2;
+                    INDEX_SUBJECTS = root.indexOfChild(root.findViewById(R.id.startup_subjects));
                     for (int i = INDEX_SESSIONS; i < INDEX_SUBJECTS; ++i)
                         root.getChildAt(i).setVisibility(View.GONE);
 
@@ -246,36 +276,70 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     subject_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     subject_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
 
-                    final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            (int) (40 * density));
-                    lp.setMargins((int) (10 * density), (int) (10 * density), (int) (10 * density), 0);
-
                     /*
                     final int[] index = new int[]{INDEX_SUBJECTS};
                     cannot use index variable because a change in session will change INDEX_SUBJECT but that
                     change will not be reflected in index. so, instead using indexOfChild(session_plus)
                      */
-                    final LinkedList<Integer> colors_subjects = (LinkedList<Integer>) colors.clone();
-                    Collections.shuffle(colors_subjects);
+                    final LinkedList<Integer> colors_subjects = new LinkedList<>(Arrays.asList(colors));
+                    final View.OnTouchListener swipe_listener = new View.OnTouchListener() {
+                        private float startX;
+
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                    startX = event.getRawX();
+                                    break;
+
+                                case MotionEvent.ACTION_UP:
+                                    if (event.getRawX() == startX) {
+                                        v.requestFocus();
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                                        imm.showSoftInput(v, 0);
+                                    }
+                                    break;
+                            }
+                            StartupActivity.this.onTouch(v, event);
+                            return true;
+                        }
+                    };
 
                     subject_plus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             EditText e = new EditText(StartupActivity.this);
+                            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                    (int) (40 * density));
+                            lp.setMargins(tab_margin, tab_margin, tab_margin, 0);
                             e.setLayoutParams(lp);
                             e.setSingleLine(true);
                             e.setGravity(Gravity.CENTER);
                             e.setBackgroundResource(R.drawable.curve_10dp);
                             ViewCompat.setBackgroundTintList(e, ColorStateList.valueOf(colors_subjects.pop()));
                             if (colors_subjects.size() == 0) {
-                                colors_subjects.addAll(colors);
+                                colors_subjects.addAll(Arrays.asList(colors));
                                 Collections.shuffle(colors_subjects);
                             }
                             e.setHint("Subject");
                             e.setPadding((int) (10 * density), 0, (int) (10 * density), 0);
-                            sub_edits.add(e);
-                            root.addView(e, root.indexOfChild(v));
+                            e.setOnTouchListener(swipe_listener);
                             e.requestFocus();
+
+                            if (sub_guided == 0) {
+                                View guide = root.getChildAt(INDEX_SUBJECTS + 1);
+                                guide.setVisibility(View.VISIBLE);
+                                guide.animate().alpha(1f).setStartDelay(duration);
+                                sub_guided = 1;
+                                root.addView(e, INDEX_SUBJECTS + 1);
+                            } else {
+                                if (sub_guided == 1) {
+                                    root.removeViewAt(root.indexOfChild(v)-1);
+                                    sub_guided = 2;
+                                }
+                                root.addView(e, root.indexOfChild(v));
+                            }
+                            sub_edits.add(e);
                         }
                     });
                     if (!condensed)
@@ -283,13 +347,15 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 } else {    // blast from the past
 
                     TransitionManager.beginDelayedTransition(root);
-                    for (int i = INDEX_SUBJECTS; i <= INDEX_SUBJECTS + sub_edits.size() + 1; ++i)
+                    for (int i = INDEX_SUBJECTS; i < root.indexOfChild(root.findViewById(R.id.startup_time_table)); ++i)
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                 }
-                page++;
+                ++page;
+                updateProgressBar();
                 break;
-
+            }
             case 2:     //timetable
+            {
                 hideKeyboard();
                 boolean okay = sub_edits.size() != 0;
                 subjects.clear();
@@ -317,10 +383,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
                 }
                 subjects.addFirst("<free>");    //for spinner adapter
-                INDEX_TIMETABLE = INDEX_SUBJECTS + data.size() + 2;
+
+                INDEX_TIMETABLE = root.indexOfChild(root.findViewById(R.id.startup_time_table));
                 for (int i = INDEX_SUBJECTS; i < INDEX_TIMETABLE; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
-
 
                 while (tt_spinners[0].size() < sessions.size())  //to prevent extra sessions caused paradox [blast from the past]
                     for (int i = 0; i < 7; ++i)
@@ -366,9 +432,11 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 }
 
                 ++page;
+                updateProgressBar();
                 break;
-
+            }
             case 3:     //Attendance details
+            {
                 LinearLayout attendance_layout = findViewById(R.id.attendance_linear_layout);   //view after timetable
                 edit_attendance = findViewById(R.id.editText_attendance);
 
@@ -393,14 +461,15 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 }
 
                 ++page;
+                updateProgressBar();
                 if (!condensed) {
                     attendance_layout.setVisibility(View.VISIBLE);
                     attendance_layout.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
                     break;
                 }
-
+            }
             case 4:     //Working Days
-                //falls through if condensed
+            {   //falls through if condensed
                 hideKeyboard();
                 TextView date_text = findViewById(R.id.startup_working),
                         date_hyphen = findViewById(R.id.semester_hyphen);
@@ -460,9 +529,11 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     });
                 }
                 ++page;
+                updateProgressBar();
                 break;
-
+            }
             case 5:     //Subject division
+            {
                 if (!condensed) {
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
@@ -524,7 +595,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     start_day = start_day == 6 ? 0 : start_day + 1; //cycle along
                 }
 
-                INDEX_DISTR = INDEX_ATTENDANCE + 5;
+                INDEX_DISTR = root.indexOfChild(root.findViewById(R.id.startup_distribution));
                 for (int i = INDEX_ATTENDANCE; i < INDEX_DISTR; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
 
@@ -565,8 +636,11 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     l.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
                 }
                 ++page;
+                updateProgressBar();
                 break;
+            }
             case 6:     //startup complete
+            {
                 hideKeyboard();
                 for (int i = 0; i < data.size(); ++i) {
                     try {
@@ -597,6 +671,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
                 }, 2000);
                 break;
+            }
         }
     }
 
@@ -607,11 +682,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         switch (page) {
             case 2:     //not condensed. Back pressed from subjects page. To sessions page
                 hideKeyboard();
-                for (int i = INDEX_SUBJECTS; i < INDEX_SUBJECTS + sub_edits.size() + 2; ++i)
+                for (int i = INDEX_SUBJECTS; i < root.indexOfChild(findViewById(R.id.startup_time_table)); ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
                 for (int i = INDEX_SESSIONS; i < INDEX_SUBJECTS; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
+                updateProgressBar();
                 back_button.setVisibility(View.GONE);
                 break;
 
@@ -621,8 +697,19 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 for (int i = INDEX_SUBJECTS; i < INDEX_TIMETABLE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
+                updateProgressBar();
                 if (condensed)
                     back_button.setVisibility(View.GONE);
+                else{   //session edits
+                    for(int i = 0; i < is_box_active.length; ++i){
+                        if (is_box_active[i]){
+                            ((GridLayout) (root.getChildAt(INDEX_TIMETABLE + i + 2))).removeAllViews();
+                                                                                // to separate parent
+                            root.removeViewAt(INDEX_TIMETABLE + i + 2);
+                            is_box_active[i] = false;
+                        }
+                    }
+                }
                 break;
 
             case 4:     //from attendance state 1. to time table page. not condensed
@@ -631,6 +718,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
+                updateProgressBar();
                 break;
 
             case 5:     //from attendance state2. to time table page
@@ -639,6 +727,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 page -= 2;
+                updateProgressBar();
                 break;
 
             case 6:     //from distribution page. to attendance state 2.
@@ -649,15 +738,16 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 for (int i = INDEX_ATTENDANCE; i < INDEX_DISTR; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
+                updateProgressBar();
                 break;
 
         }
     }
 
     public void handle_session_input() {
-        final int[] active_sess_index = new int[2], index = new int[]{INDEX_SESSIONS}, set_time = new int[]{8, 0};
-        final TextView[] active_view =  new TextView[1];
-        final LinkedList<Integer> colors_sessions = (LinkedList<Integer>) colors.clone();
+        final int[] active_sess_index = new int[2], set_time = new int[]{8, 0};
+        final TextView[] active_view = new TextView[1];
+        final LinkedList<Integer> colors_sessions = new LinkedList<>(Arrays.asList(colors));
         Collections.shuffle(colors_sessions);
 
         final TimePickerDialog.OnTimeSetListener time_listener = new TimePickerDialog.OnTimeSetListener() {
@@ -676,12 +766,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             public void onClick(View v) {
                 final View[] time_view = create_session_view(colors_sessions.pop());
 
+                time_view[0].setOnTouchListener(StartupActivity.this);
+
                 time_view[1].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        active_sess_index[0] = root.indexOfChild(time_view[0])-INDEX_SESSIONS-1;
+                        active_sess_index[0] = root.indexOfChild(time_view[0]) - INDEX_SESSIONS - 1;
                         active_sess_index[1] = 0;
-                        active_view[0] = (TextView)v;
+                        active_view[0] = (TextView) v;
                         new TimePickerDialog(StartupActivity.this, time_listener, set_time[0], set_time[1], false).show();
                     }
                 });
@@ -689,37 +781,50 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 time_view[2].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        active_sess_index[0] = root.indexOfChild(time_view[0])-INDEX_SESSIONS-1;
+                        active_sess_index[0] = root.indexOfChild(time_view[0]) - INDEX_SESSIONS - 1;
                         active_sess_index[1] = 1;
-                        active_view[0] = (TextView)v;
+                        active_view[0] = (TextView) v;
                         new TimePickerDialog(StartupActivity.this, time_listener, set_time[0], set_time[1], false).show();
                     }
                 });
 
                 if (colors_sessions.size() == 0) {
-                    colors_sessions.addAll(colors);
+                    colors_sessions.addAll(Arrays.asList(colors));
                     Collections.shuffle(colors_sessions);
                 }
 
+                if (sess_guided == 0) {
+                    View guide = root.getChildAt(INDEX_SESSIONS + 1);
+                    guide.setVisibility(View.VISIBLE);
+                    guide.animate().alpha(1f).setStartDelay(duration);
+                    sess_guided = 1;
+                    root.addView(time_view[0], INDEX_SESSIONS + 1);
+                } else {
+                    if (sess_guided == 1) {
+                        root.removeViewAt(root.indexOfChild(v)-1);
+                        sess_guided = 2;
+                    }
+                    root.addView(time_view[0], root.indexOfChild(v));
+                }
                 sessions.add(new String[2]);
-                root.addView(time_view[0], ++index[0]);
             }
         });
     }
 
     private View[] create_session_view(int bg_color) {
-        LinearLayout layout = new LinearLayout(this);
+        final LinearLayout layout = new LinearLayout(this);
         layout.setBackgroundResource(R.drawable.curve_10dp);
         ViewCompat.setBackgroundTintList(layout, ColorStateList.valueOf(bg_color));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 (int) (40 * density));
-        lp.setMargins((int) (10 * density), (int) (10 * density), (int) (10 * density), 0);
+        lp.setMargins(tab_margin, tab_margin, tab_margin, 0);
         layout.setLayoutParams(lp);
 
         LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
         LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 2f);
         TextView[] tvs = new TextView[3];
+
         for (int i = 0; i < 3; ++i) {
             tvs[i] = new TextView(this);
             //tvs[i].setTypeface(ResourcesCompat.getFont(this, R.font.poppins_medium));
@@ -727,6 +832,30 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             TextViewCompat.setAutoSizeTextTypeWithDefaults(tvs[i], TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
             tvs[i].setTextColor(0xff272727);
         }
+
+        View.OnTouchListener swipe_listener = new View.OnTouchListener() {
+            private float startX;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getRawX();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+//                        if(Math.abs(event.getRawX() - startDist) < 20)
+                        if (event.getRawX() == startX)
+                            v.performClick();
+                        break;
+                }
+                StartupActivity.this.onTouch(layout, event);
+                return true;
+            }
+        };
+
+        tvs[0].setOnTouchListener(swipe_listener);
+        tvs[2].setOnTouchListener(swipe_listener);
         tvs[1].setLayoutParams(lp2);
         tvs[1].setText("-");
         tvs[1].setGravity(Gravity.CENTER);
@@ -812,29 +941,108 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-//        int action = event.getActionMasked();
-//        switch (action){
-//            case MotionEvent.ACTION_DOWN:
-//                int pointer_index = event.getActionIndex();     //handling multiple touch
-//                touch_x = event.getX(pointer_index);
-//                touch_y = event.getY(pointer_index);
-//                touch_pointer_id = event.getPointerId(0);   //First touch pointer?
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                pointer_index = event.findPointerIndex(touch_pointer_id);
-//
-//                final float x = MotionEventCompat.getX(ev, pointerIndex);
-//                final float y = MotionEventCompat.getY(ev, pointerIndex);
-//
-//                // Calculate the distance moved
-//                final float dx = x - mLastTouchX;
-//                final float dy = y - mLastTouchY;
-//
-//
-//        }
-        return false;
+    public boolean onTouch(final View v, MotionEvent event) {
+        int action = event.getActionMasked();// & MotionEvent.ACTION_MASK;     //bitwise and
+        int x = (int) event.getRawX();
+
+        // Check if the image view is out of the parent view and report it if it is.
+        float threshold_width = 0.42f * v.getWidth();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN: {
+                Log.i("mylog", "down fired");
+                x_touch_origin = x;
+                sliding_view = v;
+                break;
+            }
+
+            case MotionEvent.ACTION_UP: {
+
+                Log.i("mylog", "up fired");
+                sliding_view = null;
+                boolean hasCrossedThreshold = Math.abs(x_touch_origin - x)>threshold_width;
+                if (hasCrossedThreshold) {
+                    float to_move = v.getX();
+                    if (to_move < 0) to_move = -(v.getWidth() + to_move);
+                    ObjectAnimator slide = ObjectAnimator.ofFloat(v, "translationX", to_move);
+                    slide.setDuration(200);
+                    slide.start();
+                    AlphaAnimation alpha = new AlphaAnimation(1f, 0f);
+                    alpha.setDuration(250);
+                    delete_slide.startAnimation(alpha);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            int ind = root.indexOfChild(v);
+                            root.removeViewAt(ind);
+                            if (page == 1) {
+                                sessions.remove(ind - INDEX_SESSIONS - 1);
+                                if(tt_spinners[0].size() != 0) {      //reset tt_spinners on session remove
+                                    for(LinkedList<Spinner> tt_spin: tt_spinners)
+                                        tt_spin.clear();
+                                }
+                            }
+                            else if (page == 2)
+                                sub_edits.remove(ind - INDEX_SUBJECTS - 1);
+
+                            delete_slide.setVisibility(View.GONE);
+
+                        }
+                    }, 250);
+                } else {
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+                    Transition auto = new AutoTransition();
+                    auto.setDuration(100);
+                    TransitionManager.beginDelayedTransition(root, auto);
+                    lp.leftMargin = tab_margin;
+                    lp.rightMargin = tab_margin;
+                    v.setLayoutParams(lp);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            delete_slide.setVisibility(View.GONE);
+                        }
+                    }, 100);
+                }
+
+                deleteActive = 0;
+                break;
+            }
+
+            case MotionEvent.ACTION_MOVE: {
+                Log.i("mylog", "move fired");
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+                int dist_moved_x = x - x_touch_origin;
+                lp.leftMargin = tab_margin + dist_moved_x;
+                lp.rightMargin = tab_margin - dist_moved_x;
+                v.setLayoutParams(lp);
+
+                int[] location = new int[2];
+                v.getLocationOnScreen(location);
+                if (dist_moved_x < 0 && deleteActive != -1) {    //Left Movement
+                    delete_slide.setVisibility(View.VISIBLE);
+                    delete_slide.setX(35 * density + v.getWidth() - delete_slide.getWidth());
+                    delete_slide.setY(location[1] - v.getHeight() / 2f);
+                    deleteActive = -1;
+
+                } else if (dist_moved_x > 0 && deleteActive != 1) {    //Right Movement
+                    delete_slide.setVisibility(View.VISIBLE);
+                    delete_slide.setX(35 * density);
+                    delete_slide.setY(location[1] - v.getHeight() / 2f);
+                    deleteActive = 1;
+                }
+                if(scrolling){
+                    delete_slide.setY(location[1] - v.getHeight() / 2f);
+                    scrolling = false;
+                }
+
+                break;
+            }
+        }
+        return true;
     }
+
 
     void save_data() {
         if (mode == 0) {    // first start
@@ -853,6 +1061,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
     @Override
     public void onBackPressed() {
+    }
+
+    public void updateProgressBar(){
+        int progress = ((page)*100)/6;
+        ProgressBar progress_bar = findViewById(R.id.startup_progress);
+        ObjectAnimator.ofInt(progress_bar, "progress", progress)
+                .setDuration(500)
+                .start();
     }
 
     public void hideKeyboard() {

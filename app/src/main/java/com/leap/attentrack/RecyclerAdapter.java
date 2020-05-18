@@ -178,6 +178,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     dialog.setCancelable(true);
                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                     dialog.setContentView(R.layout.dialog_layout);
+                    ViewCompat.setBackgroundTintList(dialog.findViewById(R.id.dialog_root),
+                            ColorStateList.valueOf(0xfffffbdb));    //xml assign not working
                     final Spinner session = dialog.findViewById(R.id.session_spinner),
                             subject = dialog.findViewById(R.id.subject_spinner);
                     final DatePicker picker = dialog.findViewById(R.id.dialog_date_picker);

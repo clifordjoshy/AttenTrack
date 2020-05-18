@@ -21,7 +21,7 @@
         android:title="@string/toggle_menu" />
     <item android:id="@+id/notification_message"
         android:icon="@drawable/icon_notification_on"
-        android:title="Turn Off Notifications" />
+        android:title="@string/notif_on_menu" />
     <group android:id="@+id/group2">
         <item android:id="@+id/support_message"
             android:icon="@drawable/icon_support"
