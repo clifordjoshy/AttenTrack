@@ -11,7 +11,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,7 +54,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
     //persistent through fn calls. (to read data)
     private EditText edit_attendance;
-    private EditText[] edit_distribution;
     private TextView semester_d1, semester_d2;
     private LinkedList<EditText> sub_edits = new LinkedList<>();
     private LinkedList<String> subjects = new LinkedList<>();    //for spinner adapter
@@ -64,7 +62,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
     //constants of sorts
     private int page = -1, duration = 400, lag = 400, animation_offset, mode, tab_margin;
-    private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE, INDEX_DISTR;
+    private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE;
     private final Integer[] colors = {0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
             0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2, 0xffb5dfff, 0xffe6c6ff};
     private float density;
@@ -127,7 +125,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 break;
 
             case 1:    //Subject Reset Mode
-                intro[2].setText(R.string.subject_reset_mode_text);
+                intro[2].setText(R.string.new_sem_mode_text);
                 condensed = true;
                 page = 1;   //jump to subjects
                 sessions = Subject.session_encoder;
@@ -137,14 +135,13 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 return;     //no hello for menu reset
 
             case 2:     //Complete Reset Mode
-                intro[1].setText(R.string.complete_reset_mode_text);
+                intro[1].setText(R.string.reset_mode_text);
                 condensed = false;
                 intro[0].setVisibility(View.GONE);
                 intro[2].setVisibility(View.GONE);
                 intro[1].animate().alpha(1f).setDuration(duration).setStartDelay(duration);
                 okay.animate().alpha(1f).setDuration(duration).setStartDelay(2 * duration + lag);
                 ++page;
-                updateProgressBar();
                 return;     //no hello for menu reset
         }
 
@@ -173,7 +170,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
                     public void onAnimationEnd(Animator animation) {
                         ++page;
-                        updateProgressBar();
                     }
                 });
     }
@@ -194,6 +190,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 session_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
                 handle_session_input();
                 ++page;
+                findViewById(R.id.startup_progress).animate().
+                        alpha(1f).
+                        setDuration(400).
+                        start();
                 updateProgressBar();
                 break;
             }
@@ -352,6 +352,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     for (int i = INDEX_SUBJECTS; i < root.indexOfChild(root.findViewById(R.id.startup_time_table)); ++i)
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                 }
+                if(condensed)
+                    findViewById(R.id.startup_progress).animate().alpha(1f).setDuration(400).start();
                 ++page;
                 updateProgressBar();
                 break;
@@ -534,8 +536,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 updateProgressBar();
                 break;
             }
-            case 5:     //Subject division
+            case 5:     //Startup Complete
             {
+                hideKeyboard();
+                for (int i = INDEX_ATTENDANCE; i <= INDEX_ATTENDANCE+5; ++i)
+                    root.getChildAt(i).setVisibility(View.GONE);
+
                 if (!condensed) {
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
@@ -599,67 +605,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     start_day = start_day == 6 ? 0 : start_day + 1; //cycle along
                 }
 
-                INDEX_DISTR = root.indexOfChild(root.findViewById(R.id.startup_distribution));
-                for (int i = INDEX_ATTENDANCE; i < INDEX_DISTR; ++i)
-                    root.getChildAt(i).setVisibility(View.GONE);
-
-
-                LinearLayout.LayoutParams laypar = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, (int) (40 * density));
-                LinearLayout.LayoutParams laypartext = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
-                LinearLayout.LayoutParams layparedit = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2);
-
-                laypar.setMargins(0, (int) (30 * density), 0, 0);
-                TextView distribution_text = findViewById(R.id.startup_distribution);
-                distribution_text.setVisibility(View.VISIBLE);
-                distribution_text.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
-                edit_distribution = new EditText[data.size()];
-
                 for (int i = 0; i < data.size(); ++i) {
-                    LinearLayout l = new LinearLayout(this);
-                    l.setOrientation(LinearLayout.HORIZONTAL);
-                    l.setLayoutParams(laypar);
-                    TextView t = new TextView(this);
-                    t.setText((data.get(i).name + ": "));
-                    t.setTextColor(0xff272727);
-                    TextViewCompat.setAutoSizeTextTypeWithDefaults(t, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-                    t.setLayoutParams(laypartext);
-                    t.setGravity(Gravity.CENTER);
-                    //t.setTypeface(ResourcesCompat.getFont(this, R.font.poppins_medium));
-                    EditText e = new EditText(this);
-                    e.setLayoutParams(layparedit);
-                    e.setInputType(InputType.TYPE_CLASS_NUMBER);
-                    e.setBackgroundResource(R.drawable.curve_10dp);
-                    e.setPadding((int) (5 * density), 0, (int) (5 * density), 0);
-                    e.setText(("" + subject_distr[i]));
-                    edit_distribution[i] = e;
-                    l.addView(t);
-                    l.addView(e);
-                    l.setAlpha(0);
-                    root.addView(l, INDEX_DISTR + 1 + i);
-                    l.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
-                }
-                ++page;
-                updateProgressBar();
-                break;
-            }
-            case 6:     //startup complete
-            {
-                hideKeyboard();
-                for (int i = 0; i < data.size(); ++i) {
-                    try {
-                        data.get(i).total = Integer.parseInt(edit_distribution[i].getText().toString());
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Invalid Entry", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    data.get(i).total = subject_distr[i];
                     data.get(i).missable = (100 - Subject.req_percentage) * data.get(i).total / 100;
                 }
+
                 ++page;
                 updateProgressBar();
 
-                for (int i = 0; i <= INDEX_DISTR + data.size() + 1; ++i)
-                    root.getChildAt(i).setVisibility(View.GONE);
                 TextView loading_text = findViewById(R.id.startup_loading);
                 ProgressBar p = findViewById(R.id.loading_progress);
                 loading_text.setVisibility(View.VISIBLE);
@@ -733,17 +686,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 page -= 2;
-                updateProgressBar();
-                break;
-
-            case 6:     //from distribution page. to attendance state 2.
-                hideKeyboard();
-                // too many variables. destroy them all. *fire emoji
-                root.removeViewsInLayout(INDEX_DISTR + 1, data.size());
-                root.getChildAt(INDEX_DISTR).setVisibility(View.GONE);
-                for (int i = INDEX_ATTENDANCE; i < INDEX_DISTR; ++i)
-                    root.getChildAt(i).setVisibility(View.VISIBLE);
-                --page;
                 updateProgressBar();
                 break;
 
@@ -1038,7 +980,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     delete_slide.setY(location[1] - v.getHeight() / 2f);
                     scrolling = false;
                 }
-
                 break;
             }
         }
@@ -1068,7 +1009,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     public void updateProgressBar(){
-        int progress = ((page)*100)/7;
+        int progress = ((page)*100)/6;
         ProgressBar progress_bar = findViewById(R.id.startup_progress);
         ObjectAnimator.ofInt(progress_bar, "progress", progress)
                 .setDuration(500)

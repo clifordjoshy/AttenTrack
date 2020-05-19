@@ -9,6 +9,7 @@
         <item name="android:fontFamily">@font/poppins_regular</item>
         <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
         <item name="colorControlHighlight">@android:color/transparent</item>
+        <item name="android:listDivider">?attr/drawerSelectedColor</item>
     </style>
 
     <style name = "ToolBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
