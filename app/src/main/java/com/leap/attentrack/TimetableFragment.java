@@ -1,5 +1,10 @@
 package com.leap.attentrack;
 
+import android.animation.Animator;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -20,16 +25,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.transition.TransitionManager;
 
-import com.google.android.gms.ads.InterstitialAd;
-
-import java.util.Collections;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class TimetableFragment extends Fragment {
@@ -37,7 +42,6 @@ public class TimetableFragment extends Fragment {
     private TextView[] boxes;
     private TextView title;
     private LinearLayout list;
-    private ConstraintLayout root;
     private Menu options_menu;
     private LinkedList<Subject> table;
     private Spinner[][] tt_spinners;
@@ -54,7 +58,6 @@ public class TimetableFragment extends Fragment {
 
         density = getContext().getResources().getDisplayMetrics().density;
         list = fragmentView.findViewById(R.id.linear_timetable);
-        root = fragmentView.findViewById(R.id.time_table_root);
         title = fragmentView.findViewById(R.id.time_table_title);
         boxes = new TextView[]{fragmentView.findViewById(R.id.box_day_1),
                 fragmentView.findViewById(R.id.box_day_2), fragmentView.findViewById(R.id.box_day_3),
@@ -209,18 +212,15 @@ public class TimetableFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        TransitionManager.beginDelayedTransition(root);
-        if (active_box != -1) {
-            list.removeViewAt(active_box + 1);
-            active_box = -1;
-        }
-
-        switch(item.getItemId()){
-
+        switch (item.getItemId()) {
             case R.id.edit_timetable_button:
+                TransitionManager.beginDelayedTransition(list);
+                if (active_box != -1) {
+                    list.removeViewAt(active_box + 1);
+                    active_box = -1;
+                }
                 editing = true;
-                title.setText(R.string.time_table_edit);
-                root.findViewById(R.id.edit_note).setVisibility(View.VISIBLE);
+                animate_title(R.string.time_table_edit);
                 item.setVisible(false);
                 options_menu.findItem(R.id.save_timetable_button).setVisible(true);
                 options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
@@ -233,42 +233,62 @@ public class TimetableFragment extends Fragment {
                 break;
 
             case R.id.save_timetable_button:
-                editing = false;
-                title.setText(R.string.time_table_title);
-                root.findViewById(R.id.edit_note).setVisibility(View.GONE);
 
-                item.setVisible(false);
-                options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
-                options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
+                final int[] changes = get_distribution_changes();
 
-                Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
+                if (changes == null)
+                    save_timetable_changes();
 
-                for (int i = 0; i < tt_spinners.length; ++i) {
-                    for (int j = 0; j < tt_spinners[i].length; ++j) {
-                        if (tt_spinners[i][j] != null) {
-
-                            //Remove the slot if it's already there
-                            for(Subject k: table)
-                                k.slots[i].remove(Integer.valueOf(j));
-
-                            try {
-                                Subject to_edit = table.get(tt_spinners[i][j].getSelectedItemPosition() - 1);
-                                to_edit.slots[i].add(j);
-                            } catch(IndexOutOfBoundsException e){
-                                //Free Slot
-                            }
+                else {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    dialog.setTitle(R.string.warning_title);
+                    final StringBuilder s = new StringBuilder(getString(R.string.time_table_change_warning));
+                    for (int i = 0; i < changes.length; ++i) {
+                        if (changes[i] != 0) {
+                            s.append('\t').append(table.get(i).name).append(" : ");
+                            s.append(table.get(i).total).append(" → ");
+                            s.append(table.get(i).total + changes[i]).append('\n');
                         }
                     }
-                }
+                    dialog.setMessage(s);
+                    dialog.setNegativeButton("EDIT", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                tt_spinners = null;
-                spinner_options = null;
+                    dialog.setNeutralButton("IGNORE CHANGES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            save_timetable_changes();
+                        }
+                    });
+
+                    dialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            for (int i = 0; i < changes.length; ++i)
+                                    table.get(i).total += changes[i];
+                            dialog.cancel();
+                            save_timetable_changes();
+                        }
+                    });
+                    ((TextView)dialog.show().findViewById(android.R.id.message)).
+                            setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_regular));
+                }
                 break;
 
             case R.id.cancel_timetable_button:
+                TransitionManager.beginDelayedTransition(list);
+                if (active_box != -1) {
+                    list.removeViewAt(active_box + 1);
+                    active_box = -1;
+                }
+
                 editing = false;
-                title.setText(R.string.time_table_title);
-                root.findViewById(R.id.edit_note).setVisibility(View.GONE);
+                animate_title(R.string.time_table_title);
 
                 item.setVisible(false);
                 options_menu.findItem(R.id.save_timetable_button).setVisible(false);
@@ -280,56 +300,176 @@ public class TimetableFragment extends Fragment {
                 break;
         }
 
-
-
-//        if (item.getItemId() == R.id.edit_timetable_button) {
-//            editing = !editing;
-//            TransitionManager.beginDelayedTransition(root);
-
-//            if (active_box != -1) {
-//                list.removeViewAt(active_box + 1);
-//                active_box = -1;
-//            }
-//
-//            if (editing) {
-//                title.setText(R.string.time_table_edit);
-//                root.findViewById(R.id.edit_note).setVisibility(View.VISIBLE);
-//                item.setIcon(R.drawable.toolbar_icon_save);
-//                tt_spinners = new Spinner[7][Subject.session_encoder.size()];
-//                String[] spinner_options_array = new String[table.size() + 1];
-//                spinner_options_array[0] = "<free>";
-//                for (int i = 1; i < spinner_options_array.length; ++i)
-//                    spinner_options_array[i] = table.get(i - 1).name;
-//                spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
-
-//            } else {
-//                title.setText(R.string.time_table_title);
-//                root.findViewById(R.id.edit_note).setVisibility(View.GONE);
-//                item.setIcon(R.drawable.toolbar_icon_edit);
-//                Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
-//
-//                for (int i = 0; i < tt_spinners.length; ++i) {
-//                    for (int j = 0; j < tt_spinners[i].length; ++j) {
-//                        if (tt_spinners[i][j] != null) {
-//
-//                            //Remove the slot if it's already there
-//                            for(Subject k: table)
-//                                k.slots[i].remove(Integer.valueOf(j));
-//
-//                            try {
-//                                Subject to_edit = table.get(tt_spinners[i][j].getSelectedItemPosition() - 1);
-//                                to_edit.slots[i].add(j);
-//                            } catch(IndexOutOfBoundsException e){
-//                                //Free Slot
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                tt_spinners = null;
-//                spinner_options = null;
-//            }
-//        }
         return super.onOptionsItemSelected(item);
     }
+
+    private int[] get_distribution_changes() {
+
+        Date start, end;
+
+        try {
+            String start_string, end_string;
+            SimpleDateFormat string_format = new SimpleDateFormat("dd/MM/yyyy");
+            Date today = Calendar.getInstance().getTime();
+            today = string_format.parse(string_format.format(today));   //set time 00:00
+            SharedPreferences sp = getActivity().getSharedPreferences(MainActivity.shared_pref_name, Context.MODE_PRIVATE);
+            start_string = sp.getString("sem_start_date", null);
+            end_string = sp.getString("sem_end_date", null);
+
+            if (start_string != null && end_string != null) {
+                start = string_format.parse(start_string);
+                end = string_format.parse(end_string);
+                if (start.before(today))
+                    start = today;
+            } else
+                return null;
+
+        } catch (ParseException e) {
+            return null;
+        }
+
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        int start_day = c.get(Calendar.DAY_OF_WEEK) - 1;    //sun-sat 0 -6
+        start_day = start_day == 0 ? 6 : start_day - 1;     //mon-sun
+        c.setTime(end);
+        int end_day = c.get(Calendar.DAY_OF_WEEK) - 1;
+        end_day = end_day == 0 ? 6 : end_day - 1;     //mon-sun
+
+        int weeks_to_go = (int) ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7));
+        int[] subject_distr_old = new int[table.size()];
+        int[] subject_distr_new = new int[table.size()];
+
+        //old tt classes
+        for (int i = 0; i < table.size(); ++i) {
+            for (LinkedList<Integer> day : table.get(i).slots)
+                subject_distr_old[i] += day.size();
+            subject_distr_old[i] *= weeks_to_go;
+        }
+
+        for (int day = start_day; day != end_day; day = day == 6 ? 0 : (day + 1)) {  //To account for remainder days.
+            for (int i = 0; i < table.size(); ++i)
+                subject_distr_old[i] += table.get(i).slots[day].size();
+        }
+
+        //new tt classes
+        for (int i = 0; i < tt_spinners.length; ++i) {
+            for (int j = 0; j < tt_spinners[i].length; ++j) {
+                int sub_ind = get_subject_new_tt(i, j);
+                if (sub_ind != -1)
+                    ++subject_distr_new[sub_ind];
+            }
+        }
+        for (int i = 0; i < subject_distr_new.length; ++i)
+            subject_distr_new[i] *= weeks_to_go;
+
+        for (int day = start_day; day != end_day; day = day == 6 ? 0 : (day + 1)) {  //To account for remainder days.
+            for (int j = 0; j < tt_spinners[day].length; ++j) {
+                int sub_ind = get_subject_new_tt(day, j);
+                if (sub_ind != -1) {
+                    ++subject_distr_new[sub_ind];
+                }
+            }
+        }
+
+        boolean changed = false;
+        int[] changes = new int[table.size()];
+        for (int i = 0; i < changes.length; ++i) {
+            changes[i] = subject_distr_new[i] - subject_distr_old[i];
+            if (changes[i] != 0)
+                changed = true;
+        }
+        if (changed)
+            return changes;
+        else
+            return null;
+    }
+
+    private int get_subject_new_tt(int day_num, int sess_num) {
+        if (tt_spinners[day_num][sess_num] != null) {
+            int opt = tt_spinners[day_num][sess_num].getSelectedItemPosition() - 1;
+            if (opt >= 0)     //not free
+                return opt;
+        } else {
+            //get from table.
+            for (int k = 0; k < table.size(); ++k) {
+                if (table.get(k).slots[day_num].contains(sess_num))
+                    return k;
+            }
+        }
+        return -1;
+    }
+
+    private void save_timetable_changes() {
+        TransitionManager.beginDelayedTransition(list);
+        if (active_box != -1) {
+            list.removeViewAt(active_box + 1);
+            active_box = -1;
+        }
+
+        editing = false;
+        animate_title(R.string.time_table_title);
+
+        options_menu.findItem(R.id.save_timetable_button).setVisible(false);
+        options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
+        options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
+
+        Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
+
+        for (int i = 0; i < tt_spinners.length; ++i) {
+            for (int j = 0; j < tt_spinners[i].length; ++j) {
+                if (tt_spinners[i][j] != null) {
+
+                    //Remove the slot if it's already there
+                    for (Subject k : table)
+                        k.slots[i].remove(Integer.valueOf(j));
+
+                    try {
+                        Subject to_edit = table.get(tt_spinners[i][j].getSelectedItemPosition() - 1);
+                        to_edit.slots[i].add(j);
+                    } catch (IndexOutOfBoundsException e) {
+                        //Free Slot
+                    }
+                }
+            }
+        }
+        tt_spinners = null;
+        spinner_options = null;
+    }
+
+    private void animate_title(final int resId){
+
+        title.animate().
+                translationX(title.getWidth() + 20*density).
+                setDuration(300).
+                setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                title.setText(resId);
+                title.setX(-title.getWidth()-20*density);
+                title.animate().
+                        translationX(0).
+                        setDuration(300).
+                        setListener(null).  //to prevent recursion
+                        start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+//                title.setText(resId);
+//                title.setX(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        }).start();
+    }
+
+
 }

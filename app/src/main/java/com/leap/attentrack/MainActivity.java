@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
@@ -92,15 +90,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(savedInstanceState != null)
             current_fragment = savedInstanceState.getInt("current_fragment", 0);
+
         Fragment go_to = null;
-        if (current_fragment == 0)
-            go_to = new ScheduleFragment();
-        else if (current_fragment == 1)
-            go_to = new TimetableFragment();
-        else if (current_fragment == 2)
-            go_to = new AllClassesFragment();
-        else if (current_fragment == 3)
-            go_to = new SupportFragment();
+        switch(current_fragment){
+            case 0:
+                go_to = new ScheduleFragment();
+                navView.getMenu().findItem(R.id.schedule_message).setChecked(true);
+                break;
+            case 1:
+                go_to = new TimetableFragment();
+                navView.getMenu().findItem(R.id.time_table_message).setChecked(true);
+                break;
+            case 2:
+                go_to = new EditStatsFragment();
+                navView.getMenu().findItem(R.id.edit_stats_message).setChecked(true);
+                break;
+            case 3:
+                go_to = new SupportFragment();
+                navView.getMenu().findItem(R.id.support_message).setChecked(true);
+                break;
+        }
+
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, go_to).commit();
     }
 
@@ -135,16 +145,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             to_write.append("\n");
             outputStreamWriter.write(to_write.toString());
 
-            for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
-                for (int[] sess : sess_list) {
-                    to_write = new StringBuilder("extra");
-                    for (int val : sess)
-                        to_write.append("/").append(val);
-                    to_write.append("\n");
-                    outputStreamWriter.write(to_write.toString());
-                }
+            for (int[] sess : extra_sessions) {
+                to_write = new StringBuilder("extra");
+                for (int val : sess)
+                    to_write.append("/").append(val);
+                to_write.append("\n");
+                outputStreamWriter.write(to_write.toString());
             }
 
+            for (int[] sess : cancelled_sessions) {
+                to_write = new StringBuilder("cancel");
+                for (int val : sess)
+                    to_write.append("/").append(val);
+                to_write.append("\n");
+                outputStreamWriter.write(to_write.toString());
+            }
+
+            for (int[] sess : missed_sessions) {
+                to_write = new StringBuilder("missed");
+                for (int val : sess)
+                    to_write.append("/").append(val);
+                to_write.append("\n");
+                outputStreamWriter.write(to_write.toString());
+            }
             outputStreamWriter.close();
 
         } catch (Exception e) {
@@ -237,24 +260,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.schedule_message:
+                item.setChecked(true);
                 current_fragment = 0;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ScheduleFragment()).commit();
                 break;
             case R.id.time_table_message:
+                item.setChecked(true);
                 current_fragment = 1;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new TimetableFragment()).commit();
                 break;
-            case R.id.missed_message:
+
+            case R.id.edit_stats_message:
+                item.setChecked(true);
                 current_fragment = 2;
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AllClassesFragment()).commit();
+                        new EditStatsFragment()).commit();
                 break;
+
             case R.id.dark_message:
                 dark_mode_on = !dark_mode_on;
                 recreate();
                 break;
+
             case R.id.notification_message:
                 is_notification_on = !is_notification_on;
                 NavigationView navView = findViewById(R.id.nav_view);
@@ -264,13 +293,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                Toast.makeText(this, "Notifications " + (is_notification_on ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
                 updateAlarmBroadcastReceiver(is_notification_on);
                 return true;    //don't close drawer
-            case R.id.reset_message:
+
+            case R.id.start_new_semester_message: {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                 dialog.setTitle(R.string.warning_title);
-                dialog.setMessage(R.string.reset_warning);
+                dialog.setMessage(R.string.new_sem_warning);
 
                 dialog.setCancelable(true);
-                dialog.setPositiveButton("SUBJECT RESET", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, StartupActivity.class);
@@ -278,12 +308,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivityForResult(intent, 31);
                     }
                 });
-                dialog.setNegativeButton("COMPLETE RESET", new DialogInterface.OnClickListener() {
+                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                ((TextView) dialog.show().findViewById(android.R.id.message)).
+                        setTypeface(ResourcesCompat.getFont(this, R.font.poppins_regular));
+                //Editing Typeface after dialog is shown. dialog.show() returns an AlertDialog
+                break;
+            }
+
+            case R.id.reset_message:
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle(R.string.warning_title);
+                dialog.setMessage(R.string.reset_warning);
+
+                dialog.setCancelable(true);
+                dialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, StartupActivity.class);
                         intent.putExtra("mode", 2);
                         startActivityForResult(intent, 31);
+                    }
+                });
+                dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
                 });
 
@@ -293,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.support_message:
                 current_fragment = 3;
+                item.setChecked(true);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SupportFragment()).commit();
                 break;

@@ -36,6 +36,7 @@
         android:background="@drawable/curve_right_only_20dp"
         android:layout_gravity="start"
         app:itemTextColor="?attr/textColor"
+        app:itemBackground="@drawable/drawer_selector"
         app:itemIconTint="?attr/textColor"
         app:headerLayout="@layout/slide_header"
         app:menu="@menu/slide_menu" />

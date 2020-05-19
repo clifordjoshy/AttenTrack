@@ -13,4 +13,6 @@
     <color name="saturday_color">#ffdb85</color>
     <color name="sunday_color">#ff8f8f</color>
     <color name="dialog_warning">#d32f2f</color>
+    <color name="drawer_bg_light">#40272727</color>
+    <color name="drawer_bg_dark">#40ffffff</color>
 </resources>

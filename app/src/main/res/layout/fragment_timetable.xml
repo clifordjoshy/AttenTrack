@@ -22,29 +22,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/edit_note"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:textColor="#808080"
-        android:visibility="gone"
-        android:text="@string/time_table_edit_note"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="@+id/time_table_title"
-        app:layout_constraintStart_toStartOf="@+id/time_table_title"
-        app:layout_constraintTop_toBottomOf="@+id/time_table_title" />
-
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/time_table_scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/time_table_title"
         app:layout_constraintStart_toStartOf="@+id/time_table_title"
-        app:layout_constraintTop_toBottomOf="@+id/edit_note">
+        app:layout_constraintTop_toBottomOf="@+id/time_table_title">
 
         <LinearLayout
             android:id="@+id/linear_timetable"

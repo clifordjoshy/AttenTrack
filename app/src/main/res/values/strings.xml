@@ -34,10 +34,10 @@
     <string name="cancel_all_warning">Would you like to cancel all of today\'s classes?</string>
     <string name="time_table_title">Time Table</string>
     <string name="time_table_edit">Time Table Editor</string>
-    <string name="time_table_edit_note">NOTE: Changes made to the Time Table will not change the total
-        class count. If there is a change in the total class count, a subject reset is advised.</string>
+    <string name="time_table_change_warning">The total class count of the following subjects have changed :-\n\n</string>
     <string name="schedule_menu">Schedule</string>
     <string name="edit_stats_menu">Edit Stats</string>
+    <string name="start_new_sem_menu">Start New Semester</string>
     <string name="reset_menu">Reset Details</string>
     <string name="toggle_menu">Toggle Dark Mode</string>
     <string name="support_menu">Support</string>
@@ -53,9 +53,10 @@
         ( ^ ᗜ ^ )
     </string>
     <string name="warning_title">WARNING</string>
-    <string name="reset_warning">Subject Reset will reset the subjects and time table data
-        and is meant to be used at the end of a semester/term. Complete Reset will completely erase
-        all the data.</string>
-    <string name="edit_menu">Edit Time Table</string>
+    <string name="reset_warning">This will permanently erase all the data.</string>
+    <string name="new_sem_warning">This will reset the subjects and time table data.</string>
+    <string name="edit_tt_menu">Edit Time Table</string>
+    <string name="save_tt_menu">Save Changes</string>
+    <string name="cancel_tt_menu">Cancel Changes</string>
     <string name="delete_slider_text">Delete</string>
 </resources>

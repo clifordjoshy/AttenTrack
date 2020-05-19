@@ -11,9 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +30,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
@@ -76,6 +73,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private View sliding_view;
 
     //required data
+    String sem_start, sem_end;
     LinkedList<String[]> sessions = new LinkedList<>();
     LinkedList<Subject> data = new LinkedList<>();
 
@@ -439,7 +437,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 updateProgressBar();
                 break;
             }
-            case 3:     //Attendance details
+            case 3:     //Attendance percentage
             {
                 LinearLayout attendance_layout = findViewById(R.id.attendance_linear_layout);   //view after timetable
                 edit_attendance = findViewById(R.id.editText_attendance);
@@ -472,7 +470,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     break;
                 }
             }
-            case 4:     //Working Days
+            case 4:     //Semester Start/End
             {   //falls through if condensed
                 hideKeyboard();
                 TextView date_text = findViewById(R.id.startup_working),
@@ -566,7 +564,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     d1 = sdf.parse(date_string_1);
                     d2 = sdf.parse(date_string_2);
                 } catch (ParseException e) {
-                    Log.i("mylog", "Parse Error: " + e.getMessage());
                     return;
                 }
 
@@ -574,6 +571,9 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     Toast.makeText(this, "Invalid Dates", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                sem_start = semester_d1.getText().toString();
+                sem_end = semester_d2.getText().toString();
 
                 long diff = (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24);
                 int number_of_weeks = (int) (diff / 7);
@@ -956,7 +956,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
-                Log.i("mylog", "down fired");
                 x_touch_origin = x;
                 sliding_view = v;
                 break;
@@ -964,16 +963,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
             case MotionEvent.ACTION_UP: {
 
-                Log.i("mylog", "up fired");
                 sliding_view = null;
                 boolean hasCrossedThreshold = Math.abs(x_touch_origin - x)>threshold_width;
                 if (hasCrossedThreshold) {
                     float to_move = v.getX();
                     if (to_move < 0) to_move = -(v.getWidth() + to_move);
-                    ObjectAnimator slide = ObjectAnimator.ofFloat(v, "translationX", to_move);
-                    slide.setDuration(200);
-                    slide.start();
-                    AlphaAnimation alpha = new AlphaAnimation(1f, 0f);
+                    v.animate().translationX(to_move).setDuration(200).start();
+
+                    AlphaAnimation alpha = new AlphaAnimation(1f, 0f);  //to avoid permanent animations
                     alpha.setDuration(250);
                     delete_slide.startAnimation(alpha);
 
@@ -1017,7 +1014,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             }
 
             case MotionEvent.ACTION_MOVE: {
-                Log.i("mylog", "move fired");
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
                 int dist_moved_x = x - x_touch_origin;
                 lp.leftMargin = tab_margin + dist_moved_x;
@@ -1049,18 +1045,20 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         return true;
     }
 
-
     void save_data() {
+        SharedPreferences.Editor sp_editor = getSharedPreferences(MainActivity.shared_pref_name, MODE_PRIVATE).edit();
+
         if (mode == 0) {    // first start
-            SharedPreferences.Editor sp_editor = getSharedPreferences(MainActivity.shared_pref_name, MODE_PRIVATE).edit();
             sp_editor.putInt("first_start", 0);
-            sp_editor.apply();
             MainActivity.is_notification_on = true;
         }
 
+        sp_editor.putString("sem_start_date", sem_start);
+        sp_editor.putString("sem_end_date", sem_end);
+        sp_editor.apply();
+
         //MainActivity will be recreated on result of this activity, thus calling onPause() and hence put_data().
         //So, just save the values in MainActivity and it will be written to the file.
-        //Only first start needs to be saved explicitly
         Subject.session_encoder = sessions;
         MainActivity.data = data;
     }
@@ -1082,15 +1080,4 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         //Find the currently focused view, so we can grab the correct window token from it.
         imm.hideSoftInputFromWindow(root.getWindowToken(), 0);
     }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedState) {
-        super.onRestoreInstanceState(savedState);
-    }
-
 }

@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/edit_timetable_button"
         android:icon="@drawable/toolbar_icon_edit"
-        android:title="@string/edit_menu"
+        android:title="@string/edit_tt_menu"
         app:showAsAction="always" />
 
     <item android:id="@+id/cancel_timetable_button"
         android:icon="@drawable/toolbar_icon_cancel"
-        android:title="@string/edit_menu"
+        android:title="@string/cancel_tt_menu"
         android:visible="false"
         app:showAsAction="always" />
 
     <item android:id="@+id/save_timetable_button"
         android:icon="@drawable/toolbar_icon_save"
-        android:title="@string/edit_menu"
+        android:title="@string/save_tt_menu"
         android:visible="false"
         app:showAsAction="always" />
 </menu>
