@@ -12,7 +12,8 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5022247600598681~1959626655"/>
-        <activity android:name="com.leap.attentrack.StartupActivity">
+        <activity android:name="com.leap.attentrack.StartupActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize">
         </activity>
         <activity android:name="com.leap.attentrack.MainActivity">
             <intent-filter>
