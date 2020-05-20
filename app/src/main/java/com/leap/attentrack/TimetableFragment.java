@@ -455,8 +455,7 @@ public class TimetableFragment extends Fragment {
                 title.animate().
                         translationX(0).
                         setDuration(300).
-                        setListener(null).  //to prevent recursion
-                        start();
+                        setListener(null);  //to prevent recursion
             }
 
             @Override
@@ -468,7 +467,7 @@ public class TimetableFragment extends Fragment {
             @Override
             public void onAnimationRepeat(Animator animation) {
             }
-        }).start();
+        });
     }
 
 

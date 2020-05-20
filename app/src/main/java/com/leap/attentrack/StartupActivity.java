@@ -125,13 +125,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 break;
 
             case 1:    //Subject Reset Mode
-                intro[2].setText(R.string.new_sem_mode_text);
                 condensed = true;
                 page = 1;   //jump to subjects
                 sessions = Subject.session_encoder;
-                root.removeViewsInLayout(0, 2);
-                intro[2].animate().alpha(1f).setDuration(duration).setStartDelay(duration);
-                okay.animate().alpha(1f).setDuration(duration).setStartDelay(2 * duration + lag);
+                okay_button_pressed(okay);
                 return;     //no hello for menu reset
 
             case 2:     //Complete Reset Mode
@@ -192,8 +189,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 ++page;
                 findViewById(R.id.startup_progress).animate().
                         alpha(1f).
-                        setDuration(400).
-                        start();
+                        setDuration(400);
                 updateProgressBar();
                 break;
             }
@@ -258,16 +254,13 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     for (int i = INDEX_SESSIONS; i < INDEX_SUBJECTS; ++i)
                         root.getChildAt(i).setVisibility(View.GONE);
 
-
+                    back_button.setVisibility(View.VISIBLE);
                 } else {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-                    root.removeViewsInLayout(0, 4);
+                    root.removeViewsInLayout(0, 6);
                     INDEX_SUBJECTS = 0;
                 }
 
-
-                if (!condensed)
-                    back_button.setVisibility(View.VISIBLE);
 
                 if (sub_edits.size() == 0) {     //first coming
                     final TextView subject_text = findViewById(R.id.startup_subjects);
@@ -277,6 +270,9 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     animation_offset = 0;
                     subject_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     subject_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
+                    if(condensed)
+                        findViewById(R.id.okay_btn_startup).animate().alpha(1f).setDuration(duration).
+                                setStartDelay(animation_offset += duration);
 
                     /*
                     final int[] index = new int[]{INDEX_SUBJECTS};
@@ -346,6 +342,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     });
                     if (!condensed)
                         back_button.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
+
                 } else {    // blast from the past
 
                     TransitionManager.beginDelayedTransition(root);
@@ -353,7 +350,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                 }
                 if(condensed)
-                    findViewById(R.id.startup_progress).animate().alpha(1f).setDuration(400).start();
+                    findViewById(R.id.startup_progress).animate().alpha(1f).setDuration(400);
                 ++page;
                 updateProgressBar();
                 break;
@@ -910,7 +907,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 if (hasCrossedThreshold) {
                     float to_move = v.getX();
                     if (to_move < 0) to_move = -(v.getWidth() + to_move);
-                    v.animate().translationX(to_move).setDuration(200).start();
+                    v.animate().translationX(to_move).setDuration(200);
 
                     AlphaAnimation alpha = new AlphaAnimation(1f, 0f);  //to avoid permanent animations
                     alpha.setDuration(250);
@@ -1009,7 +1006,17 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     public void updateProgressBar(){
-        int progress = ((page)*100)/6;
+        int progress = (page*100)/6;
+        if(condensed) {
+            if(page == 2)
+                progress =25;
+            else if(page ==3)
+                progress = 50;
+            else if(page == 5)
+                progress = 75;
+            else if (page == 6)
+                progress = 100;
+        }
         ProgressBar progress_bar = findViewById(R.id.startup_progress);
         ObjectAnimator.ofInt(progress_bar, "progress", progress)
                 .setDuration(500)

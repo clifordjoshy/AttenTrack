@@ -43,7 +43,6 @@
     <string name="support_menu">Support</string>
     <string name="notif_on_menu">Disable Notifications</string>
     <string name="notif_off_menu">Enable Notifications</string>
-    <string name="new_sem_mode_text">Welcome to the New Semester</string>
     <string name="reset_mode_text">Welcome to Reset Mode</string>
     <string name="support_message">
         You might have noticed that there are no in-line ads in this app and there never will be.
@@ -59,4 +58,6 @@
     <string name="save_tt_menu">Save Changes</string>
     <string name="cancel_tt_menu">Cancel Changes</string>
     <string name="delete_slider_text">Delete</string>
+    <string name="support_adbutton">WATCH AN AD</string>
+    <string name="support_reviewbutton">LEAVE A REVIEW</string>
 </resources>
