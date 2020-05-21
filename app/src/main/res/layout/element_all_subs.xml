@@ -82,6 +82,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/plus_image"
         app:layout_constraintTop_toBottomOf="@+id/plus_image"
-        app:srcCompat="@drawable/cancel2" />
+        app:srcCompat="@drawable/cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

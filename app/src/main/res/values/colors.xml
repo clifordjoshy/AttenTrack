@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#272727</color>
+    <color name="drawer_bg_light">#25272727</color>
+    <color name="drawer_bg_dark">#25ffffff</color>
     <color name="colorAccent">#00609f</color>
     <color name="dialogbg">#fffbdb</color>
     <color name="startup_bg">#e2e2e2</color>
@@ -13,6 +15,4 @@
     <color name="saturday_color">#ffdb85</color>
     <color name="sunday_color">#ff8f8f</color>
     <color name="dialog_warning">#d32f2f</color>
-    <color name="drawer_bg_light">#25272727</color>
-    <color name="drawer_bg_dark">#25ffffff</color>
 </resources>

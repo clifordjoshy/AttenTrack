@@ -36,7 +36,7 @@ public class ScheduleFragment extends Fragment{
         fragmentView.findViewById(R.id.cancel_button_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
                 dialog.setMessage(R.string.cancel_all_warning);
                 dialog.setCancelable(true);
                 dialog.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
@@ -76,7 +76,7 @@ public class ScheduleFragment extends Fragment{
         name_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
                 edit_dialog.setTitle("Enter New Username");
                 final EditText e = new EditText(getContext());
                 e.setBackgroundColor(0xffb5dfff);

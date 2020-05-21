@@ -42,8 +42,6 @@ public class SupportFragment extends Fragment {
             public void onClick(View v) {
                 if (myAd.isLoaded()) {
                     myAd.show();
-                } else {
-                    Log.i("mylog", "The interstitial wasn't loaded yet.");
                 }
             }
         });

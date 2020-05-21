@@ -1,6 +1,5 @@
 package com.leap.attentrack;
 
-import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,10 +24,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.transition.Explode;
 import androidx.transition.TransitionManager;
 
 import java.text.ParseException;
@@ -40,9 +41,9 @@ import java.util.LinkedList;
 public class TimetableFragment extends Fragment {
 
     private TextView[] boxes;
-    private TextView title;
     private LinearLayout list;
     private Menu options_menu;
+    private TextView title, edit_title;
     private LinkedList<Subject> table;
     private Spinner[][] tt_spinners;
     private ArrayAdapter<String> spinner_options;
@@ -57,14 +58,22 @@ public class TimetableFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_timetable, container, false);
 
         density = getContext().getResources().getDisplayMetrics().density;
-        list = fragmentView.findViewById(R.id.linear_timetable);
         title = fragmentView.findViewById(R.id.time_table_title);
+        edit_title = fragmentView.findViewById(R.id.time_table_editor_title);
+        list = fragmentView.findViewById(R.id.linear_timetable);
         boxes = new TextView[]{fragmentView.findViewById(R.id.box_day_1),
                 fragmentView.findViewById(R.id.box_day_2), fragmentView.findViewById(R.id.box_day_3),
                 fragmentView.findViewById(R.id.box_day_4), fragmentView.findViewById(R.id.box_day_5),
                 fragmentView.findViewById(R.id.box_day_6), fragmentView.findViewById(R.id.box_day_7)};
         font_med = ResourcesCompat.getFont(getContext(), R.font.poppins_regular);
         dark = MainActivity.dark_mode_on;
+
+        edit_title.post(new Runnable() {
+            @Override
+            public void run() {
+                edit_title.setVisibility(View.GONE);    //cant start with gone. need width
+            }
+        });
 
         boxes[0].setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,14 +222,18 @@ public class TimetableFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.edit_timetable_button:
+            case R.id.edit_timetable_button: {
                 TransitionManager.beginDelayedTransition(list);
                 if (active_box != -1) {
                     list.removeViewAt(active_box + 1);
                     active_box = -1;
                 }
                 editing = true;
-                animate_title(R.string.time_table_edit);
+                animate_title();
+
+                Explode explode = new Explode();
+                explode.setDuration(400);
+                TransitionManager.beginDelayedTransition((Toolbar) getActivity().findViewById(R.id.toolbar), explode);
                 item.setVisible(false);
                 options_menu.findItem(R.id.save_timetable_button).setVisible(true);
                 options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
@@ -231,8 +244,8 @@ public class TimetableFragment extends Fragment {
                     spinner_options_array[i] = table.get(i - 1).name;
                 spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
                 break;
-
-            case R.id.save_timetable_button:
+            }
+            case R.id.save_timetable_button: {
 
                 final int[] changes = get_distribution_changes();
 
@@ -240,7 +253,7 @@ public class TimetableFragment extends Fragment {
                     save_timetable_changes();
 
                 else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
                     dialog.setTitle(R.string.warning_title);
                     final StringBuilder s = new StringBuilder(getString(R.string.time_table_change_warning));
                     for (int i = 0; i < changes.length; ++i) {
@@ -270,17 +283,17 @@ public class TimetableFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             for (int i = 0; i < changes.length; ++i)
-                                    table.get(i).total += changes[i];
+                                table.get(i).total += changes[i];
                             dialog.cancel();
                             save_timetable_changes();
                         }
                     });
-                    ((TextView)dialog.show().findViewById(android.R.id.message)).
+                    ((TextView) dialog.show().findViewById(android.R.id.message)).
                             setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_regular));
                 }
                 break;
-
-            case R.id.cancel_timetable_button:
+            }
+            case R.id.cancel_timetable_button: {
                 TransitionManager.beginDelayedTransition(list);
                 if (active_box != -1) {
                     list.removeViewAt(active_box + 1);
@@ -288,16 +301,20 @@ public class TimetableFragment extends Fragment {
                 }
 
                 editing = false;
-                animate_title(R.string.time_table_title);
+                animate_title();
 
-                item.setVisible(false);
+                Explode explode = new Explode();
+                explode.setDuration(400);
+                TransitionManager.beginDelayedTransition((Toolbar) getActivity().findViewById(R.id.toolbar), explode);
                 options_menu.findItem(R.id.save_timetable_button).setVisible(false);
+                item.setVisible(false);
                 options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
 
                 Toast.makeText(getContext(), "Edits Cancelled", Toast.LENGTH_SHORT).show();
                 tt_spinners = null;
                 spinner_options = null;
                 break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -409,8 +426,11 @@ public class TimetableFragment extends Fragment {
         }
 
         editing = false;
-        animate_title(R.string.time_table_title);
+        animate_title();
 
+        Explode explode = new Explode();
+        explode.setDuration(400);
+        TransitionManager.beginDelayedTransition((Toolbar)getActivity().findViewById(R.id.toolbar), explode);
         options_menu.findItem(R.id.save_timetable_button).setVisible(false);
         options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
         options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
@@ -438,36 +458,12 @@ public class TimetableFragment extends Fragment {
         spinner_options = null;
     }
 
-    private void animate_title(final int resId){
-
-        title.animate().
-                translationX(title.getWidth() + 20*density).
-                setDuration(300).
-                setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                title.setText(resId);
-                title.setX(-title.getWidth()-20*density);
-                title.animate().
-                        translationX(0).
-                        setDuration(300).
-                        setListener(null);  //to prevent recursion
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-//                title.setText(resId);
-//                title.setX(0);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
+    private void animate_title(){
+        TextView in = editing?edit_title:title, out = editing?title:edit_title;
+        in.setVisibility(View.VISIBLE);
+        in.setX(-in.getWidth()-20*density);
+        in.animate().translationX(0).setDuration(600);
+        out.animate().translationX(out.getWidth()+20*density).setDuration(600);
     }
 
 

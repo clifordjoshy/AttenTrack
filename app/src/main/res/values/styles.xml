@@ -32,6 +32,11 @@
         <item name="drawerSelectedColor">@color/drawer_bg_dark</item>
     </style>
 
+    <style name="ThemedAlertDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/themed_dialog_bg</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">?attr/textColor</item>
+    </style>
 
 
 

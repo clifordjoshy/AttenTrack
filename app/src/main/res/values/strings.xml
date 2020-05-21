@@ -27,7 +27,7 @@
     <string name="dialog_date_text">Date:</string>
     <string name="dialog_session_text">Session:</string>
     <string name="dialog_subject_text">Subject:</string>
-    <string name="warning_text">WARNING: A class already exists in that time slot.
+    <string name="class_override_warning">WARNING: A class already exists in that time slot.
         Press Okay again to overwrite class.</string>
     <string name="hi_there">Hi There,</string>
     <string name="todays_classes_text">Today\'s Classes</string>
@@ -60,4 +60,5 @@
     <string name="delete_slider_text">Delete</string>
     <string name="support_adbutton">WATCH AN AD</string>
     <string name="support_reviewbutton">LEAVE A REVIEW</string>
+    <string name="extra_class_dialog_title">Add Extra Class</string>
 </resources>

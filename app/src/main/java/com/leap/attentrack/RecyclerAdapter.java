@@ -1,10 +1,9 @@
 package com.leap.attentrack;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.Transition;
@@ -13,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,21 +39,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private Context context;
     private RecyclerView mRecyclerView;
 
-    private LinkedList<Subject> details;
-    private LinkedList<Integer> today_sess;
+    private LinkedList<Subject> today_subjects;
+    private LinkedList<Integer> today_sessions;
     private LinkedList<Boolean> is_open;
 
-    private String[] all_subs;
     private int[] today;
-    private int[] warned_for = null;
+    private int warned_for = -1;
 
     RecyclerAdapter(Context ct) {
         context = ct;
         String[] date_string = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()).split("-");
         today = new int[]{Integer.parseInt(date_string[0]), Integer.parseInt(date_string[1]), Integer.parseInt(date_string[2])};
-        handle_data(MainActivity.data);    //fills up details, today_sess, all_subs
+        handle_data();    //fills up details, today_sess, all_subs
         is_open = new LinkedList<>();
-        for (int i = 0; i < today_sess.size(); ++i)
+        for (int i = 0; i < today_sessions.size(); ++i)
             is_open.add(false);
     }
 
@@ -80,9 +78,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             demo.color = 0xffffa5c0;
 
             //demo subject
-            details.addFirst(demo);
+            today_subjects.addFirst(demo);
             is_open.addFirst(false);
-            today_sess.addFirst(0);
+            today_sessions.addFirst(0);
             notifyItemInserted(0);
             notifyItemRangeChanged(0, getItemCount());
             new Handler().postDelayed(new Runnable() {
@@ -100,16 +98,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         handle_main_click(holder, position);
     }
 
-    private void handle_data(LinkedList<Subject> deets) {
-        all_subs = new String[deets.size()];
+    private void handle_data() {
+        LinkedList<Subject> deets = MainActivity.data;
         int weekday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;    // Get Today[0-6 sun-sat]
         weekday = weekday > 0 ? weekday - 1 : 6;    //mon-sun
 
-        for (int i = 0; i < all_subs.length; ++i)
-            all_subs[i] = deets.get(i).name;
-
-        details = new LinkedList<>();
-        today_sess = new LinkedList<>();
+        today_subjects = new LinkedList<>();
+        today_sessions = new LinkedList<>();
 
         LinkedList<int[]> extra_sess = new LinkedList<>();
         LinkedList<int[]> cancel_sess = ((MainActivity) context).cancelled_sessions;
@@ -124,8 +119,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             boolean overwrite = false;
             for (int[] sess : extra_sess) {
                 if (sess[3] == i) {
-                    details.add(deets.get(sess[4]));
-                    today_sess.add(i);
+                    today_subjects.add(deets.get(sess[4]));
+                    today_sessions.add(i);
                     overwrite = true;
                     break;
                 }
@@ -144,8 +139,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                                 break;
                             }
                         if (!cancelled) {
-                            details.add(deets.get(s));
-                            today_sess.add(i);
+                            today_subjects.add(deets.get(s));
+                            today_sessions.add(i);
                         }
                     }
                 }
@@ -157,7 +152,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position < details.size()) {
+                if (position < today_subjects.size()) {
                     Transition tr = new AutoTransition();
                     tr.setDuration(150);
                     TransitionManager.beginDelayedTransition(mRecyclerView, tr);
@@ -174,84 +169,86 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     notifyItemChanged(position);
 
                 } else {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setCancelable(true);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                    dialog.setContentView(R.layout.dialog_layout);
-                    ViewCompat.setBackgroundTintList(dialog.findViewById(R.id.dialog_root),
-                            ColorStateList.valueOf(0xfffffbdb));    //xml assign not working
-                    final Spinner session = dialog.findViewById(R.id.session_spinner),
-                            subject = dialog.findViewById(R.id.subject_spinner);
-                    final DatePicker picker = dialog.findViewById(R.id.dialog_date_picker);
-                    picker.setMinDate(System.currentTimeMillis());
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
-                            android.R.layout.simple_spinner_item, all_subs);
-                    subject.setAdapter(adapter);
-                    String[] start_time_array = new String[Subject.session_encoder.size()];
-                    for (int i = 0; i < start_time_array.length; ++i)
-                        start_time_array[i] = Subject.session_encoder.get(i)[0] + "-" + Subject.session_encoder.get(i)[1];
-                    adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, start_time_array);
-                    session.setAdapter(adapter);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                    final Spinner session, subject;
 
-                    dialog.findViewById(R.id.cancel_btn_dialog).setOnClickListener(new View.OnClickListener() {
+                    final LinearLayout dialog_layout = (LinearLayout) ((MainActivity)context).
+                            getLayoutInflater().inflate(R.layout.extra_class_dialog_layout, null);
+                    session = dialog_layout.findViewById(R.id.session_spinner);
+                    subject = dialog_layout.findViewById(R.id.subject_spinner);
+
+                    String[] all_subs = new String[MainActivity.data.size()];
+                    for (int i = 0; i < all_subs.length; ++i)
+                        all_subs[i] = MainActivity.data.get(i).name;
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.spinner_item, all_subs);
+                    subject.setAdapter(adapter);
+
+                    String[] all_times = new String[Subject.session_encoder.size()];
+                    for (int i = 0; i < all_times.length; ++i)
+                        all_times[i] = Subject.session_encoder.get(i)[0] + "-" + Subject.session_encoder.get(i)[1];
+                    adapter = new ArrayAdapter<>(context, R.layout.spinner_item, all_times);
+                    session.setAdapter(adapter);
+                    dialog.setView(dialog_layout);
+
+                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
+                        public void onClick(DialogInterface d, int which) {
+                            d.cancel();
                         }
                     });
 
                     dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
-                        public void onCancel(DialogInterface dialog) {
-                            warned_for = null;  //cancel without override
+                        public void onCancel(DialogInterface d) {
+                            warned_for = -1;  //cancel without override
                         }
                     });
 
-                    dialog.findViewById(R.id.okay_btn_dialog).setOnClickListener(new View.OnClickListener() {
+                    dialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View v) {
+                        public void onClick(DialogInterface dlog, int which) {
                             //Get Form Data
                             int session_selected_index = session.getSelectedItemPosition(),
                                     sub_selected_index = subject.getSelectedItemPosition();
-                            if (handle_class_addition(dialog, picker, session_selected_index)) {
-                                dialog.cancel();
-                                int[] add_extra = new int[]{picker.getYear(), picker.getMonth() + 1,
-                                        picker.getDayOfMonth(), session_selected_index, sub_selected_index};
+                            if (handle_class_addition(dialog_layout, session_selected_index)) {
+                                dlog.cancel();
+                                int[] add_extra = new int[]{today[0], today[1], today[2],
+                                        session_selected_index, sub_selected_index};
                                 ((MainActivity) context).extra_sessions.add(add_extra);
                                 MainActivity.data.get(sub_selected_index).add_session();
 
                                 //add class to list
-                                int add_index = today_sess.size();
+                                int add_index = today_sessions.size();
                                 for (int i = 0; i < add_index; ++i)
-                                    if (today_sess.get(i) > session_selected_index) {
+                                    if (today_sessions.get(i) > session_selected_index) {
                                         add_index = i;
                                         break;
                                     }
                                 TransitionManager.beginDelayedTransition(mRecyclerView);
-                                today_sess.add(add_index, session_selected_index);
+                                today_sessions.add(add_index, session_selected_index);
                                 is_open.add(add_index, false);
-                                details.add(add_index, MainActivity.data.get(sub_selected_index));
+                                today_subjects.add(add_index, MainActivity.data.get(sub_selected_index));
                                 notifyItemInserted(add_index);
                                 notifyItemRangeChanged(add_index, getItemCount());
 
                                 // [called before view is added]
                                 update_printed_details(MainActivity.data.get(sub_selected_index),
-                                        today_sess.indexOf(session_selected_index));    //ignore this position
+                                        today_sessions.indexOf(session_selected_index));    //ignore this position
                             }
                         }
                     });
-                    dialog.show();
+                dialog.show();
                 }
             }
         });
     }
 
     private void handle_print(final MyViewHolder holder, final int position) {
-        if (position < details.size()) {    // Subject Field
-            final Subject this_sub = details.get(position);
+        if (position < today_subjects.size()) {    // Subject Field
+            final Subject this_sub = today_subjects.get(position);
 
             holder.subject.setText(this_sub.name);
-            holder.time.setText(Subject.session_encoder.get(today_sess.get(position))[0]);
+            holder.time.setText(Subject.session_encoder.get(today_sessions.get(position))[0]);
             holder.percent.setText((this_sub.attendance + "%"));
             holder.extras.setText(("Total:" + this_sub.total + "    Missed:" + this_sub.missed + "    Missable:" + this_sub.missable));
             ViewCompat.setBackgroundTintList(holder.root,ColorStateList.valueOf(this_sub.color));
@@ -259,7 +256,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             holder.picture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int missed_sess = today_sess.get(position), missed_sub = MainActivity.data.indexOf(details.get(position));
+                    int missed_sess = today_sessions.get(position), missed_sub = MainActivity.data.indexOf(today_subjects.get(position));
                     for (int[] sess : ((MainActivity) context).missed_sessions) {
                         if (sess[3] == missed_sess && sess[4] == missed_sub) {
                             Toast.makeText(context, "You Already Missed This Class", Toast.LENGTH_SHORT).show();
@@ -302,30 +299,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
     }
 
-    private boolean handle_class_addition(Dialog dialog, DatePicker picker, int sess_ind) {
-        //confirm press check[todays class override]
-        if (warned_for != null) {
-            //if configs haven't changed
-            if (warned_for[0] == sess_ind && warned_for[1] == picker.getDayOfMonth() &&
-                    warned_for[2] == picker.getMonth() + 1 && warned_for[3] == picker.getYear()) {
-                int chng_ind = today_sess.indexOf(sess_ind);
-                cancel_class(details.get(chng_ind), chng_ind, (MyViewHolder)mRecyclerView.findViewHolderForAdapterPosition(chng_ind));
-
-                warned_for = null;
+    private boolean handle_class_addition(LinearLayout dialog_layout, int sess_ind) {
+        //confirm press check[class override]
+        if (warned_for == sess_ind) {
+                int chng_ind = today_sessions.indexOf(sess_ind);
+                cancel_class(today_subjects.get(chng_ind), chng_ind, (MyViewHolder)mRecyclerView.findViewHolderForAdapterPosition(chng_ind));
+                warned_for = -1;
                 return true;
-            }
         }
 
-        //If today's class
-        if (today[0] == picker.getYear() && today[1] == picker.getMonth() + 1 && today[2] == picker.getDayOfMonth()) {
-            //if class exists in today's
-            if (today_sess.contains(sess_ind)) {
-                warned_for = new int[]{sess_ind, picker.getDayOfMonth(), picker.getMonth() + 1, picker.getYear()};
-                dialog.findViewById(R.id.dialog_warning).setVisibility(View.VISIBLE);
-                return false;
-            }
+        if (today_sessions.contains(sess_ind)) {
+            warned_for = sess_ind;
+            TextView warning = new TextView(context);
+            warning.setText(R.string.class_override_warning);
+            warning.setPadding(0, 0,0,0);
+            warning.setTextColor(context.getResources().getColor(R.color.dialog_warning));
+            dialog_layout.addView(warning);
+            return false;
         }
-        warned_for = null;  //corrected warning without override
+
+        warned_for = -1;  //corrected warning without override
         return true;
     }
 
@@ -333,11 +326,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         int last_visible = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findLastVisibleItemPosition();
         int first_visible = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
 
-        if (details.size() == last_visible)
+        if (today_subjects.size() == last_visible)
             --last_visible;     //From (+) to last subject
 
-        for (int i = 0; i < details.size(); ++i) {
-            if (i != ignore_position && details.get(i) == s) {
+        for (int i = 0; i < today_subjects.size(); ++i) {
+            if (i != ignore_position && today_subjects.get(i) == s) {
                 if (i < first_visible || i > last_visible)
                     notifyItemChanged(i);       //out of range view
                 else {
@@ -356,7 +349,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         boolean in_extra = false;
         for (int[] sess : ((MainActivity) context).extra_sessions) {
-            if (sess[3] == today_sess.get(position) && sess[4] == MainActivity.data.indexOf(details.get(position))) {
+            if (sess[3] == today_sessions.get(position) && sess[4] == MainActivity.data.indexOf(today_subjects.get(position))) {
                 ((MainActivity) context).extra_sessions.remove(sess);
                 in_extra = true;
                 break;
@@ -364,14 +357,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         }
         if (!in_extra) {
             int[] add_cancel = new int[]{today[0], today[1],
-                    today[2], today_sess.get(position),
-                    MainActivity.data.indexOf(details.get(position))};
+                    today[2], today_sessions.get(position),
+                    MainActivity.data.indexOf(today_subjects.get(position))};
 
             ((MainActivity) context).cancelled_sessions.add(add_cancel);
         }
 
-        today_sess.remove(position);
-        details.remove(position);
+        today_sessions.remove(position);
+        today_subjects.remove(position);
 
         is_open.remove(position);
         holder.cancel.setVisibility(View.GONE);     //Reusing same view?
@@ -383,15 +376,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     void cancel_all_classes() {
         TransitionManager.beginDelayedTransition(mRecyclerView);
-        for (int i = details.size() - 1; i >= 0; --i)    //backward traverse[removal]
-            cancel_class(details.get(i), i, (MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i));
+        for (int i = today_subjects.size() - 1; i >= 0; --i)    //backward traverse[removal]
+            cancel_class(today_subjects.get(i), i, (MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i));
 
     }
 
     @Override
     public int getItemCount() {
         // +1 is for the (+) button
-        return details.size() + 1;
+        return today_subjects.size() + 1;
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -501,7 +494,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 break;
 
             case 6: //from 5
-                mRecyclerView.smoothScrollToPosition(details.size());
+                mRecyclerView.smoothScrollToPosition(today_subjects.size());
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -510,7 +503,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                                 .setTitle("Extra Class?")
                                 .setContentText("Click here to add classes\n" +
                                         "to the schedule.")
-                                .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(details.size())).root)
+                                .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(today_subjects.size())).root)
                                 .build()
                                 .show();
 

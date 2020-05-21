@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             outputStreamWriter.close();
 
         } catch (Exception e) {
-            Log.i("mylog", "Writing Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -243,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i("mylog", "Reading Error: " + e.getMessage());
         }
     }
 
@@ -295,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;    //don't close drawer
 
             case R.id.start_new_semester_message: {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.ThemedAlertDialog);
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.new_sem_warning);
 
@@ -321,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             case R.id.reset_message:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.ThemedAlertDialog);
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.reset_warning);
 

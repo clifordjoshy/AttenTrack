@@ -63,7 +63,7 @@ public class EditStatsFragment extends Fragment {
             element.findViewById(R.id.subject_text).setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(final View v) {
-                   AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext());
+                   AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
                    edit_dialog.setTitle("Enter Subject Name");
                    final EditText e = new EditText(getContext());
                    e.setBackgroundColor(s.color);

@@ -7,14 +7,14 @@ android {
         applicationId "com.leap.attentrack"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 6
-        versionName "1.6"
+        versionCode 7
+        versionName "1.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -535,10 +535,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             }
             case 5:     //Startup Complete
             {
-                hideKeyboard();
-                for (int i = INDEX_ATTENDANCE; i <= INDEX_ATTENDANCE+5; ++i)
-                    root.getChildAt(i).setVisibility(View.GONE);
-
                 if (!condensed) {
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
@@ -574,6 +570,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     Toast.makeText(this, "Invalid Dates", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                hideKeyboard();
+                for (int i = INDEX_ATTENDANCE; i <= INDEX_ATTENDANCE+5; ++i)
+                    root.getChildAt(i).setVisibility(View.GONE);
 
                 sem_start = semester_d1.getText().toString();
                 sem_end = semester_d2.getText().toString();
