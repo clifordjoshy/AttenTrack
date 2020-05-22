@@ -33,6 +33,8 @@
         android:layout_marginEnd="20dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Subject"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toStartOf="@+id/percent_text"
@@ -61,27 +63,71 @@
 
     <TextView
         android:id="@+id/data_text"
-        android:layout_width="250dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="10dp"
-        android:text="Total:53    Missed:4    Missable:5"
-        android:textColor="?attr/metaTextColor"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="@+id/cancel_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cancel_button" />
-
-    <ImageView
-        android:id="@+id/cancel_button"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center_vertical"
+        android:text="Total:53    Missed:4    Missable:5"
+        android:textColor="@color/metaTextColor"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/remove_button"
+        app:layout_constraintEnd_toStartOf="@+id/remove_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/remove_button" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/cancel_button"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:layout_marginBottom="5dp"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/plus_image"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/plus_image"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/plus_image"-->
+<!--        app:srcCompat="@drawable/cancel" />-->
+
+    <TextView
+        android:id="@+id/add_button"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/curve_12dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:paddingVertical="4dp"
+        app:autoSizeMinTextSize="1dp"
+        android:paddingHorizontal="4dp"
+        android:text="@string/add_button_text"
+        app:autoSizeTextType="uniform"
+        app:backgroundTint="#80ffffff"
+        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/plus_image"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/plus_image"
-        app:layout_constraintTop_toBottomOf="@+id/plus_image"
-        app:srcCompat="@drawable/cancel" />
+        app:layout_constraintTop_toBottomOf="@+id/plus_image" />
+
+    <TextView
+        android:id="@+id/remove_button"
+        android:layout_width="0dp"
+        android:layout_height="24dp"
+        android:background="@drawable/curve_12dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="4dp"
+        android:text="@string/remove_button_text"
+        android:textColor="@color/colorPrimary"
+        app:backgroundTint="#64000000"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/add_button"
+        app:layout_constraintEnd_toEndOf="@+id/minus_image"
+        app:layout_constraintStart_toStartOf="@+id/minus_image"
+        app:layout_constraintTop_toTopOf="@+id/add_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

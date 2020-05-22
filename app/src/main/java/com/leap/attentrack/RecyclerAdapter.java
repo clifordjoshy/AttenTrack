@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,29 +190,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     adapter = new ArrayAdapter<>(context, R.layout.spinner_item, all_times);
                     session.setAdapter(adapter);
                     dialog.setView(dialog_layout);
+                    dialog.setCancelable(true);
+                    dialog.setNegativeButton(R.string.cancel_text, null);
+                    dialog.setPositiveButton("ADD", null);  //closes dialog after click. so overrided after showing
 
-                    dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
-                        public void onClick(DialogInterface d, int which) {
-                            d.cancel();
-                        }
-                    });
-
-                    dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface d) {
+                        public void onDismiss(DialogInterface d) {
+                            Log.i("mylog", "bruh");
                             warned_for = -1;  //cancel without override
                         }
                     });
 
-                    dialog.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+
+                    final AlertDialog shown = dialog.show();
+                    shown.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dlog, int which) {
+                        public void onClick(View v) {
                             //Get Form Data
                             int session_selected_index = session.getSelectedItemPosition(),
                                     sub_selected_index = subject.getSelectedItemPosition();
                             if (handle_class_addition(dialog_layout, session_selected_index)) {
-                                dlog.cancel();
+                                shown.dismiss();
                                 int[] add_extra = new int[]{today[0], today[1], today[2],
                                         session_selected_index, sub_selected_index};
                                 ((MainActivity) context).extra_sessions.add(add_extra);
@@ -237,7 +237,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                             }
                         }
                     });
-                dialog.show();
                 }
             }
         });
@@ -310,11 +309,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
         if (today_sessions.contains(sess_ind)) {
             warned_for = sess_ind;
-            TextView warning = new TextView(context);
-            warning.setText(R.string.class_override_warning);
-            warning.setPadding(0, 0,0,0);
-            warning.setTextColor(context.getResources().getColor(R.color.dialog_warning));
-            dialog_layout.addView(warning);
+            TransitionManager.beginDelayedTransition(dialog_layout);
+            dialog_layout.findViewById(R.id.dialog_warning).setVisibility(View.VISIBLE);
             return false;
         }
 
@@ -389,9 +385,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView subject, time, percent, extras;
+        TextView subject, time, percent, extras, cancel;
         ConstraintLayout root;
-        ImageView picture, cancel;
+        ImageView picture;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);

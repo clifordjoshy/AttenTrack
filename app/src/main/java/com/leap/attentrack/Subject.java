@@ -13,7 +13,7 @@ class Subject implements Serializable {
     static LinkedList<String[]> session_encoder;
 
     void cancel_session() {
-        if (total == 1)
+        if (total <= 1 || missed == total)
             return;
         total -= 1;
         attendance = (total - missed) * 100 / total;
@@ -21,7 +21,7 @@ class Subject implements Serializable {
     }
 
     void missed_session() {
-        if (total == 0)
+        if (total <= 0 || missed == total)
             return;
         missed += 1;
         missable -= 1;
@@ -29,7 +29,7 @@ class Subject implements Serializable {
     }
 
     void unmiss_session() {
-        if (total == 0)
+        if (total <= 0 || missed == 0)
             return;
         missed -= 1;
         missable += 1;
@@ -37,6 +37,8 @@ class Subject implements Serializable {
     }
 
     void add_session() {
+        if (total < 0)
+            return;
         total += 1;
         attendance = (total - missed) * 100 / total;
         missable = (attendance - req_percentage) * total / 100;

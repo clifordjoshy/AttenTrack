@@ -264,17 +264,11 @@ public class TimetableFragment extends Fragment {
                         }
                     }
                     dialog.setMessage(s);
-                    dialog.setNegativeButton("EDIT", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
+                    dialog.setNegativeButton("EDIT", null);
 
                     dialog.setNeutralButton("IGNORE CHANGES", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
                             save_timetable_changes();
                         }
                     });
@@ -284,12 +278,10 @@ public class TimetableFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             for (int i = 0; i < changes.length; ++i)
                                 table.get(i).total += changes[i];
-                            dialog.cancel();
                             save_timetable_changes();
                         }
                     });
-                    ((TextView) dialog.show().findViewById(android.R.id.message)).
-                            setTypeface(ResourcesCompat.getFont(getContext(), R.font.poppins_regular));
+                    dialog.show();
                 }
                 break;
             }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LightTheme" parent="AppTheme">
+        <item name="textColor">@color/colorPrimaryDark</item>
+        <item name="bgColor">@color/colorPrimary</item>
+        <item name="drawerSelectedColor">@color/drawer_bg_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="cancelButtonColor">@color/cancel_light</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="textColor">@color/colorPrimary</item>
+        <item name="bgColor">@color/colorPrimaryDark</item>
+        <item name="drawerSelectedColor">@color/drawer_bg_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="cancelButtonColor">@color/cancel_dark</item>
+    </style>
+</resources>

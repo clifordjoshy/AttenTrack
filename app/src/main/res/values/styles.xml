@@ -20,24 +20,31 @@
 
     <style name="LightTheme" parent="AppTheme">
         <item name="textColor">@color/colorPrimaryDark</item>
-        <item name="metaTextColor">#606060</item>
         <item name="bgColor">@color/colorPrimary</item>
         <item name="drawerSelectedColor">@color/drawer_bg_light</item>
+        <item name="cancelButtonColor">@color/cancel_light</item>
     </style>
 
     <style name="DarkTheme" parent="AppTheme">
         <item name="textColor">@color/colorPrimary</item>
-        <item name="metaTextColor">#606060</item>
         <item name="bgColor">@color/colorPrimaryDark</item>
         <item name="drawerSelectedColor">@color/drawer_bg_dark</item>
+        <item name="cancelButtonColor">@color/cancel_dark</item>
     </style>
 
     <style name="ThemedAlertDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/themed_dialog_bg</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">?attr/textColor</item>
+        <item name="android:textAppearanceSmall">@style/SmallTextStyleDialog</item>
+        <item name="android:textAppearanceMedium">@style/TitleTextStyleDialog</item>
     </style>
 
-
+    <style name="SmallTextStyleDialog" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+    <style name="TitleTextStyleDialog" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
 
 </resources>

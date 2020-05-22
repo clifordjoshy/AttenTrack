@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
+
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 
 public class EditStatsFragment extends Fragment {
     @Nullable
@@ -52,10 +56,18 @@ public class EditStatsFragment extends Fragment {
                     data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
                 }
             });
-            element.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
+            element.findViewById(R.id.remove_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     s.cancel_session();
+                    percent.setText((s.attendance + "%"));
+                    data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                }
+            });
+            element.findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    s.add_session();
                     percent.setText((s.attendance + "%"));
                     data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
                 }
@@ -64,7 +76,7 @@ public class EditStatsFragment extends Fragment {
                @Override
                public void onClick(final View v) {
                    AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
-                   edit_dialog.setTitle("Enter Subject Name");
+                   edit_dialog.setTitle(R.string.subject_name_edit_title);
                    final EditText e = new EditText(getContext());
                    e.setBackgroundColor(s.color);
                    e.setHint(s.name);
@@ -73,7 +85,7 @@ public class EditStatsFragment extends Fragment {
                    e.setPadding(20, 20, 20, 20);
                    edit_dialog.setView(e);
                    edit_dialog.setCancelable(true);
-                   edit_dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                   edit_dialog.setPositiveButton(R.string.save_text, new DialogInterface.OnClickListener() {
                        @Override
                        public void onClick(DialogInterface dialog, int which) {
                            String temp = e.getText().toString();
@@ -90,6 +102,33 @@ public class EditStatsFragment extends Fragment {
 
             root_layout.addView(element);
         }
+
+        handle_first_start(root_layout);
         return fragment_view;
+    }
+
+    private void handle_first_start(final LinearLayout root){
+        boolean first = getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
+                getBoolean("edit_stats_first_start", true);
+        if(!first)
+            return;
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new GuideView.Builder(getContext())
+                        .setTitle("Forgot To Mark Something?")
+                        .setContentText("Not A Problem.\n\n (+) & (-) to edit your attendance.\n \"Add\" & \"Remove\" to edit class count.")
+                        .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
+                        .setTargetView(root.getChildAt(0))
+                        .setGravity(smartdevelop.ir.eram.showcaseviewlib.config.Gravity.auto)
+                        .build()
+                        .show();
+            }
+        }, 500);
+
+        getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
+                edit().putBoolean("edit_stats_first_start", false).apply();
+
     }
 }

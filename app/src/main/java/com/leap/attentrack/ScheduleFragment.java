@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,22 +38,14 @@ public class ScheduleFragment extends Fragment{
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
                 dialog.setMessage(R.string.cancel_all_warning);
                 dialog.setCancelable(true);
-                dialog.setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton(R.string.okay_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         adapter.cancel_all_classes();
                     }
                 });
-                dialog.setNegativeButton("NOPE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                ((TextView)dialog.show().findViewById(android.R.id.message)).setTypeface(
-                        ResourcesCompat.getFont(getContext(), R.font.poppins_regular));
-
+                dialog.setNegativeButton(R.string.nope_text, null);
+                dialog.show();
 
             }
         });
@@ -77,7 +68,7 @@ public class ScheduleFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
-                edit_dialog.setTitle("Enter New Username");
+                edit_dialog.setTitle(R.string.username_edit_title);
                 final EditText e = new EditText(getContext());
                 e.setBackgroundColor(0xffb5dfff);
                 e.setHint("Namey McNamus");

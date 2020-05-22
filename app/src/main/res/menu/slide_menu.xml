@@ -1,5 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#ffffff"/>
-    <corners android:radius="20dp"/>
-</shape>
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <item android:id="@+id/schedule_message"
+        android:icon="@drawable/icon_schedule"
+        android:title="@string/schedule_menu"
+        android:checkable="true"/>
+    <item android:id="@+id/time_table_message"
+        android:icon="@drawable/icon_timetable"
+        android:title="@string/time_table_title"
+        android:checkable="true"/>
+    <item android:id="@+id/edit_stats_message"
+        android:icon="@drawable/icon_edit_stats"
+        android:title="@string/edit_stats_menu"
+        android:checkable="true"/>
+    <item android:id="@+id/dark_message"
+        android:icon="@drawable/icon_darkmode"
+        android:title="@string/toggle_menu" />
+    <item android:id="@+id/notification_message"
+        android:icon="@drawable/icon_notification_on"
+        android:title="@string/notif_on_menu" />
+    <item android:id="@+id/start_new_semester_message"
+        android:icon="@drawable/icon_start_new_semester"
+        android:title="@string/start_new_sem_menu" />
+    <group android:id="@+id/group2">
+        <item android:id="@+id/reset_message"
+            android:icon="@drawable/icon_reset"
+            android:title="@string/reset_menu" />
+        <item android:id="@+id/support_message"
+            android:icon="@drawable/icon_support"
+            android:title="@string/support_menu"
+            android:checkable="true"/>
+    </group>
+</menu>

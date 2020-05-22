@@ -49,8 +49,8 @@ import java.util.TimeZone;
 public class StartupActivity extends AppCompatActivity implements View.OnTouchListener {
     //for ease of usage
     LinearLayout root;
-    private ImageView session_plus, back_button;
-    private TextView delete_slide;
+    private ImageView session_plus;
+    private TextView delete_slide, back_button;
 
     //persistent through fn calls. (to read data)
     private EditText edit_attendance;
@@ -62,7 +62,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
     //constants of sorts
     private int page = -1, duration = 400, lag = 400, animation_offset, mode, tab_margin;
-    private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE;
+    private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE, INDEX_END;
     private final Integer[] colors = {0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
             0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2, 0xffb5dfff, 0xffe6c6ff};
     private float density;
@@ -86,7 +86,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         root = findViewById(R.id.startup_main_linear);
         TextView[] intro = new TextView[]{findViewById(R.id.startup_hello),
                 findViewById(R.id.startup_hello2), findViewById(R.id.startup_hello3)};
-        ImageView okay = findViewById(R.id.okay_btn_startup);
+        TextView okay = findViewById(R.id.okay_btn_startup);
         back_button = findViewById(R.id.back_btn_startup);
         delete_slide = findViewById(R.id.delete_slide);
         tt_spinners = new LinkedList[]{new LinkedList<>(), new LinkedList<>(), new LinkedList<>(),
@@ -280,6 +280,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     change will not be reflected in index. so, instead using indexOfChild(session_plus)
                      */
                     final LinkedList<Integer> colors_subjects = new LinkedList<>(Arrays.asList(colors));
+                    Collections.shuffle(colors_subjects);
+
                     final View.OnTouchListener swipe_listener = new View.OnTouchListener() {
                         private float startX;
 
@@ -426,7 +428,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
                 } else {
                     TransitionManager.beginDelayedTransition(root);
-                    for (int i = INDEX_TIMETABLE + 1; i < root.indexOfChild(findViewById(R.id.attendance_linear_layout)); ++i)
+                    for (int i = INDEX_TIMETABLE; i < root.indexOfChild(findViewById(R.id.attendance_linear_layout)); ++i)
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                     if (condensed)
                         back_button.setVisibility(View.VISIBLE);
@@ -438,11 +440,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             }
             case 3:     //Attendance percentage
             {
+                TextView almost_there = findViewById(R.id.startup_almost_there);
                 LinearLayout attendance_layout = findViewById(R.id.attendance_linear_layout);   //view after timetable
                 edit_attendance = findViewById(R.id.editText_attendance);
 
-                //root.removeViewsInLayout(0, root.indexOfChild(attendance_layout));
-                INDEX_ATTENDANCE = root.indexOfChild(attendance_layout);
+//                INDEX_ATTENDANCE = root.indexOfChild(attendance_layout);
+                INDEX_ATTENDANCE = root.indexOfChild(almost_there);
+                INDEX_END = root.indexOfChild(findViewById(R.id.buttons_layout))+1;
+
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
 
@@ -464,8 +469,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 ++page;
                 updateProgressBar();
                 if (!condensed) {
+                    almost_there.setVisibility(View.VISIBLE);
                     attendance_layout.setVisibility(View.VISIBLE);
-                    attendance_layout.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
+                    almost_there.animate().alpha(1f).setDuration(duration).setStartDelay(duration);
+                    attendance_layout.animate().alpha(1f).setDuration(duration).setStartDelay(2 * duration + lag);
                     break;
                 }
             }
@@ -473,7 +480,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             {   //falls through if condensed
                 hideKeyboard();
                 TextView date_text = findViewById(R.id.startup_working),
-                        date_hyphen = findViewById(R.id.semester_hyphen);
+                        date_hyphen = findViewById(R.id.semester_hyphen),
+                        almost_there = findViewById(R.id.startup_almost_there);
                 semester_d1 = findViewById(R.id.semester_start_date);
                 semester_d2 = findViewById(R.id.semester_end_date);
 
@@ -488,6 +496,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     semester_d1.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     date_hyphen.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset);
                     semester_d2.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset);
+                    almost_there.setText(R.string.almost_there_text_2);
+                    almost_there.setTextColor(getResources().getColor(R.color.colorAccent));
 
                     final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
@@ -572,7 +582,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 }
 
                 hideKeyboard();
-                for (int i = INDEX_ATTENDANCE; i <= INDEX_ATTENDANCE+5; ++i)
+                for (int i = INDEX_ATTENDANCE; i < INDEX_END; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
 
                 sem_start = semester_d1.getText().toString();
@@ -671,6 +681,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             case 4:     //from attendance state 1. to time table page. not condensed
                 hideKeyboard();
                 root.getChildAt(INDEX_ATTENDANCE).setVisibility(View.GONE);
+                root.getChildAt(INDEX_ATTENDANCE+1).setVisibility(View.GONE);
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
@@ -678,7 +689,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 break;
 
             case 5:     //from attendance state2. to time table page
-                for (int i = INDEX_ATTENDANCE; i <= INDEX_ATTENDANCE + 4; ++i)
+                for (int i = INDEX_ATTENDANCE; i < INDEX_END - 1; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);

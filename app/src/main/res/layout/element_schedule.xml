@@ -15,35 +15,38 @@
         android:layout_width="70dp"
         android:layout_height="55dp"
         android:layout_marginEnd="10dp"
+        android:gravity="center_vertical|end"
         android:text="75%"
         android:textColor="@color/colorPrimaryDark"
-        android:gravity="center_vertical|end"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/subject_text"
         app:layout_constraintEnd_toStartOf="@+id/click_image"
-        app:autoSizeTextType="uniform"
         app:layout_constraintTop_toTopOf="@+id/time_text" />
 
     <TextView
         android:id="@+id/time_text"
-        android:layout_width="50dp"
+        android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:text="18:00"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="@+id/subject_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/subject_text"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="20dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Subject"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toStartOf="@+id/percent_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_text" />
 
@@ -59,29 +62,41 @@
 
     <TextView
         android:id="@+id/data_text"
-        android:layout_width="250dp"
-        android:layout_height="25dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:text="Total:53    Missed:4    Missable:5"
+        android:layout_marginEnd="20dp"
         android:visibility="gone"
-        android:textColor="?attr/metaTextColor"
+        android:gravity="center_vertical"
+        android:text="Total:53    Missed:4    Missable:5"
+        android:textColor="@color/metaTextColor"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/cancel_button"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cancel_button" />
 
-    <ImageView
+
+    <TextView
         android:id="@+id/cancel_button"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/curve_12dp"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:paddingVertical="4dp"
+        app:autoSizeMinTextSize="1dp"
         android:visibility="gone"
+        android:paddingHorizontal="4dp"
+        android:text="@string/cancel_text"
+        android:textColor="@color/colorPrimary"
+        app:backgroundTint="#64000000"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/click_image"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/click_image"
-        app:layout_constraintTop_toBottomOf="@+id/click_image"
-        app:srcCompat="@drawable/cancel" />
+        app:layout_constraintTop_toBottomOf="@+id/click_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

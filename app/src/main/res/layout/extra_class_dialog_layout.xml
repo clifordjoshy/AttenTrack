@@ -73,4 +73,15 @@
                 android:ellipsize="end" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/dialog_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:paddingStart="20dp"
+        android:text="@string/class_override_warning"
+        android:textColor="@color/dialog_warning" />
 </LinearLayout>

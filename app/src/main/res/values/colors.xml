@@ -2,8 +2,11 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#272727</color>
+    <color name="metaTextColor">#606060</color>
     <color name="drawer_bg_light">#25272727</color>
     <color name="drawer_bg_dark">#25ffffff</color>
+    <color name="cancel_light">#64000000</color>
+    <color name="cancel_dark">#80ffffff</color>
     <color name="colorAccent">#00609f</color>
     <color name="dialogbg">#fffbdb</color>
     <color name="startup_bg">#e2e2e2</color>

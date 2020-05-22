@@ -5,12 +5,12 @@
     <string name="startup_hello">Hello There.</string>
     <string name="startup_welcome">Welcome to AttenTrack.</string>
     <string name="startup_lets_get">Let\'s Get You Started!</string>
-    <string name="startup_session_title">Enter Session Timings</string>
+    <string name="startup_session_title">What Are Your Class Timings?</string>
     <string name="startup_guide_text">Click To Add. Swipe to Delete.</string>
     <string name="session_time_start">Start</string>
     <string name="session_time_end">End</string>
-    <string name="startup_subject_title">Enter Subjects</string>
-    <string name="startup_timetable_title">Enter Time Table</string>
+    <string name="startup_subject_title">And Your Courses?</string>
+    <string name="startup_timetable_title">What\'s 12 x 12?\nNo Wait, That\'s The Times Table. \nEnter Your Time Table.</string>
     <string name="monday_text">Monday</string>
     <string name="tuesday_text">Tuesday</string>
     <string name="wednesday_text">Wednesday</string>
@@ -19,7 +19,7 @@
     <string name="saturday_text">Saturday</string>
     <string name="sunday_text">Sunday</string>
     <string name="required_attendance">Required Attendance (%):</string>
-    <string name="semester_text">Enter Semester Start and End Date</string>
+    <string name="semester_text">One Last Thing;\nSemester Start and End Date</string>
     <string name="blank_date">--/--/----</string>
     <string name="empty_hyphen">-</string>
     <string name="session_distr_title">Total Sessions</string>
@@ -28,7 +28,7 @@
     <string name="dialog_session_text">Session:</string>
     <string name="dialog_subject_text">Subject:</string>
     <string name="class_override_warning">WARNING: A class already exists in that time slot.
-        Press Okay again to overwrite class.</string>
+        Press Add again to overwrite class.</string>
     <string name="hi_there">Hi There,</string>
     <string name="todays_classes_text">Today\'s Classes</string>
     <string name="cancel_all_warning">Would you like to cancel all of today\'s classes?</string>
@@ -61,4 +61,17 @@
     <string name="support_adbutton">WATCH AN AD</string>
     <string name="support_reviewbutton">LEAVE A REVIEW</string>
     <string name="extra_class_dialog_title">Add Extra Class</string>
+    <string name="almost_there_text_1">You\'re Almost There</string>
+    <string name="almost_there_text_2">This Is It. We\'re Done \\(^o^)/</string>
+    <string name="add_button_text">Add</string>
+    <string name="remove_button_text">Remove</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="back_text">Back</string>
+    <string name="okay_text">Okay</string>
+    <string name="confirm_text">Confirm</string>
+    <string name="nope_text">Nope</string>
+    <string name="save_text">Save</string>
+    <string name="subject_name_edit_title">Enter Subject Name</string>
+    <string name="username_edit_title">"Enter New Username"</string>
+    <string name="cancel_all_text">Cancel All</string>
 </resources>
