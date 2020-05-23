@@ -45,6 +45,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private LinkedList<Integer> today_sessions;
     private LinkedList<Boolean> is_open;
 
+    private Handler cancel_remover = null;
     private int[] today, cancel_waiting = null;
     private int warned_for = -1;
 
@@ -266,8 +267,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     cancel_tab.setY(display_height);
                     cancel_tab.setVisibility(View.VISIBLE);
                     cancel_tab.animate().translationY(0).setDuration(500);
-
-                    final Handler remover = new Handler();
+                    if(cancel_remover != null)
+                        cancel_remover.removeCallbacksAndMessages(null);   //cancel old runnable
+                    cancel_remover = new Handler();
 
                     cancel_tab.findViewById(R.id.undo_button).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -275,17 +277,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                             add_extra_class(cancel_waiting[0], cancel_waiting[1]);
                             cancel_waiting = null;
                             cancel_tab.animate().translationY(display_height).setDuration(300);
-                            remover.removeCallbacksAndMessages(null);   //cancel handler
+                            cancel_remover.removeCallbacksAndMessages(null);   //cancel handler
+                            cancel_remover = null;
                         }
                     });
 
-                    remover.postDelayed(new Runnable() {
+                    cancel_remover.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(cancel_waiting != null) {      //not undone
-                                cancel_tab.animate().translationY(display_height).setDuration(300);
-                                cancel_waiting = null;
-                            }
+                            cancel_tab.animate().translationY(display_height).setDuration(300);
+                            cancel_waiting = null;
+                            cancel_remover = null;
                         }
                     }, 3000);
 
