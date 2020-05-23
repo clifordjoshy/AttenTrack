@@ -39,15 +39,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     private Context context;
     private RecyclerView mRecyclerView;
+    private LinearLayout cancel_tab;
 
     private LinkedList<Subject> today_subjects;
     private LinkedList<Integer> today_sessions;
     private LinkedList<Boolean> is_open;
 
-    private int[] today;
+    private int[] today, cancel_waiting = null;
     private int warned_for = -1;
 
-    RecyclerAdapter(Context ct) {
+    RecyclerAdapter(Context ct, View root_fragment) {
         context = ct;
         String[] date_string = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()).split("-");
         today = new int[]{Integer.parseInt(date_string[0]), Integer.parseInt(date_string[1]), Integer.parseInt(date_string[2])};
@@ -55,6 +56,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         is_open = new LinkedList<>();
         for (int i = 0; i < today_sessions.size(); ++i)
             is_open.add(false);
+        cancel_tab = root_fragment.findViewById(R.id.cancelled_undo_bar);
+
+        //not working from xml
+        ViewCompat.setElevation(cancel_tab, 5*context.getResources().getDisplayMetrics().density);
+        ViewCompat.setBackgroundTintList(cancel_tab,
+                ColorStateList.valueOf(MainActivity.dark_mode_on?0xff272727:0xffffffff));
     }
 
     @NonNull
@@ -212,28 +219,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                                     sub_selected_index = subject.getSelectedItemPosition();
                             if (handle_class_addition(dialog_layout, session_selected_index)) {
                                 shown.dismiss();
-                                int[] add_extra = new int[]{today[0], today[1], today[2],
-                                        session_selected_index, sub_selected_index};
-                                ((MainActivity) context).extra_sessions.add(add_extra);
-                                MainActivity.data.get(sub_selected_index).add_session();
-
-                                //add class to list
-                                int add_index = today_sessions.size();
-                                for (int i = 0; i < add_index; ++i)
-                                    if (today_sessions.get(i) > session_selected_index) {
-                                        add_index = i;
-                                        break;
-                                    }
-                                TransitionManager.beginDelayedTransition(mRecyclerView);
-                                today_sessions.add(add_index, session_selected_index);
-                                is_open.add(add_index, false);
-                                today_subjects.add(add_index, MainActivity.data.get(sub_selected_index));
-                                notifyItemInserted(add_index);
-                                notifyItemRangeChanged(add_index, getItemCount());
-
-                                // [called before view is added]
-                                update_printed_details(MainActivity.data.get(sub_selected_index),
-                                        today_sessions.indexOf(session_selected_index));    //ignore this position
+                                add_extra_class(session_selected_index, sub_selected_index);
                             }
                         }
                     });
@@ -272,13 +258,47 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             holder.cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    final int display_height = (int)(context.getResources().getDisplayMetrics().heightPixels);
+                    String message = today_subjects.get(position).name + " Cancelled";
+                    ((TextView)cancel_tab.findViewById(R.id.cancelled_message))
+                            .setText(message);
+                    cancel_tab.setY(display_height);
+                    cancel_tab.setVisibility(View.VISIBLE);
+                    cancel_tab.animate().translationY(0).setDuration(500);
+
+                    final Handler remover = new Handler();
+
+                    cancel_tab.findViewById(R.id.undo_button).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            add_extra_class(cancel_waiting[0], cancel_waiting[1]);
+                            cancel_waiting = null;
+                            cancel_tab.animate().translationY(display_height).setDuration(300);
+                            remover.removeCallbacksAndMessages(null);   //cancel handler
+                        }
+                    });
+
+                    remover.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(cancel_waiting != null) {      //not undone
+                                cancel_tab.animate().translationY(display_height).setDuration(300);
+                                cancel_waiting = null;
+                            }
+                        }
+                    }, 3000);
+
+
+                    cancel_waiting = new int[]{today_sessions.get(position),
+                            MainActivity.data.indexOf(today_subjects.get(position))};
                     TransitionManager.beginDelayedTransition(mRecyclerView);
                     cancel_class(this_sub, position, holder);
                 }
             });
 
 
-        } else {        // + button
+        } else if (position == today_subjects.size()){        // + button
             holder.subject.setVisibility(View.GONE);
             holder.time.setVisibility(View.GONE);
             holder.percent.setVisibility(View.GONE);
@@ -366,8 +386,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         holder.cancel.setVisibility(View.GONE);     //Reusing same view?
         holder.extras.setVisibility(View.GONE);
 
+        notifyItemRangeChanged(position, getItemCount());   //item removed? idk. works in this order
         notifyItemRemoved(position);
-        notifyItemRangeChanged(position, getItemCount());
     }
 
     void cancel_all_classes() {
@@ -375,6 +395,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         for (int i = today_subjects.size() - 1; i >= 0; --i)    //backward traverse[removal]
             cancel_class(today_subjects.get(i), i, (MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i));
 
+    }
+
+    private void add_extra_class(int session_index, int sub_index){
+        int[] add_extra = new int[]{today[0], today[1], today[2],
+                session_index, sub_index};
+        ((MainActivity) context).extra_sessions.add(add_extra);
+        MainActivity.data.get(sub_index).add_session();
+
+        //add class to list
+        int add_index = today_sessions.size();
+        for (int i = 0; i < add_index; ++i)
+            if (today_sessions.get(i) > session_index) {
+                add_index = i;
+                break;
+            }
+        TransitionManager.beginDelayedTransition(mRecyclerView);
+        today_sessions.add(add_index, session_index);
+        is_open.add(add_index, false);
+        today_subjects.add(add_index, MainActivity.data.get(sub_index));
+        notifyItemInserted(add_index);
+        notifyItemRangeChanged(add_index, getItemCount());
+
+        // [called before view is added]
+        update_printed_details(MainActivity.data.get(sub_index),
+                today_sessions.indexOf(session_index));    //ignore this position
     }
 
     @Override

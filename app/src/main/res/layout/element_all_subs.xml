@@ -71,6 +71,7 @@
         android:text="Total:53    Missed:4    Missable:5"
         android:textColor="@color/metaTextColor"
         app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/remove_button"
         app:layout_constraintEnd_toStartOf="@+id/remove_button"
         app:layout_constraintStart_toStartOf="parent"

@@ -28,7 +28,7 @@ public class ScheduleFragment extends Fragment{
 
         RecyclerView list = fragmentView.findViewById(R.id.recycler);
         list.setItemAnimator(null);     //Added transition manager for expand
-        final RecyclerAdapter adapter = new RecyclerAdapter(getActivity());
+        final RecyclerAdapter adapter = new RecyclerAdapter(getActivity(), fragmentView);
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
 

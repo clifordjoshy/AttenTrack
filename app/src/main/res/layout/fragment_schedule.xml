@@ -75,16 +75,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/cancel_button_main"-->
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginTop="35dp"-->
-<!--        android:layout_marginEnd="12dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/name_text"-->
-<!--        app:srcCompat="@drawable/cancel" />-->
-
     <TextView
         android:id="@+id/cancel_button_main"
         android:layout_width="70dp"
@@ -102,4 +92,47 @@
         app:layout_constraintBottom_toBottomOf="@+id/today_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/today_text" />
+
+    <LinearLayout
+        android:id="@+id/cancelled_undo_bar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/curve_10dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp"
+        app:backgroundTint="?attr/bgColor"
+        app:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/cancelled_message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="5"
+            android:gravity="center_vertical|start"
+            android:text="Subject Cancelled"
+            android:textColor="?attr/textColor"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="1dp"/>
+
+        <TextView
+            android:id="@+id/undo_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/undo_text"
+            android:gravity="center_vertical|end"
+            android:textColor="@color/colorAccent"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="1dp"/>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -121,7 +121,6 @@ public class EditStatsFragment extends Fragment {
                         .setContentText("Not A Problem.\n\n (+) & (-) to edit your attendance.\n \"Add\" & \"Remove\" to edit class count.")
                         .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
                         .setTargetView(root.getChildAt(0))
-                        .setGravity(smartdevelop.ir.eram.showcaseviewlib.config.Gravity.auto)
                         .build()
                         .show();
             }

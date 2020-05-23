@@ -69,6 +69,7 @@
         android:visibility="gone"
         android:gravity="center_vertical"
         android:text="Total:53    Missed:4    Missable:5"
+        app:autoSizeMinTextSize="1dp"
         android:textColor="@color/metaTextColor"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/cancel_button"
