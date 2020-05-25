@@ -75,4 +75,5 @@
     <string name="username_edit_title">"Enter New Username"</string>
     <string name="cancel_all_text">Cancel All</string>
     <string name="undo_text">UNDO</string>
+    <string name="cancel_demo_toast">Congrats. You Almost Found A Bug.</string>
 </resources>

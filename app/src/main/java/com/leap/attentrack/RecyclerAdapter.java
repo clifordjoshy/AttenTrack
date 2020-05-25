@@ -48,6 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
     private Handler cancel_remover = null;
     private int[] today, cancel_waiting = null;
     private int warned_for = -1;
+    private boolean first_start = false;
 
     RecyclerAdapter(Context ct, View root_fragment) {
         context = ct;
@@ -78,6 +79,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
         if (MainActivity.is_first_start == 0) {
+            first_start = true;
             Subject demo = new Subject();
             demo.name = "Subject";
             demo.attendance = 96;
@@ -274,11 +276,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     cancel_tab.findViewById(R.id.undo_button).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            add_extra_class(cancel_waiting[0], cancel_waiting[1]);
-                            cancel_waiting = null;
-                            cancel_tab.animate().translationY(display_height).setDuration(300);
-                            cancel_remover.removeCallbacksAndMessages(null);   //cancel handler
-                            cancel_remover = null;
+                            if(!first_start) {
+                                add_extra_class(cancel_waiting[0], cancel_waiting[1]);
+                                cancel_waiting = null;
+                                cancel_tab.animate().translationY(display_height).setDuration(300);
+                                cancel_remover.removeCallbacksAndMessages(null);   //cancel handler
+                                cancel_remover = null;
+                            } else {
+                                //first start.
+                                //Demo cancel
+                                Toast.makeText(context, R.string.cancel_demo_toast, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -553,6 +561,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                         context.getSharedPreferences(MainActivity.shared_pref_name, MODE_PRIVATE).edit().
                                 putInt("first_start", 1).apply();
                         MainActivity.is_first_start = 1;
+                        first_start = false;
                     }
                 }, 500);
                 break;

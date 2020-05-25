@@ -377,13 +377,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     return;
                 }
 
-                if (data.size() < subjects.size()) {
-                    for (int i = data.size(); i < subjects.size(); ++i) {
-                        Subject sub = new Subject();
-                        sub.name = subjects.get(i);
-                        sub.color = sub_colors.get(i);
-                        data.add(sub);
-                    }
+                data = new LinkedList<>();
+                for (int i = 0; i < subjects.size(); ++i) {
+                    Subject sub = new Subject();
+                    sub.name = subjects.get(i);
+                    sub.color = sub_colors.get(i);
+                    data.add(sub);
                 }
                 subjects.addFirst("<free>");    //for spinner adapter
 
@@ -428,7 +427,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
                 } else {
                     TransitionManager.beginDelayedTransition(root);
-                    for (int i = INDEX_TIMETABLE; i < root.indexOfChild(findViewById(R.id.attendance_linear_layout)); ++i)
+                    for (int i = INDEX_TIMETABLE; i < root.indexOfChild(findViewById(R.id.startup_almost_there)); ++i)
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                     if (condensed)
                         back_button.setVisibility(View.VISIBLE);
@@ -848,7 +847,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         gridparams.setMargins((int) (density * 20), 0, (int) (density * 20), 0);
         grid.setLayoutParams(gridparams);
         grid.setPadding((int) (density * 10), 0, 0, (int) (density * 2));
-        int gridwidth = root.getWidth() - (int) (density * 50), color = 0x60ffffff + box_color + 1;
+        int gridwidth = root.getWidth() - (int) (density * 50),
+                color = 0x60ffffff + box_color + 1;
 
         ViewCompat.setBackgroundTintList(grid, ColorStateList.valueOf(color));
         root.addView(grid, add_index);
@@ -860,22 +860,24 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             grid.addView(createTextViewForGrid(i, 1, "-", gridwidth / 15, Gravity.CENTER_HORIZONTAL));
             grid.addView(createTextViewForGrid(i, 2, sessions.get(i)[1], gridwidth / 5, Gravity.START));
 
+            GridLayout.LayoutParams grid_pos_lparam = new GridLayout.LayoutParams(GridLayout.spec(i), GridLayout.spec(3));
+            grid_pos_lparam.height = (int) (30 * density);
+            grid_pos_lparam.width = 8 * gridwidth / 15;
+            grid_pos_lparam.setGravity(Gravity.BOTTOM);
+            grid_pos_lparam.setMargins(0, (int) (5 * density), 0, 0);
+
             if (tt_spinners[boxno].get(i) == null) {
-                GridLayout.LayoutParams lparams = new GridLayout.LayoutParams(GridLayout.spec(i), GridLayout.spec(3));
-                lparams.height = (int) (30 * density);
-                lparams.width = 8 * gridwidth / 15;
-                lparams.setGravity(Gravity.BOTTOM);
-                lparams.setMargins(0, (int) (5 * density), 0, 0);
                 Spinner s = new Spinner(this);
-                s.setLayoutParams(lparams);
+                s.setLayoutParams(grid_pos_lparam);
                 s.setGravity(Gravity.END);
                 s.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                 s.setAdapter(adapter);
                 tt_spinners[boxno].set(i, s);
-            } else {    //blast from the past
+            } else {    //reopen box
                 int sel = tt_spinners[boxno].get(i).getSelectedItemPosition();
                 tt_spinners[boxno].get(i).setAdapter(adapter);
                 tt_spinners[boxno].get(i).setSelection(sel);
+                tt_spinners[boxno].get(i).setLayoutParams(grid_pos_lparam);     //for session delete alone.
             }
             grid.addView(tt_spinners[boxno].get(i));
             active_boxes[boxno] = true;
@@ -930,14 +932,25 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                             int ind = root.indexOfChild(v);
                             root.removeViewAt(ind);
                             if (page == 1) {
-                                sessions.remove(ind - INDEX_SESSIONS - 1);
-                                if(tt_spinners[0].size() != 0) {      //reset tt_spinners on session remove
-                                    for(LinkedList<Spinner> tt_spin: tt_spinners)
-                                        tt_spin.clear();
+                                int sess_index = ind - INDEX_SESSIONS - 1;
+                                sessions.remove(sess_index);
+                                for (int i = 0; i < 7; ++i) {
+                                    if(tt_spinners[i].size() != 0)
+                                        tt_spinners[i].remove(sess_index);
+                                }
+
+                            }
+                            else if (page == 2) {
+                                int sub_index = ind - INDEX_SUBJECTS - 1;
+                                sub_edits.remove(sub_index);
+                                //Check if sub is selected anywhere
+                                for (LinkedList<Spinner> tt_spin: tt_spinners){
+                                    for(Spinner s: tt_spin){
+                                        if (s != null && s.getSelectedItemPosition()-1 == sub_index)
+                                            s.setSelection(0);
+                                    }
                                 }
                             }
-                            else if (page == 2)
-                                sub_edits.remove(ind - INDEX_SUBJECTS - 1);
 
                             delete_slide.setVisibility(View.GONE);
 
