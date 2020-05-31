@@ -23,8 +23,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder;
         mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_support)
-                .setContentTitle("Miss Any Classes Today?")
-                .setContentText("Click Here To Mark It in The Schedule")
+                .setContentTitle(context.getString(R.string.notif_title))
+                .setContentText(context.getString(R.string.notif_content))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         if (android.os.Build.VERSION.SDK_INT >= 26) {

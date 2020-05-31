@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         if (MainActivity.is_first_start == 0) {
             first_start = true;
             Subject demo = new Subject();
-            demo.name = "Subject";
+            demo.name = context.getString(R.string.demo_subject_name);
             demo.attendance = 96;
             demo.total = 56;
             demo.missed = 2;
@@ -202,12 +201,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     dialog.setView(dialog_layout);
                     dialog.setCancelable(true);
                     dialog.setNegativeButton(R.string.cancel_text, null);
-                    dialog.setPositiveButton("ADD", null);  //closes dialog after click. so overrided after showing
+                    dialog.setPositiveButton(R.string.add_button_text, null);  //closes dialog after click. so overrided after showing
 
                     dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface d) {
-                            Log.i("mylog", "bruh");
                             warned_for = -1;  //cancel without override
                         }
                     });
@@ -238,7 +236,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             holder.subject.setText(this_sub.name);
             holder.time.setText(Subject.session_encoder.get(today_sessions.get(position))[0]);
             holder.percent.setText((this_sub.attendance + "%"));
-            holder.extras.setText(("Total:" + this_sub.total + "    Missed:" + this_sub.missed + "    Missable:" + this_sub.missable));
+            String extra_text = context.getString(R.string.total_text) + this_sub.total + "    "+
+                    context.getString(R.string.missed_text) + this_sub.missed + "    " +
+                    context.getString(R.string.missable_text) + this_sub.missable;
+            holder.extras.setText(extra_text);
             ViewCompat.setBackgroundTintList(holder.root,ColorStateList.valueOf(this_sub.color));
 
             holder.picture.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +248,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     int missed_sess = today_sessions.get(position), missed_sub = MainActivity.data.indexOf(today_subjects.get(position));
                     for (int[] sess : ((MainActivity) context).missed_sessions) {
                         if (sess[3] == missed_sess && sess[4] == missed_sub) {
-                            Toast.makeText(context, "You Already Missed This Class", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, R.string.missed_class_toast, Toast.LENGTH_SHORT).show();
                             return;
                         }
                     }
@@ -263,7 +264,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 public void onClick(View v) {
 
                     final int display_height = (int)(context.getResources().getDisplayMetrics().heightPixels);
-                    String message = today_subjects.get(position).name + " Cancelled";
+                    String message = today_subjects.get(position).name + " " + context.getString(R.string.cancelled_undo_text);
                     ((TextView)cancel_tab.findViewById(R.id.cancelled_message))
                             .setText(message);
                     cancel_tab.setY(display_height);
@@ -362,7 +363,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 else {
                     MyViewHolder holder = (MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
                     holder.percent.setText((s.attendance + "%"));
-                    holder.extras.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                    String extra_text = context.getString(R.string.total_text) + s.total + "    "+
+                            context.getString(R.string.missed_text) + s.missed + "    " +
+                            context.getString(R.string.missable_text) + s.missable;
+                    holder.extras.setText(extra_text);
 //                  notifyItemChanged(i);       //works, but probably creats new onclicklistener
                 }
             }
@@ -464,8 +468,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             //group 1[user deets] //from onAttachedToRecyclerView()
             case 1:
                 new GuideView.Builder(context)
-                        .setTitle("Change Your Avatar")
-                        .setContentText("Have It Your Way :)")
+                        .setTitle(context.getString(R.string.startup_guide_title_1))
+                        .setContentText(context.getString(R.string.startup_guide_message_1))
                         //.setDismissType(DismissType.targetView) //optional - default DismissType.targetView
                         .setTargetView(((MainActivity) context).findViewById(R.id.avatar))
                         .setGuideListener(new GuideListener() {
@@ -480,8 +484,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
             case 2: //called from case 1
                 new GuideView.Builder(context)
-                        .setTitle("Change Your Username")
-                        .setContentText("You're already spectacular. You\ndon't need me to say it.")
+                        .setTitle(context.getString(R.string.startup_guide_title_2))
+                        .setContentText(context.getString(R.string.startup_guide_message_2))
                         .setTargetView(((MainActivity) context).findViewById(R.id.name_text))
                         .build()
                         .show();
@@ -492,8 +496,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             case 3:     //called from name_text listener[schedule fragment class]
 
                 new GuideView.Builder(context)
-                        .setTitle("Here's Your Subject Card")
-                        .setContentText("Click For More Info.")
+                        .setTitle(context.getString(R.string.startup_guide_title_3))
+                        .setContentText(context.getString(R.string.startup_guide_message_3))
                         .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(0)).root)
                         .setGuideListener(new GuideListener() {
                             @Override
@@ -508,9 +512,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             case 4:     //called from case 3
 
                 new GuideView.Builder(context)
-                        .setTitle("Miss A Class?")
-                        .setContentText("Click here to mark your absence\n" +
-                                "and see your percentage change.")
+                        .setTitle(context.getString(R.string.startup_guide_title_4))
+                        .setContentText(context.getString(R.string.startup_guide_message_4))
                         .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(0)).picture)
                         .setGuideListener(new GuideListener() {
                             @Override
@@ -525,9 +528,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             case 5:     //called from case 4
 
                 new GuideView.Builder(context)
-                        .setTitle("Session Cancelled?")
-                        .setContentText("Click here to mark it and see how\n" +
-                                "your attendance changes.")
+                        .setTitle(context.getString(R.string.startup_guide_title_5))
+                        .setContentText(context.getString(R.string.startup_guide_message_5))
                         .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(0)).cancel)
                         .setGuideListener(new GuideListener() {
                             @Override
@@ -551,9 +553,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     @Override
                     public void run() {
                         new GuideView.Builder(context)
-                                .setTitle("Extra Class?")
-                                .setContentText("Click here to add classes\n" +
-                                        "to the schedule.")
+                                .setTitle(context.getString(R.string.startup_guide_title_6))
+                                .setContentText(context.getString(R.string.startup_guide_message_6))
                                 .setTargetView(((MyViewHolder) mRecyclerView.findViewHolderForAdapterPosition(today_subjects.size())).root)
                                 .build()
                                 .show();

@@ -32,9 +32,7 @@ public class EditStatsFragment extends Fragment {
             final Subject s = MainActivity.data.get(i);
             View element = getLayoutInflater().inflate(R.layout.element_all_subs, root_layout, false);
             ((TextView)element.findViewById(R.id.subject_text)).setText(s.name);
-            String deets = "Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable;
-            ((TextView)element.findViewById(R.id.data_text)).setText(deets);
-            ((TextView)element.findViewById(R.id.percent_text)).setText((s.attendance+"%"));
+            update_deets(s, (TextView)element.findViewById(R.id.percent_text), (TextView)element.findViewById(R.id.data_text));
             ViewCompat.setBackgroundTintList(element, ColorStateList.valueOf(s.color));
 
             final TextView percent = element.findViewById(R.id.percent_text),
@@ -44,32 +42,28 @@ public class EditStatsFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     s.unmiss_session();
-                    percent.setText((s.attendance + "%"));
-                    data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                    update_deets(s, percent, data);
                 }
             });
             element.findViewById(R.id.minus_image).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     s.missed_session();
-                    percent.setText((s.attendance + "%"));
-                    data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                    update_deets(s, percent, data);
                 }
             });
             element.findViewById(R.id.remove_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     s.cancel_session();
-                    percent.setText((s.attendance + "%"));
-                    data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                    update_deets(s, percent, data);
                 }
             });
             element.findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     s.add_session();
-                    percent.setText((s.attendance + "%"));
-                    data.setText(("Total:" + s.total + "    Missed:" + s.missed + "    Missable:" + s.missable));
+                    update_deets(s, percent, data);
                 }
             });
             element.findViewById(R.id.subject_text).setOnClickListener(new View.OnClickListener() {
@@ -107,6 +101,14 @@ public class EditStatsFragment extends Fragment {
         return fragment_view;
     }
 
+    private void update_deets(Subject s, TextView percent, TextView deet){
+        percent.setText((s.attendance + "%"));
+        String deet_text = getString(R.string.total_text) + s.total + "    "+
+                getString(R.string.missed_text) + s.missed + "    " +
+                getString(R.string.missable_text) + s.missable;
+        deet.setText(deet_text);
+    }
+
     private void handle_first_start(final LinearLayout root){
         boolean first = getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
                 getBoolean("edit_stats_first_start", true);
@@ -117,8 +119,8 @@ public class EditStatsFragment extends Fragment {
             @Override
             public void run() {
                 new GuideView.Builder(getContext())
-                        .setTitle("Forgot To Mark Something?")
-                        .setContentText("Not A Problem.\n\n (+) & (-) to edit your attendance.\n \"Add\" & \"Remove\" to edit class count.")
+                        .setTitle(getString(R.string.edit_stats_guide_title))
+                        .setContentText(getString(R.string.edit_stats_guide_message))
                         .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
                         .setTargetView(root.getChildAt(0))
                         .build()

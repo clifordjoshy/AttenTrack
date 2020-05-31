@@ -239,7 +239,7 @@ public class TimetableFragment extends Fragment {
                 options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
                 tt_spinners = new Spinner[7][Subject.session_encoder.size()];
                 String[] spinner_options_array = new String[table.size() + 1];
-                spinner_options_array[0] = "<free>";
+                spinner_options_array[0] = getString(R.string.free_session_text);
                 for (int i = 1; i < spinner_options_array.length; ++i)
                     spinner_options_array[i] = table.get(i - 1).name;
                 spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
@@ -264,16 +264,16 @@ public class TimetableFragment extends Fragment {
                         }
                     }
                     dialog.setMessage(s);
-                    dialog.setNegativeButton("EDIT", null);
+                    dialog.setNegativeButton(R.string.edit_button_text, null);
 
-                    dialog.setNeutralButton("IGNORE CHANGES", new DialogInterface.OnClickListener() {
+                    dialog.setNeutralButton(R.string.ignore_button_text, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             save_timetable_changes();
                         }
                     });
 
-                    dialog.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+                    dialog.setPositiveButton(R.string.confirm_text, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             for (int i = 0; i < changes.length; ++i)
@@ -302,7 +302,7 @@ public class TimetableFragment extends Fragment {
                 item.setVisible(false);
                 options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
 
-                Toast.makeText(getContext(), "Edits Cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.tt_edits_cancelled_toast, Toast.LENGTH_SHORT).show();
                 tt_spinners = null;
                 spinner_options = null;
                 break;
@@ -427,7 +427,7 @@ public class TimetableFragment extends Fragment {
         options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
         options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
 
-        Toast.makeText(getContext(), "Edits Saved", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.tt_edits_saved_toast, Toast.LENGTH_SHORT).show();
 
         for (int i = 0; i < tt_spinners.length; ++i) {
             for (int j = 0; j < tt_spinners[i].length; ++j) {

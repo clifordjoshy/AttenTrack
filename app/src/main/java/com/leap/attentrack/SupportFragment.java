@@ -32,7 +32,7 @@ public class SupportFragment extends Fragment {
         myAd.setAdListener(new AdListener(){
             @Override
             public void onAdClosed() {
-                Toast.makeText(getContext(), "Thank You :)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.support_thank_you_toast, Toast.LENGTH_SHORT).show();
                 myAd.loadAd(new AdRequest.Builder().build());
             }
         });

@@ -77,7 +77,7 @@ public class ScheduleFragment extends Fragment{
                 e.setPadding(20, 20, 20, 20);
                 edit_dialog.setView(e);
                 edit_dialog.setCancelable(true);
-                edit_dialog.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                edit_dialog.setPositiveButton(R.string.save_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity.name = e.getText().toString();

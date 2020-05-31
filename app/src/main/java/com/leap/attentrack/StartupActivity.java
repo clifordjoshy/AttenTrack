@@ -246,7 +246,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     }
 
                     if (!okay) {
-                        Toast.makeText(this, "Invalid Sessions", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.invalid_sessions_toast, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -321,7 +321,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                                 colors_subjects.addAll(Arrays.asList(colors));
                                 Collections.shuffle(colors_subjects);
                             }
-                            e.setHint("Subject");
+                            e.setHint(R.string.demo_subject_name);
                             e.setPadding((int) (10 * density), 0, (int) (10 * density), 0);
                             e.setOnTouchListener(swipe_listener);
                             e.requestFocus();
@@ -373,7 +373,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     sub_colors.add(ViewCompat.getBackgroundTintList(sub_edits.get(i)).getDefaultColor());
                 }
                 if (!okay) {
-                    Toast.makeText(this, "Invalid Subjects", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.invalid_subjects_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -384,7 +384,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     sub.color = sub_colors.get(i);
                     data.add(sub);
                 }
-                subjects.addFirst("<free>");    //for spinner adapter
+                subjects.addFirst(getString(R.string.free_session_text));    //for spinner adapter
 
                 INDEX_TIMETABLE = root.indexOfChild(root.findViewById(R.id.startup_time_table));
                 for (int i = INDEX_SUBJECTS; i < INDEX_TIMETABLE; ++i)
@@ -548,7 +548,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
                         ViewCompat.setBackgroundTintList(edit_attendance, ColorStateList.valueOf(0xffff8080));
-                        Toast.makeText(this, "Invalid Percentage", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.invalid_percentage_toast, Toast.LENGTH_SHORT).show();
                         return;
                     }
                     Subject.req_percentage = Integer.parseInt(percent);
@@ -557,12 +557,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 String date_string_1 = semester_d1.getText().toString(), date_string_2 = semester_d2.getText().toString();
                 if ("--/--/----".equals(date_string_1)) {
                     ViewCompat.setBackgroundTintList(semester_d1, ColorStateList.valueOf(0xffff8080));
-                    Toast.makeText(this, "Enter Start Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.start_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if ("--/--/----".equals(date_string_2)) {
                     ViewCompat.setBackgroundTintList(semester_d2, ColorStateList.valueOf(0xffff8080));
-                    Toast.makeText(this, "Enter End Date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.end_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -576,7 +576,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 }
 
                 if (!d2.after(d1)) {
-                    Toast.makeText(this, "Invalid Dates", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.invalid_dates_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
