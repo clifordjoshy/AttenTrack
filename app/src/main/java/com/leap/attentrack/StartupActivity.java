@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -61,7 +63,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private boolean[] is_box_active;
 
     //constants of sorts
-    private int page = -1, duration = 400, lag = 400, animation_offset, mode, tab_margin;
+    private int page = -1, duration = 400, lag = 400, mode, tab_margin;
     private int INDEX_SESSIONS, INDEX_SUBJECTS, INDEX_TIMETABLE, INDEX_ATTENDANCE, INDEX_END;
     private final Integer[] colors = {0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
             0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2, 0xffb5dfff, 0xffe6c6ff};
@@ -89,13 +91,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         TextView okay = findViewById(R.id.okay_btn_startup);
         back_button = findViewById(R.id.back_btn_startup);
         delete_slide = findViewById(R.id.delete_slide);
-        tt_spinners = new LinkedList[]{new LinkedList<>(), new LinkedList<>(), new LinkedList<>(),
-                new LinkedList<>(), new LinkedList<>(), new LinkedList<>(), new LinkedList<>()};
+        tt_spinners = new LinkedList[]{new LinkedList<Spinner>(), new LinkedList<Spinner>(), new LinkedList<Spinner>(),
+                new LinkedList<Spinner>(), new LinkedList<Spinner>(), new LinkedList<Spinner>(), new LinkedList<Spinner>()};
 
-        findViewById(R.id.startup_scrollview).setOnTouchListener(new View.OnTouchListener() {
+        final View scroller = findViewById(R.id.startup_scrollview);
+        scroller.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                //ScrollView consumes touch events while scrolling. So intercept them here and pass on.
+                //ScrollView consumes touch events **while scrolling**. So intercept them here and pass on.
                 if(sliding_view != null) {
                     StartupActivity.this.onTouch(sliding_view, event);
                     scrolling = true;
@@ -103,6 +106,28 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 return false;
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final View elevator = findViewById(R.id.elevation_view);
+            elevator.setVisibility(View.VISIBLE);
+            ViewCompat.setElevation(findViewById(R.id.startup_progress), 5 * density);
+            scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                private boolean elevated = false;
+                @Override
+                public void onScrollChanged() {
+                    if (scroller.canScrollVertically(-1)) {
+                        if (!elevated) {
+                            elevator.animate().translationZ(5 * density).setDuration(200);
+                            elevated = true;
+                        }
+                    } else if (elevated) {
+                        elevator.animate().translationZ(0).setDuration(200);
+                        elevated = false;
+                    }
+                }
+            });
+        }
+
 
         //disable layout appear animation. custom animation given
         LayoutTransition expand_transition = new LayoutTransition();
@@ -143,7 +168,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         }
 
         //hello animation
-        animation_offset = 200;
+        int animation_offset = 200;
         intro[0].animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset);
         intro[1].animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
         intro[2].animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
@@ -172,6 +197,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     public void okay_button_pressed(View view) {
+
         switch (page) {
             case 0:     //sessions
             {
@@ -180,7 +206,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 INDEX_SESSIONS = 0;
                 TextView session_text = findViewById(R.id.startup_session_time);
                 session_plus = findViewById(R.id.session_plus);
-                animation_offset = 0;
+                int animation_offset = 0;
                 session_text.setVisibility(View.VISIBLE);
                 session_plus.setVisibility(View.VISIBLE);
                 session_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
@@ -267,7 +293,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     final ImageView subject_plus = findViewById(R.id.subject_plus);
                     subject_text.setVisibility(View.VISIBLE);
                     subject_plus.setVisibility(View.VISIBLE);
-                    animation_offset = 0;
+                    int animation_offset = 0;
                     subject_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     subject_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
                     if(condensed)
@@ -490,7 +516,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 semester_d2.setVisibility(View.VISIBLE);
 
                 if (date_hyphen.getAlpha() == 0) {     //first coming
-                    animation_offset = 0;
+                    int animation_offset = 0;
                     date_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     semester_d1.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     date_hyphen.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset);

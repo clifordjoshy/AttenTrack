@@ -22,7 +22,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         String CHANNEL_ID = "attentrack";// The id of the channel.
         NotificationCompat.Builder mBuilder;
         mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.icon_support)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(context.getString(R.string.notif_title))
                 .setContentText(context.getString(R.string.notif_content))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);

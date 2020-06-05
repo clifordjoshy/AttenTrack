@@ -23,6 +23,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/elevation_view"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="30dp"
+        android:background="@color/startup_bg"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/startup_progress"
         style="?android:attr/progressBarStyleHorizontal"
@@ -94,7 +102,6 @@
                 android:id="@+id/startup_session_time"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="30dp"
                 android:alpha="0"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/startup_session_title"
@@ -131,7 +138,6 @@
                 android:id="@+id/startup_subjects"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="30dp"
                 android:alpha="0"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/startup_subject_title"
@@ -292,7 +298,6 @@
                 android:id="@+id/startup_almost_there"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="30dp"
                 android:alpha="0"
                 android:fontFamily="@font/poppins_medium"
                 android:text="@string/almost_there_text_1"
