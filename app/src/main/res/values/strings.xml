@@ -10,6 +10,7 @@
     <string name="session_time_start">Start</string>
     <string name="session_time_end">End</string>
     <string name="startup_subject_title">And Your Courses?</string>
+    <string name="condensed_subject_title">What Are Your Courses?</string>
     <string name="startup_timetable_title">What\'s 12 x 12?\nNo Wait, That\'s The Times Table. \nEnter Your Time Table.</string>
     <string name="monday_text">Monday</string>
     <string name="tuesday_text">Tuesday</string>

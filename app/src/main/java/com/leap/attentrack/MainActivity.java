@@ -384,11 +384,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 29) {
-            if (requestCode == 31) {    //reset button press
-                cancelled_sessions.clear();
-                extra_sessions.clear();
-                missed_sessions.clear();
-            }
+            cancelled_sessions.clear();
+            extra_sessions.clear();
+            missed_sessions.clear();
             recreate();
         }
     }

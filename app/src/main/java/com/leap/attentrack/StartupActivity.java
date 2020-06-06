@@ -152,7 +152,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             case 1:    //Subject Reset Mode
                 condensed = true;
                 page = 1;   //jump to subjects
-                sessions = (LinkedList<String[]>) Arrays.asList(Subject.session_encoder);
+                sessions = new LinkedList<>(Arrays.asList(Subject.session_encoder));
                 okay_button_pressed(okay);
                 return;     //no hello for menu reset
 
@@ -290,6 +290,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
                 if (sub_edits.size() == 0) {     //first coming
                     final TextView subject_text = findViewById(R.id.startup_subjects);
+                    if(condensed)
+                        subject_text.setText(R.string.condensed_subject_title);
                     final ImageView subject_plus = findViewById(R.id.subject_plus);
                     subject_text.setVisibility(View.VISIBLE);
                     subject_plus.setVisibility(View.VISIBLE);
