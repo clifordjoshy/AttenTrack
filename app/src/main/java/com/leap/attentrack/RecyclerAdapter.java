@@ -124,7 +124,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 extra_sess.add(sess);
 
         LinkedList<Integer> schedule;
-        for (int i = 0; i < Subject.session_encoder.size(); ++i) {
+        for (int i = 0; i < Subject.session_encoder.length; ++i) {
 
             boolean overwrite = false;
             for (int[] sess : extra_sess) {
@@ -193,9 +193,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.spinner_item, all_subs);
                     subject.setAdapter(adapter);
 
-                    String[] all_times = new String[Subject.session_encoder.size()];
+                    String[] all_times = new String[Subject.session_encoder.length];
                     for (int i = 0; i < all_times.length; ++i)
-                        all_times[i] = Subject.session_encoder.get(i)[0] + "-" + Subject.session_encoder.get(i)[1];
+                        all_times[i] = Subject.session_encoder[i][0] + "-" + Subject.session_encoder[i][1];
                     adapter = new ArrayAdapter<>(context, R.layout.spinner_item, all_times);
                     session.setAdapter(adapter);
                     dialog.setView(dialog_layout);
@@ -234,7 +234,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             final Subject this_sub = today_subjects.get(position);
 
             holder.subject.setText(this_sub.name);
-            holder.time.setText(Subject.session_encoder.get(today_sessions.get(position))[0]);
+            holder.time.setText(Subject.session_encoder[today_sessions.get(position)][0]);
             holder.percent.setText((this_sub.attendance + "%"));
             String extra_text = context.getString(R.string.total_text) + this_sub.total + "    "+
                     context.getString(R.string.missed_text) + this_sub.missed + "    " +

@@ -152,7 +152,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             case 1:    //Subject Reset Mode
                 condensed = true;
                 page = 1;   //jump to subjects
-                sessions = Subject.session_encoder;
+                sessions = (LinkedList<String[]>) Arrays.asList(Subject.session_encoder);
                 okay_button_pressed(okay);
                 return;     //no hello for menu reset
 
@@ -1039,6 +1039,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         if (mode == 0) {    // first start
             sp_editor.putInt("first_start", 0);
             MainActivity.is_notification_on = true;
+            MainActivity.is_first_start = 0;    //put data has check for first start
         }
 
         sp_editor.putString("sem_start_date", sem_start);
@@ -1047,7 +1048,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
         //MainActivity will be recreated on result of this activity, thus calling onPause() and hence put_data().
         //So, just save the values in MainActivity and it will be written to the file.
-        Subject.session_encoder = sessions;
+        Subject.session_encoder = new String[sessions.size()][];
+        for(int i = 0; i < sessions.size(); ++i)
+            Subject.session_encoder[i] = sessions.get(i);
+
         MainActivity.data = data;
     }
 

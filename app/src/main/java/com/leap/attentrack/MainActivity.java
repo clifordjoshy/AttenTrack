@@ -5,11 +5,15 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,7 +63,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        get_data();
+        try {
+            get_data();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+            //data is gone. restart :(
+            getSharedPreferences(shared_pref_name, MODE_PRIVATE).edit().remove("first_start").apply();
+            is_first_start = -1;    //don't put data
+            recreate();
+            return;     //stop loading current screen
+        }
+
         setTheme(dark_mode_on ? R.style.DarkTheme : R.style.LightTheme);
         setContentView(R.layout.activity_main);
 
@@ -79,17 +95,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                int start_val = dark_mode_on ? 39 : 255, end_val = dark_mode_on ? 16 : 102;
+                int color_val = (int)(start_val - (start_val - end_val)*slideOffset);
+                getWindow().setStatusBarColor(Color.rgb(color_val, color_val, color_val));
+            }
+        };
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         MobileAds.initialize(this);
 
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             current_fragment = savedInstanceState.getInt("current_fragment", 0);
 
         Fragment go_to = null;
-        switch(current_fragment){
+        switch (current_fragment) {
             case 0:
                 go_to = new ScheduleFragment();
                 navView.getMenu().findItem(R.id.schedule_message).setChecked(true);
@@ -114,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        put_data();
+        if(is_first_start != -1)    //going to startup activity
+            put_data();
     }
 
     void put_data() {
@@ -172,75 +198,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    void get_data() {
-        try {
-            FileInputStream fis = new FileInputStream(time_table_file);
-            ObjectInputStream inputStream = new ObjectInputStream(fis);
-            data = (LinkedList<Subject>) inputStream.readObject();
-            inputStream.close();
-            fis.close();
+    void get_data() throws Exception {
 
-            InputStream sec_input = openFileInput(sec_file);
-            InputStreamReader reader = new InputStreamReader(sec_input);
-            BufferedReader buffer_read = new BufferedReader(reader);
+        FileInputStream fis = new FileInputStream(time_table_file);
+        ObjectInputStream inputStream = new ObjectInputStream(fis);
+        data = (LinkedList<Subject>) inputStream.readObject();
+        inputStream.close();
+        fis.close();
 
-            String receiveString;
+        InputStream sec_input = openFileInput(sec_file);
+        InputStreamReader reader = new InputStreamReader(sec_input);
+        BufferedReader buffer_read = new BufferedReader(reader);
 
-            while ((receiveString = buffer_read.readLine()) != null) {
-                String[] line = receiveString.split(delim_sec);
-                if ("session_encoder".equals(line[0])) {
-                    LinkedList<String[]> vals = new LinkedList<>();
-                    for (int i = 1; i < line.length; ++i)
-                        vals.add(line[i].split("-"));
-                    Subject.session_encoder = vals;
+        String receiveString;
 
-                } else if ("extra".equals(line[0])) {
-                    int[] vals = new int[5];   //year, month, day, session, subject
-                    for (int i = 0; i < 5; ++i)
-                        vals[i] = Integer.parseInt(line[i + 1]);
-                    extra_sessions.add(vals);
+        while ((receiveString = buffer_read.readLine()) != null) {
+            String[] line = receiveString.split(delim_sec);
+            if ("session_encoder".equals(line[0])) {
+                LinkedList<String[]> vals = new LinkedList<>();
+                for (int i = 1; i < line.length; ++i)
+                    vals.add(line[i].split("-"));
+                Subject.session_encoder = new String[vals.size()][];
+                for(int i = 0; i < vals.size(); ++i)
+                    Subject.session_encoder[i] = vals.get(i);
 
-                } else if ("cancel".equals(line[0])) {
-                    int[] vals = new int[5];   //year, month, day, session, subject
-                    for (int i = 0; i < 5; ++i)
-                        vals[i] = Integer.parseInt(line[i + 1]);
-                    cancelled_sessions.add(vals);
+            } else if ("extra".equals(line[0])) {
+                int[] vals = new int[5];   //year, month, day, session, subject
+                for (int i = 0; i < 5; ++i)
+                    vals[i] = Integer.parseInt(line[i + 1]);
+                extra_sessions.add(vals);
 
-                } else if ("missed".equals(line[0])) {
-                    int[] vals = new int[5];   //year, month, day, session, subject
-                    for (int i = 0; i < 5; ++i)
-                        vals[i] = Integer.parseInt(line[i + 1]);
-                    missed_sessions.add(vals);
-                }
+            } else if ("cancel".equals(line[0])) {
+                int[] vals = new int[5];   //year, month, day, session, subject
+                for (int i = 0; i < 5; ++i)
+                    vals[i] = Integer.parseInt(line[i + 1]);
+                cancelled_sessions.add(vals);
+
+            } else if ("missed".equals(line[0])) {
+                int[] vals = new int[5];   //year, month, day, session, subject
+                for (int i = 0; i < 5; ++i)
+                    vals[i] = Integer.parseInt(line[i + 1]);
+                missed_sessions.add(vals);
             }
-
-            SimpleDateFormat string_format = new SimpleDateFormat("yyyy-MM-dd");
-            Date today = Calendar.getInstance().getTime();
-            today = string_format.parse(string_format.format(today));   //to get rid of time
-
-            for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
-                //need to traverse backwards to prevent element upward shift
-                for (int i = sess_list.size() - 1; i >= 0; --i) {
-                    int[] sess = sess_list.get(i);
-                    String month = (sess[1] < 9 ? "0" : "") + sess[1];
-                    String day = (sess[2] < 9 ? "0" : "") + sess[2];
-                    Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
-                    if (today.after(saved)) {
-                        sess_list.remove(i);
-                    }
-                }
-            }
-
-            SharedPreferences sp = getSharedPreferences(shared_pref_name, MODE_PRIVATE);
-            Subject.req_percentage = sp.getInt("req_percent", 75);
-            dark_mode_on = sp.getBoolean("dark_mode_on", false);
-            name = sp.getString("username", "Spectacular User");
-            is_male_avatar = sp.getBoolean("is_male_avatar", false);
-            is_notification_on = sp.getBoolean("notifs_on", true);
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+        SimpleDateFormat string_format = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = Calendar.getInstance().getTime();
+        today = string_format.parse(string_format.format(today));   //to get rid of time
+
+        for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
+            //need to traverse backwards to prevent element upward shift
+            for (int i = sess_list.size() - 1; i >= 0; --i) {
+                int[] sess = sess_list.get(i);
+                String month = (sess[1] < 9 ? "0" : "") + sess[1];
+                String day = (sess[2] < 9 ? "0" : "") + sess[2];
+                Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
+                if (today.after(saved)) {
+                    sess_list.remove(i);
+                }
+            }
+        }
+
+        SharedPreferences sp = getSharedPreferences(shared_pref_name, MODE_PRIVATE);
+        Subject.req_percentage = sp.getInt("req_percent", 75);
+        dark_mode_on = sp.getBoolean("dark_mode_on", false);
+        name = sp.getString("username", "Spectacular User");
+        is_male_avatar = sp.getBoolean("is_male_avatar", false);
+        is_notification_on = sp.getBoolean("notifs_on", true);
+
     }
 
     @Override

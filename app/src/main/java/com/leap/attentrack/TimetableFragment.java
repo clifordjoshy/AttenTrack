@@ -150,10 +150,10 @@ public class TimetableFragment extends Fragment {
             list.addView(grid, boxno + 1);
 
             if (editing) {
-                for (int i = 0; i < Subject.session_encoder.size(); ++i) {
-                    grid.addView(createTextView(i, 0, Subject.session_encoder.get(i)[0], gridwidth / 5, Gravity.END));
+                for (int i = 0; i < Subject.session_encoder.length; ++i) {
+                    grid.addView(createTextView(i, 0, Subject.session_encoder[i][0], gridwidth / 5, Gravity.END));
                     grid.addView(createTextView(i, 1, "-", gridwidth / 15, Gravity.CENTER_HORIZONTAL));
-                    grid.addView(createTextView(i, 2, Subject.session_encoder.get(i)[1], gridwidth / 5, Gravity.START));
+                    grid.addView(createTextView(i, 2, Subject.session_encoder[i][1], gridwidth / 5, Gravity.START));
 
                     if (tt_spinners[boxno][i] == null) {
                         GridLayout.LayoutParams lparams = new GridLayout.LayoutParams(GridLayout.spec(i), GridLayout.spec(3));
@@ -177,12 +177,12 @@ public class TimetableFragment extends Fragment {
                 }
 
             } else {
-                for (int i = 0; i < Subject.session_encoder.size(); ++i) {
+                for (int i = 0; i < Subject.session_encoder.length; ++i) {
                     for (Subject s : table) {
                         if (s.slots[boxno].contains(i)) {
-                            grid.addView(createTextView(i, 0, Subject.session_encoder.get(i)[0], gridwidth / 5, Gravity.END));
+                            grid.addView(createTextView(i, 0, Subject.session_encoder[i][0], gridwidth / 5, Gravity.END));
                             grid.addView(createTextView(i, 1, "-", gridwidth / 15, Gravity.CENTER_HORIZONTAL));
-                            grid.addView(createTextView(i, 2, Subject.session_encoder.get(i)[1], gridwidth / 5, Gravity.START));
+                            grid.addView(createTextView(i, 2, Subject.session_encoder[i][1], gridwidth / 5, Gravity.START));
                             grid.addView(createTextView(i, 3, s.name, 8 * gridwidth / 15, Gravity.END));
                             break;
                         }
@@ -237,7 +237,7 @@ public class TimetableFragment extends Fragment {
                 item.setVisible(false);
                 options_menu.findItem(R.id.save_timetable_button).setVisible(true);
                 options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
-                tt_spinners = new Spinner[7][Subject.session_encoder.size()];
+                tt_spinners = new Spinner[7][Subject.session_encoder.length];
                 String[] spinner_options_array = new String[table.size() + 1];
                 spinner_options_array[0] = getString(R.string.free_session_text);
                 for (int i = 1; i < spinner_options_array.length; ++i)

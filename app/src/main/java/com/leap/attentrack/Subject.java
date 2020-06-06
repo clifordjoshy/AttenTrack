@@ -10,7 +10,7 @@ class Subject implements Serializable {
     int attendance = 100, missable, missed = 0, total;
 
     static int req_percentage;
-    static LinkedList<String[]> session_encoder;
+    static String[][] session_encoder;
 
     void cancel_session() {
         if (total <= 1 || missed == total)
