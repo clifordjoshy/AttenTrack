@@ -2,9 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="176dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/curve_right_only_20dp"
-    app:backgroundTint="#ffff00"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
@@ -26,3 +23,4 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="?attr/textColor"/>
 </LinearLayout>
+
