@@ -107,7 +107,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {    //scroll elevator
             final View elevator = findViewById(R.id.elevation_view);
             elevator.setVisibility(View.VISIBLE);
             ViewCompat.setElevation(findViewById(R.id.startup_progress), 5 * density);
@@ -128,6 +128,11 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             });
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {       //status bar colour change
+            getWindow().setStatusBarColor(getColor(R.color.startup_bg));
+            //need some view to get systemui details
+            root.setSystemUiVisibility(root.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
 
         //disable layout appear animation. custom animation given
         LayoutTransition expand_transition = new LayoutTransition();
