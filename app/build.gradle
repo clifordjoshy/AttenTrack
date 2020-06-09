@@ -7,8 +7,8 @@ android {
         applicationId "com.leap.attentrack"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 13
-        versionName "1.8.5"
+        versionCode 14
+        versionName "1.8.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
