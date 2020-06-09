@@ -76,9 +76,9 @@
     <string name="username_edit_title">"Enter New Username"</string>
     <string name="cancel_all_text">Cancel All</string>
     <string name="undo_text">UNDO</string>
-    <string name="cancel_demo_toast">Congrats. You Almost Found A Bug.</string>
+    <string name="cancel_demo_toast">Let It Go. Just This Once.</string>
     <string name="notif_title">Miss Any Classes Today?</string>
-    <string name="notif_content">Click Here To Mark It in The Schedule</string>
+    <string name="notif_content">Tap to update your attendance</string>
     <string name="total_text">Total:</string>
     <string name="missed_text">Missed:</string>
     <string name="missable_text">Missable:</string>

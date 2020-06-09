@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @RequiresApi(api = Build.VERSION_CODES.M)       //status bar changes at api23[light and dark needed]
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 int start_val = dark_mode_on ? 39 : 255, end_val = dark_mode_on ? 16 : 102;
