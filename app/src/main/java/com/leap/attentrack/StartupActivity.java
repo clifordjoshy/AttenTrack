@@ -83,7 +83,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         setContentView(R.layout.activity_startup);
 
         //variables assignment
-        density = this.getResources().getDisplayMetrics().density;
+        density = getResources().getDisplayMetrics().density;
         tab_margin = (int) (10 * density);
         root = findViewById(R.id.startup_main_linear);
         TextView[] intro = new TextView[]{findViewById(R.id.startup_hello),

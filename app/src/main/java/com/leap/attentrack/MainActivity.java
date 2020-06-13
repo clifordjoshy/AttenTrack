@@ -13,7 +13,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -95,17 +94,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-
-            @RequiresApi(api = Build.VERSION_CODES.M)       //status bar changes at api23[light and dark needed]
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                int start_val = dark_mode_on ? 39 : 255, end_val = dark_mode_on ? 16 : 102;
-                int color_val = (int)(start_val - (start_val - end_val)*slideOffset);
-                getWindow().setStatusBarColor(Color.rgb(color_val, color_val, color_val));
-            }
-        };
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {  //status bar changes at api23[light and dark needed]
+            drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                @Override
+                public void onDrawerSlide(@NonNull View drawerView, final float slideOffset) {
+                    drawerView.postOnAnimation(new Runnable() {     //on next animation timestep. for sync between both colour changes.
+                        @Override
+                        public void run() {
+                            int start_val = dark_mode_on ? 39 : 255, end_val = dark_mode_on ? 16 : 102;
+                            int color_val = (int) (start_val - (start_val - end_val) * slideOffset);
+                            getWindow().setStatusBarColor(Color.rgb(color_val, color_val, color_val));
+                        }
+                    });
+                }
+            });
+        }
         toggle.syncState();
 
         MobileAds.initialize(this);
