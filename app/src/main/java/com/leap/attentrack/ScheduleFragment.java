@@ -90,9 +90,9 @@ public class ScheduleFragment extends Fragment{
                 edit_dialog.setNegativeButton(R.string.cancel_text, null);
 
                 if(MainActivity.is_first_start == 0) {
-                    edit_dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    edit_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
-                        public void onCancel(DialogInterface dialog) {
+                        public void onDismiss(DialogInterface dialog) {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
