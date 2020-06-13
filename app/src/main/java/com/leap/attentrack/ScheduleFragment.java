@@ -71,7 +71,7 @@ public class ScheduleFragment extends Fragment{
                 edit_dialog.setTitle(R.string.username_edit_title);
                 final EditText e = new EditText(getContext());
                 e.setBackgroundColor(0xffb5dfff);
-                e.setHint("Namey McNamus");
+                e.setHint(MainActivity.name);
                 e.setSingleLine(true);
                 e.setGravity(Gravity.CENTER);
                 e.setPadding(20, 20, 20, 20);
@@ -80,11 +80,14 @@ public class ScheduleFragment extends Fragment{
                 edit_dialog.setPositiveButton(R.string.save_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MainActivity.name = e.getText().toString();
-                        name_text.setText(MainActivity.name);
-                        dialog.cancel();
+                        String new_name = e.getText().toString();
+                        if(!"".equals(new_name)) {
+                            MainActivity.name = new_name;
+                            name_text.setText(new_name);
+                        }
                     }
                 });
+                edit_dialog.setNegativeButton(R.string.cancel_text, null);
 
                 if(MainActivity.is_first_start == 0) {
                     edit_dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {

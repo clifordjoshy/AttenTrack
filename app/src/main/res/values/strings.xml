@@ -111,4 +111,5 @@
     <string name="ignore_button_text">Ignore Changes</string>
     <string name="tt_edits_cancelled_toast">Edits Cancelled</string>
     <string name="tt_edits_saved_toast">Edits Saved</string>
+    <string name="default_username">Spectacular User</string>
 </resources>

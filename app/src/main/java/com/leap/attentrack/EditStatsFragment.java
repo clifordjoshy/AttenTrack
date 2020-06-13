@@ -87,7 +87,6 @@ public class EditStatsFragment extends Fragment {
                                s.name = temp;
                                ((TextView) v).setText(temp);
                            }
-                           dialog.cancel();
                        }
                    });
                    edit_dialog.show();

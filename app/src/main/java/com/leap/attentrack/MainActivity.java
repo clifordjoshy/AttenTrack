@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sp = getSharedPreferences(shared_pref_name, MODE_PRIVATE);
         Subject.req_percentage = sp.getInt("req_percent", 75);
         dark_mode_on = sp.getBoolean("dark_mode_on", false);
-        name = sp.getString("username", "Spectacular User");
+        name = sp.getString("username", getString(R.string.default_username));
         is_male_avatar = sp.getBoolean("is_male_avatar", false);
         is_notification_on = sp.getBoolean("notifs_on", true);
 
