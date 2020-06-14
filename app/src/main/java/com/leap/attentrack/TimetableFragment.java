@@ -44,7 +44,7 @@ public class TimetableFragment extends Fragment {
     private LinearLayout list;
     private Menu options_menu;
     private TextView title, edit_title;
-    private LinkedList<Subject> table;
+    private Subject[] data;
     private Spinner[][] tt_spinners;
     private ArrayAdapter<String> spinner_options;
     private int active_box = -1;
@@ -118,7 +118,7 @@ public class TimetableFragment extends Fragment {
             }
         });
 
-        table = MainActivity.data;
+        data = MainActivity.data;
         setHasOptionsMenu(true);
         return fragmentView;
     }
@@ -144,7 +144,6 @@ public class TimetableFragment extends Fragment {
             grid.setPadding((int) (density * 5), 0, (int) (density * 5), (int) (density * 2));
             int gridwidth = list.getWidth() - (int) (density * 60),  //60 = padding + margin
                     color = ViewCompat.getBackgroundTintList(boxes[boxno]).getDefaultColor();
-            color = 0xffffffff + color + 1;  // 2s complement
             color = color - 0x9f000000;     //Opacity
             ViewCompat.setBackgroundTintList(grid, ColorStateList.valueOf(color));
             list.addView(grid, boxno + 1);
@@ -169,8 +168,8 @@ public class TimetableFragment extends Fragment {
                     }
                     grid.addView(tt_spinners[boxno][i]);
 
-                    for (int j = 0; j < table.size(); ++j) {
-                        if (table.get(j).slots[boxno].contains(i)) {
+                    for (int j = 0; j < data.length; ++j) {
+                        if (data[j].slots[boxno].contains(i)) {
                             tt_spinners[boxno][i].setSelection(j + 1);
                         }
                     }
@@ -178,7 +177,7 @@ public class TimetableFragment extends Fragment {
 
             } else {
                 for (int i = 0; i < Subject.session_encoder.length; ++i) {
-                    for (Subject s : table) {
+                    for (Subject s : data) {
                         if (s.slots[boxno].contains(i)) {
                             grid.addView(createTextView(i, 0, Subject.session_encoder[i][0], gridwidth / 5, Gravity.END));
                             grid.addView(createTextView(i, 1, "-", gridwidth / 15, Gravity.CENTER_HORIZONTAL));
@@ -238,10 +237,10 @@ public class TimetableFragment extends Fragment {
                 options_menu.findItem(R.id.save_timetable_button).setVisible(true);
                 options_menu.findItem(R.id.cancel_timetable_button).setVisible(true);
                 tt_spinners = new Spinner[7][Subject.session_encoder.length];
-                String[] spinner_options_array = new String[table.size() + 1];
+                String[] spinner_options_array = new String[data.length + 1];
                 spinner_options_array[0] = getString(R.string.free_session_text);
                 for (int i = 1; i < spinner_options_array.length; ++i)
-                    spinner_options_array[i] = table.get(i - 1).name;
+                    spinner_options_array[i] = data[i - 1].name;
                 spinner_options = new ArrayAdapter<>(getContext(), R.layout.spinner_item, spinner_options_array);
                 break;
             }
@@ -258,9 +257,9 @@ public class TimetableFragment extends Fragment {
                     final StringBuilder s = new StringBuilder(getString(R.string.time_table_change_warning));
                     for (int i = 0; i < changes.length; ++i) {
                         if (changes[i] != 0) {
-                            s.append('\t').append(table.get(i).name).append(" : ");
-                            s.append(table.get(i).total).append(" → ");
-                            s.append(table.get(i).total + changes[i]).append('\n');
+                            s.append('\t').append(data[i].name).append(" : ");
+                            s.append(data[i].total).append(" → ");
+                            s.append(data[i].total + changes[i]).append('\n');
                         }
                     }
                     dialog.setMessage(s);
@@ -277,7 +276,7 @@ public class TimetableFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             for (int i = 0; i < changes.length; ++i)
-                                table.get(i).total += changes[i];
+                                data[i].total += changes[i];
                             save_timetable_changes();
                         }
                     });
@@ -347,19 +346,19 @@ public class TimetableFragment extends Fragment {
         end_day = end_day == 0 ? 6 : end_day - 1;     //mon-sun
 
         int weeks_to_go = (int) ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 7));
-        int[] subject_distr_old = new int[table.size()];
-        int[] subject_distr_new = new int[table.size()];
+        int[] subject_distr_old = new int[data.length];
+        int[] subject_distr_new = new int[data.length];
 
         //old tt classes
-        for (int i = 0; i < table.size(); ++i) {
-            for (LinkedList<Integer> day : table.get(i).slots)
+        for (int i = 0; i < data.length; ++i) {
+            for (LinkedList<Integer> day : data[i].slots)
                 subject_distr_old[i] += day.size();
             subject_distr_old[i] *= weeks_to_go;
         }
 
         for (int day = start_day; day != end_day; day = day == 6 ? 0 : (day + 1)) {  //To account for remainder days.
-            for (int i = 0; i < table.size(); ++i)
-                subject_distr_old[i] += table.get(i).slots[day].size();
+            for (int i = 0; i < data.length; ++i)
+                subject_distr_old[i] += data[i].slots[day].size();
         }
 
         //new tt classes
@@ -383,7 +382,7 @@ public class TimetableFragment extends Fragment {
         }
 
         boolean changed = false;
-        int[] changes = new int[table.size()];
+        int[] changes = new int[data.length];
         for (int i = 0; i < changes.length; ++i) {
             changes[i] = subject_distr_new[i] - subject_distr_old[i];
             if (changes[i] != 0)
@@ -402,8 +401,8 @@ public class TimetableFragment extends Fragment {
                 return opt;
         } else {
             //get from table.
-            for (int k = 0; k < table.size(); ++k) {
-                if (table.get(k).slots[day_num].contains(sess_num))
+            for (int k = 0; k < data.length; ++k) {
+                if (data[k].slots[day_num].contains(sess_num))
                     return k;
             }
         }
@@ -434,11 +433,11 @@ public class TimetableFragment extends Fragment {
                 if (tt_spinners[i][j] != null) {
 
                     //Remove the slot if it's already there
-                    for (Subject k : table)
+                    for (Subject k : data)
                         k.slots[i].remove(Integer.valueOf(j));
 
                     try {
-                        Subject to_edit = table.get(tt_spinners[i][j].getSelectedItemPosition() - 1);
+                        Subject to_edit = data[tt_spinners[i][j].getSelectedItemPosition() - 1];
                         to_edit.slots[i].add(j);
                     } catch (IndexOutOfBoundsException e) {
                         //Free Slot

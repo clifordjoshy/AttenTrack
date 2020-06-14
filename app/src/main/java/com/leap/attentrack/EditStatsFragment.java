@@ -28,8 +28,8 @@ public class EditStatsFragment extends Fragment {
         View fragment_view = inflater.inflate(R.layout.fragment_all_classes, container, false);
         LinearLayout root_layout = fragment_view.findViewById(R.id.all_subs_root_layout);
 
-        for(int i = 0; i < MainActivity.data.size(); ++i) {
-            final Subject s = MainActivity.data.get(i);
+        for(int i = 0; i < MainActivity.data.length; ++i) {
+            final Subject s = MainActivity.data[i];
             View element = getLayoutInflater().inflate(R.layout.element_all_subs, root_layout, false);
             ((TextView)element.findViewById(R.id.subject_text)).setText(s.name);
             update_deets(s, (TextView)element.findViewById(R.id.percent_text), (TextView)element.findViewById(R.id.data_text));

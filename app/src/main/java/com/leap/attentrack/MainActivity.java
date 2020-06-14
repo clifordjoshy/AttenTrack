@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
     static String time_table_file, sec_file, delim_sec = "/", shared_pref_name = "my_data";
-    static LinkedList<Subject> data;
+    static Subject[] data;
     LinkedList<int[]> extra_sessions = new LinkedList<>(), cancelled_sessions = new LinkedList<>(),
             missed_sessions = new LinkedList<>();
     static boolean dark_mode_on, is_male_avatar, is_notification_on;
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         FileInputStream fis = new FileInputStream(time_table_file);
         ObjectInputStream inputStream = new ObjectInputStream(fis);
-        data = (LinkedList<Subject>) inputStream.readObject();
+        data = (Subject[]) inputStream.readObject();
         inputStream.close();
         fis.close();
 

@@ -58,7 +58,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private EditText edit_attendance;
     private TextView semester_d1, semester_d2;
     private LinkedList<EditText> sub_edits = new LinkedList<>();
-    private LinkedList<String> subjects = new LinkedList<>();    //for spinner adapter
+    private String[] subjects;    //for spinner adapter
     private LinkedList<Spinner>[] tt_spinners;
     private boolean[] is_box_active;
 
@@ -75,7 +75,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     //required data
     String sem_start, sem_end;
     LinkedList<String[]> sessions = new LinkedList<>();
-    LinkedList<Subject> data = new LinkedList<>();
+    Subject[] data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,30 +394,29 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             {
                 hideKeyboard();
                 boolean okay = sub_edits.size() != 0;
-                subjects.clear();
-                LinkedList<Integer> sub_colors = new LinkedList<>();
+                subjects = new String[sub_edits.size()];
+                int[] sub_colors = new int[sub_edits.size()];
                 for (int i = 0; i < sub_edits.size(); ++i) {
                     String text = sub_edits.get(i).getText().toString();
                     if ("".equals(text)) {
                         okay = false;
                         break;
                     }
-                    subjects.add(text);
-                    sub_colors.add(ViewCompat.getBackgroundTintList(sub_edits.get(i)).getDefaultColor());
+                    subjects[i] = text;
+                    sub_colors[i] = ViewCompat.getBackgroundTintList(sub_edits.get(i)).getDefaultColor();
                 }
                 if (!okay) {
                     Toast.makeText(this, R.string.invalid_subjects_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                data = new LinkedList<>();
-                for (int i = 0; i < subjects.size(); ++i) {
+                data = new Subject[subjects.length];
+                for (int i = 0; i < data.length; ++i) {
                     Subject sub = new Subject();
-                    sub.name = subjects.get(i);
-                    sub.color = sub_colors.get(i);
-                    data.add(sub);
+                    sub.name = subjects[i];
+                    sub.color = sub_colors[i];
+                    data[i] = sub;
                 }
-                subjects.addFirst(getString(R.string.free_session_text));    //for spinner adapter
 
                 INDEX_TIMETABLE = root.indexOfChild(root.findViewById(R.id.startup_time_table));
                 for (int i = INDEX_SUBJECTS; i < INDEX_TIMETABLE; ++i)
@@ -491,7 +490,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                             int ind = tt_spinners[day].get(sess).getSelectedItemPosition() - 1;   //    <free>
                             // above line throws null pointer exception
                             if (ind >= 0)
-                                data.get(ind).slots[day].add(sess);
+                                data[ind].slots[day].add(sess);
                         } catch (NullPointerException e) {
                             //Completely Free Day(Never Opened Day)
                         }
@@ -623,9 +622,9 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 long diff = (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24);
                 int number_of_weeks = (int) (diff / 7);
 
-                int[] subject_distr = new int[data.size()];
-                for (int i = 0; i < data.size(); ++i) {
-                    for (LinkedList<Integer> day : data.get(i).slots)
+                int[] subject_distr = new int[data.length];
+                for (int i = 0; i < data.length; ++i) {
+                    for (LinkedList<Integer> day : data[i].slots)
                         subject_distr[i] += day.size();
                     subject_distr[i] *= number_of_weeks;
                 }
@@ -639,14 +638,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 end_day = end_day == 0 ? 6 : end_day - 1;     //mon-sun
 
                 while (start_day != end_day) {  //should run diff% 7 times. To account for the rest of the days.
-                    for (int i = 0; i < data.size(); ++i)
-                        subject_distr[i] += data.get(i).slots[start_day].size();
+                    for (int i = 0; i < data.length; ++i)
+                        subject_distr[i] += data[i].slots[start_day].size();
                     start_day = start_day == 6 ? 0 : start_day + 1; //cycle along
                 }
 
-                for (int i = 0; i < data.size(); ++i) {
-                    data.get(i).total = subject_distr[i];
-                    data.get(i).missable = (100 - Subject.req_percentage) * data.get(i).total / 100;
+                for (int i = 0; i < data.length; ++i) {
+                    data[i].total = subject_distr[i];
+                    data[i].missable = (100 - Subject.req_percentage) * data[i].total / 100;
                 }
 
                 ++page;
@@ -886,7 +885,9 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         ViewCompat.setBackgroundTintList(grid, ColorStateList.valueOf(color));
         root.addView(grid, add_index);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(StartupActivity.this, android.R.layout.simple_spinner_item, subjects);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(StartupActivity.this, android.R.layout.simple_spinner_item);
+        adapter.add(getString(R.string.free_session_text));
+        adapter.addAll(subjects);
 
         for (int i = 0; i < sessions.size(); ++i) {
             grid.addView(createTextViewForGrid(i, 0, sessions.get(i)[0], gridwidth / 5, Gravity.END));
