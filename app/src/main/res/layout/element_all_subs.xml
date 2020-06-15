@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="10dp"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         android:layout_marginEnd="10dp"
         android:gravity="center_vertical|end"
         android:text="75%"
+        tools:ignore="HardcodedText"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/subject_text"
@@ -33,6 +35,7 @@
         android:layout_marginEnd="20dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Subject"
+        tools:ignore="HardcodedText"
         android:maxLines="2"
         android:ellipsize="end"
         android:textColor="@color/colorPrimaryDark"
@@ -49,7 +52,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toStartOf="@+id/plus_image"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/minus" />
+        app:srcCompat="@drawable/minus"
+        android:contentDescription="@string/edit_minus_descrip" />
 
     <ImageView
         android:id="@+id/plus_image"
@@ -59,7 +63,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/plus" />
+        app:srcCompat="@drawable/plus"
+        android:contentDescription="@string/edit_plus_descrip" />
 
     <TextView
         android:id="@+id/data_text"
@@ -68,6 +73,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="20dp"
         android:gravity="center_vertical"
+        tools:ignore="HardcodedText"
         android:text="Total:53    Missed:4    Missable:5"
         android:textColor="@color/metaTextColor"
         app:autoSizeTextType="uniform"
@@ -76,20 +82,6 @@
         app:layout_constraintEnd_toStartOf="@+id/remove_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/remove_button" />
-
-<!--    <ImageView-->
-<!--        android:id="@+id/cancel_button"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginTop="15dp"-->
-<!--        android:layout_marginBottom="5dp"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/plus_image"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/plus_image"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/plus_image"-->
-<!--        app:srcCompat="@drawable/cancel" />-->
 
     <TextView
         android:id="@+id/add_button"

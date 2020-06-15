@@ -314,6 +314,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             boolean dark_mode = MainActivity.dark_mode_on;
             ViewCompat.setBackgroundTintList(holder.root, ColorStateList.valueOf(dark_mode ? 0xffffffff : 0xff272727));
             holder.picture.setImageResource(dark_mode ? R.drawable.plusb : R.drawable.plusw);
+            holder.picture.setContentDescription(context.getString(R.string.schedule_plus_descrip));
 
             ConstraintSet constraints = new ConstraintSet();
             int dim1 = (int) (22 * context.getResources().getDisplayMetrics().density),

@@ -58,7 +58,8 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/woman" />
+        app:srcCompat="@drawable/woman"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/today_text"
@@ -118,7 +119,6 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="5"
             android:gravity="center_vertical|start"
-            android:text="Subject Cancelled"
             android:textColor="?attr/textColor"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="1dp"/>

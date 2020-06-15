@@ -132,7 +132,8 @@
                 android:paddingVertical="5dp"
                 android:visibility="gone"
                 app:backgroundTint="@color/colorPrimaryDark"
-                app:srcCompat="@drawable/plusw" />
+                app:srcCompat="@drawable/plusw"
+                android:contentDescription="@string/session_plus_descrip"/>
 
             <TextView
                 android:id="@+id/startup_subjects"
@@ -168,7 +169,8 @@
                 android:paddingVertical="5dp"
                 android:visibility="gone"
                 app:backgroundTint="@color/colorPrimaryDark"
-                app:srcCompat="@drawable/plusw" />
+                app:srcCompat="@drawable/plusw"
+                android:contentDescription="@string/subject_plus_descrip" />
 
             <TextView
                 android:id="@+id/startup_time_table"
@@ -318,6 +320,7 @@
                     android:id="@+id/startup_attendance"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:labelFor="@+id/editText_attendance"
                     android:layout_weight="3"
                     android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
@@ -334,7 +337,8 @@
                     android:background="@drawable/curve_10dp"
                     android:inputType="number"
                     android:paddingHorizontal="5dp"
-                    app:autoSizeTextType="uniform" />
+                    app:autoSizeTextType="uniform"
+                    android:importantForAutofill="no" />
             </LinearLayout>
 
             <TextView

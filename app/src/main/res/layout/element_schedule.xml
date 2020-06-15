@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="5dp"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
@@ -16,6 +16,7 @@
         android:layout_height="55dp"
         android:layout_marginEnd="10dp"
         android:gravity="center_vertical|end"
+        tools:ignore="HardcodedText"
         android:text="75%"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
@@ -29,6 +30,7 @@
         android:layout_height="35dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
+        tools:ignore="HardcodedText"
         android:text="18:00"
         android:textColor="@color/colorPrimaryDark"
         app:autoSizeTextType="uniform"
@@ -41,6 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
+        tools:ignore="HardcodedText"
         android:layout_marginEnd="20dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Subject"
@@ -58,7 +61,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/minus" />
+        app:srcCompat="@drawable/minus"
+        android:contentDescription="@string/schedule_minus_descrip" />
 
     <TextView
         android:id="@+id/data_text"
@@ -68,6 +72,7 @@
         android:layout_marginEnd="20dp"
         android:visibility="gone"
         android:gravity="center_vertical"
+        tools:ignore="HardcodedText"
         android:text="Total:53    Missed:4    Missable:5"
         app:autoSizeMinTextSize="1dp"
         android:textColor="@color/metaTextColor"

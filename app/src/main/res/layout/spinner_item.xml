@@ -10,4 +10,5 @@
     android:maxLines="1"
     android:gravity="end"
     android:paddingStart="2dp"
+    android:paddingEnd="0dp"
     android:textColor="?attr/textColor" />
