@@ -474,6 +474,13 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 TextView almost_there = findViewById(R.id.startup_almost_there);
                 LinearLayout attendance_layout = findViewById(R.id.attendance_linear_layout);   //view after timetable
                 edit_attendance = findViewById(R.id.editText_attendance);
+                edit_attendance.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //To remove error warning red
+                        ViewCompat.setBackgroundTintList(v, ColorStateList.valueOf(0xffffffff));
+                    }
+                });
 
 //                INDEX_ATTENDANCE = root.indexOfChild(attendance_layout);
                 INDEX_ATTENDANCE = root.indexOfChild(almost_there);
@@ -535,6 +542,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     semester_d1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
+                            ViewCompat.setBackgroundTintList(v,
+                                    ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
@@ -554,6 +563,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     semester_d2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
+                            ViewCompat.setBackgroundTintList(v,
+                                    ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
