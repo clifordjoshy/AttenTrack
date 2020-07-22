@@ -182,7 +182,8 @@
                 android:text="@string/startup_timetable_title"
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
-                app:autoSizeTextType="uniform" />
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="1dp"/>
 
             <TextView
                 android:id="@+id/box_1"
