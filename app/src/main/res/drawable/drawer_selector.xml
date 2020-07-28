@@ -3,5 +3,7 @@
     <item android:state_pressed="true"
         android:drawable="@color/colorAccent"/>
     <item android:state_checked="true"
-        android:drawable="@drawable/drawer_item_bg" />
+        android:drawable="@drawable/drawer_item_bg">
+        <inset android:insetRight="2dp"/>
+    </item>
 </selector>
