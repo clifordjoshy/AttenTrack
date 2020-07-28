@@ -8,18 +8,45 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:layoutAnimation="@anim/layout_anim_pop_in"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/today_text" />
+        app:layout_constraintTop_toBottomOf="@+id/today_text">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layoutAnimation="@anim/layout_anim_pop_in"
+            android:id="@+id/schedule_linear_layout"
+            android:orientation="vertical"
+            tools:ignore="ScrollViewSize">
+
+            <LinearLayout
+                android:id="@+id/extra_class_plus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/curve_20dp"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="5dp"
+                app:backgroundTint="?attr/textColor"
+                tools:ignore="UselessParent">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/add_class_plus"
+                    android:tint="?attr/bgColor"
+                    android:contentDescription="@string/schedule_plus_descrip" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/hellotext"
@@ -58,7 +85,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/woman"
+        app:srcCompat="@drawable/avatar_woman"
         tools:ignore="ContentDescription" />
 
     <TextView

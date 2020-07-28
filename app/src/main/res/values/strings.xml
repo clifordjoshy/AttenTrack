@@ -76,7 +76,6 @@
     <string name="username_edit_title">"Enter New Username"</string>
     <string name="cancel_all_text">Cancel All</string>
     <string name="undo_text">UNDO</string>
-    <string name="cancel_demo_toast">Let it go. Just this once.</string>
     <string name="notif_title">Miss Any Classes Today?</string>
     <string name="notif_content">Tap to update your attendance</string>
     <string name="total_text">Total:</string>
@@ -97,7 +96,7 @@
     <string name="startup_guide_message_5">Click here to mark it and see how\nyour attendance changes.</string>
     <string name="startup_guide_message_6">Click here to add classes\nto the schedule.</string>
     <string name="demo_subject_name">Subject</string>
-    <string name="missed_class_toast">You already missed this class</string>
+    <string name="missed_class_toast">Absence Already Marked</string>
     <string name="cancelled_undo_text">Cancelled</string>
     <string name="invalid_sessions_toast">Invalid Sessions</string>
     <string name="invalid_subjects_toast">Invalid Subjects</string>

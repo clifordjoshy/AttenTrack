@@ -52,7 +52,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toStartOf="@+id/plus_image"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/minus"
+        app:srcCompat="@drawable/attendance_minus"
         android:contentDescription="@string/edit_minus_descrip" />
 
     <ImageView
@@ -63,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/plus"
+        app:srcCompat="@drawable/attendance_plus"
         android:contentDescription="@string/edit_plus_descrip" />
 
     <TextView

@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/percent_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/percent_text"
-        app:srcCompat="@drawable/minus"
+        app:srcCompat="@drawable/attendance_minus"
         android:contentDescription="@string/schedule_minus_descrip" />
 
     <TextView
