@@ -1,6 +1,8 @@
 package com.leap.attentrack;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Handler;
 import android.transition.AutoTransition;
@@ -122,6 +124,15 @@ public class ScheduleList {
                     deleteItemAt(0);
                 }
             });
+
+            main_list.getChildAt(0).findViewById(R.id.minus_image).
+                    setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    today_subjects.getFirst().missed_session();
+                    updateListForSubject(today_subjects.getFirst());
+                }
+            });
         }
 
     }
@@ -165,11 +176,12 @@ public class ScheduleList {
             }
         });
 
-        element.findViewById(R.id.click_image).setOnClickListener(new View.OnClickListener() {
+        element.findViewById(R.id.minus_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = main_list.indexOfChild(element);
-                int missed_sess = today_sessions.get(position), missed_sub = getSubjectIndex(today_subjects.get(position));
+                int missed_sess = today_sessions.get(position),
+                        missed_sub = getSubjectIndex(today_subjects.get(position));
                 for (int[] sess : ((MainActivity) context).missed_sessions) {
                     if (sess[3] == missed_sess && sess[4] == missed_sub) {
                         Toast.makeText(context, R.string.missed_class_toast, Toast.LENGTH_SHORT).show();
@@ -187,10 +199,40 @@ public class ScheduleList {
             @Override
             public void onClick(View v) {
                 int position = main_list.indexOfChild(element);
-                showCancelTab(today_subjects.get(position).name);
 
-                cancel_waiting = new int[]{today_sessions.get(position),
-                        getSubjectIndex(today_subjects.get(position))};
+                boolean in_missed = false;
+                int count = 0;
+                for (int[] sess : ((MainActivity) context).missed_sessions) {
+                    if (sess[3] == today_sessions.get(position) &&
+                            sess[4] == getSubjectIndex(today_subjects.get(position))) {
+                        in_missed = true;
+                        break;
+                    }
+                    ++count;
+                }
+
+                if(in_missed){
+                    final int missed_sess_index = count;
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                    dialog.setTitle(context.getString(R.string.absence_dialog_title));
+                    dialog.setMessage(context.getString(R.string.absence_dialog_message));
+                    dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            int[] m_sess = ((MainActivity)context).missed_sessions.remove(missed_sess_index);
+                            data[m_sess[3]].unmiss_session();
+                            updateListForSubject(data[m_sess[3]]);
+                        }
+                    });
+                    dialog.setNegativeButton(context.getString(R.string.ignore_text), null);
+                    dialog.show();
+                } else {
+                    //no undoing here. since the cancel tab will not be seen because of dialog.
+                    showCancelTab(today_subjects.get(position).name);
+
+                    cancel_waiting = new int[]{today_sessions.get(position),
+                            getSubjectIndex(today_subjects.get(position))};
+                }
                 TransitionManager.beginDelayedTransition(main_list);
                 cancelClass(position);
             }
@@ -353,6 +395,33 @@ public class ScheduleList {
     }
 
     void cancel_all_classes() {
+
+        if(((MainActivity)context).missed_sessions.size() > 0){
+            StringBuilder dialog_message = new StringBuilder(context.getString(R.string.multi_absence_dialog_message_1));
+            for(int[] sess_deets : ((MainActivity)context).missed_sessions){
+                dialog_message.append("\n\t").
+                        append(Subject.session_encoder[sess_deets[3]][0]).
+                        append("\t-\t").
+                        append(data[sess_deets[4]].name);
+            }
+            dialog_message.append("\n\n").append(context.getString(R.string.multi_absence_dialog_message_2));
+            AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+            dialog.setTitle(context.getString(R.string.absence_dialog_title));
+            dialog.setMessage(dialog_message);
+
+            dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    for(int[] sess_deets : ((MainActivity)context).missed_sessions)
+                        data[sess_deets[4]].unmiss_session();
+                    ((MainActivity)context).missed_sessions.clear();
+                }
+            });
+
+            dialog.setNegativeButton(context.getString(R.string.ignore_text), null);
+            dialog.show();
+        }
+
         TransitionManager.beginDelayedTransition(main_list);
         for (int i = today_subjects.size() - 1; i >= 0; --i)    //backward traverse[removal]
             cancelClass(i);
@@ -443,7 +512,7 @@ public class ScheduleList {
                 new GuideView.Builder(context)
                         .setTitle(context.getString(R.string.startup_guide_title_4))
                         .setContentText(context.getString(R.string.startup_guide_message_4))
-                        .setTargetView(demo_sub.findViewById(R.id.click_image))
+                        .setTargetView(demo_sub.findViewById(R.id.minus_image))
                         .setGuideListener(new GuideListener() {
                             @Override
                             public void onDismiss(View view) {

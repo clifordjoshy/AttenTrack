@@ -117,4 +117,9 @@
     <string name="edit_minus_descrip">Decrease Attended Classes</string>
     <string name="schedule_minus_descrip">Mark As Missed</string>
     <string name="schedule_plus_descrip">Add An Extra Class</string>
+    <string name="absence_dialog_title">Undo Absence?</string>
+    <string name="absence_dialog_message">This class was marked absent. Would you like to undo that?</string>
+    <string name="ignore_text">IGNORE</string>
+    <string name="multi_absence_dialog_message_1">The following classes were marked absent:</string>
+    <string name="multi_absence_dialog_message_2">Would you like to undo these absences?</string>
 </resources>
