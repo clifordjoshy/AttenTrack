@@ -132,7 +132,7 @@
                 android:paddingVertical="5dp"
                 android:visibility="gone"
                 app:backgroundTint="@color/colorPrimaryDark"
-                android:src="@drawable/add_class_plus"
+                android:src="@drawable/plus_icon"
                 android:contentDescription="@string/session_plus_descrip"/>
 
             <TextView
@@ -169,7 +169,7 @@
                 android:paddingVertical="5dp"
                 android:visibility="gone"
                 app:backgroundTint="@color/colorPrimaryDark"
-                android:src="@drawable/add_class_plus"
+                android:src="@drawable/plus_icon"
                 android:contentDescription="@string/subject_plus_descrip" />
 
             <TextView
