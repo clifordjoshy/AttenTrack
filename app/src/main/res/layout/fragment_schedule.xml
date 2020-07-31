@@ -28,24 +28,18 @@
             android:orientation="vertical"
             tools:ignore="ScrollViewSize">
 
-            <LinearLayout
+            <ImageView
                 android:id="@+id/extra_class_plus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:paddingTop="8dp"
+                android:layout_height="38dp"
+                android:paddingBottom="8dp"
                 android:background="@drawable/curve_20dp"
-                android:paddingVertical="8dp"
-                android:layout_marginBottom="5dp"
                 app:backgroundTint="?attr/textColor"
-                tools:ignore="UselessParent">
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@drawable/plus_icon"
-                    android:tint="?attr/bgColor"
-                    android:contentDescription="@string/schedule_plus_descrip" />
-            </LinearLayout>
+                android:src="@drawable/plus_icon"
+                android:layout_marginBottom="5dp"
+                android:tint="?attr/bgColor"
+                android:contentDescription="@string/schedule_plus_descrip" />
         </LinearLayout>
     </ScrollView>
 

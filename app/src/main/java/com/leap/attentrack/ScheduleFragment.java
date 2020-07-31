@@ -107,9 +107,7 @@ public class ScheduleFragment extends Fragment{
             }
         });
 
-        View add_plus = fragmentView.findViewById(R.id.extra_class_plus);
-        ViewCompat.setBackgroundTintList(add_plus, ColorStateList.valueOf(MainActivity.dark_mode_on ? 0xffffffff : 0xff272727));
-        add_plus.setOnClickListener(new View.OnClickListener() {
+        fragmentView.findViewById(R.id.extra_class_plus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
