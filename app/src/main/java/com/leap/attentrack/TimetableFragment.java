@@ -175,9 +175,11 @@ public class TimetableFragment extends Fragment {
                 }
 
             } else {
+                boolean isEmpty = true;
                 for (int i = 0; i < Subject.session_encoder.length; ++i) {
                     for (Subject s : data) {
                         if (s.slots[boxno].contains(i)) {
+                            isEmpty = false;
                             grid.addView(createTextView(i, 0, Subject.session_encoder[i][0], gridwidth / 5, Gravity.END));
                             grid.addView(createTextView(i, 1, "-", gridwidth / 15, Gravity.CENTER_HORIZONTAL));
                             grid.addView(createTextView(i, 2, Subject.session_encoder[i][1], gridwidth / 5, Gravity.START));
@@ -186,6 +188,8 @@ public class TimetableFragment extends Fragment {
                         }
                     }
                 }
+                if(isEmpty)
+                    Toast.makeText(getContext(), R.string.empty_tt_toast, Toast.LENGTH_SHORT).show();
             }
 
 
