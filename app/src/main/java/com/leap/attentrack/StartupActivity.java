@@ -68,8 +68,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private final Integer[] colors = {0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
             0xfff7f7be, 0xff9affff, 0xffdcfaa3, 0xffffb9b9, 0xffa3fad2, 0xffb5dfff, 0xffe6c6ff};
     private float density;
-    private int x_touch_origin, sess_guided = 0, sub_guided = 0, deleteActive = 0;
-    private boolean condensed = false, scrolling = true;
+    private int x_touch_origin, y_touch_origin, moveDirection = -1, sess_guided = 0, sub_guided = 0, deleteActive = 0;
+    private boolean condensed = false;
     private View sliding_view;
 
     //required data
@@ -99,9 +99,9 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 //ScrollView consumes touch events **while scrolling**. So intercept them here and pass on.
-                if(sliding_view != null) {
+                if (sliding_view != null) {
                     StartupActivity.this.onTouch(sliding_view, event);
-                    scrolling = true;
+                    return moveDirection != 0;
                 }
                 return false;
             }
@@ -113,6 +113,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             ViewCompat.setElevation(findViewById(R.id.startup_progress), 5 * density);
             scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                 private boolean elevated = false;
+
                 @Override
                 public void onScrollChanged() {
                     if (scroller.canScrollVertically(-1)) {
@@ -295,7 +296,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
                 if (sub_edits.size() == 0) {     //first coming
                     final TextView subject_text = findViewById(R.id.startup_subjects);
-                    if(condensed)
+                    if (condensed)
                         subject_text.setText(R.string.condensed_subject_title);
                     final ImageView subject_plus = findViewById(R.id.subject_plus);
                     subject_text.setVisibility(View.VISIBLE);
@@ -303,7 +304,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     int animation_offset = 0;
                     subject_text.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration);
                     subject_plus.animate().alpha(1f).setDuration(duration).setStartDelay(animation_offset += duration + lag);
-                    if(condensed)
+                    if (condensed)
                         findViewById(R.id.okay_btn_startup).animate().alpha(1f).setDuration(duration).
                                 setStartDelay(animation_offset += duration);
 
@@ -367,7 +368,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                                 root.addView(e, INDEX_SUBJECTS + 1);
                             } else {
                                 if (sub_guided == 1) {
-                                    root.removeViewAt(root.indexOfChild(v)-1);
+                                    root.removeViewAt(root.indexOfChild(v) - 1);
                                     sub_guided = 2;
                                 }
                                 root.addView(e, root.indexOfChild(v));
@@ -384,7 +385,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     for (int i = INDEX_SUBJECTS; i < root.indexOfChild(root.findViewById(R.id.startup_time_table)); ++i)
                         root.getChildAt(i).setVisibility(View.VISIBLE);
                 }
-                if(condensed)
+                if (condensed)
                     findViewById(R.id.startup_progress).animate().alpha(1f).setDuration(400);
                 ++page;
                 updateProgressBar();
@@ -484,7 +485,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
 //                INDEX_ATTENDANCE = root.indexOfChild(attendance_layout);
                 INDEX_ATTENDANCE = root.indexOfChild(almost_there);
-                INDEX_END = root.indexOfChild(findViewById(R.id.buttons_layout))+1;
+                INDEX_END = root.indexOfChild(findViewById(R.id.buttons_layout)) + 1;
 
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.GONE);
@@ -708,11 +709,11 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 updateProgressBar();
                 if (condensed)
                     back_button.setVisibility(View.GONE);
-                else{   //session edits
-                    for(int i = 0; i < is_box_active.length; ++i){
-                        if (is_box_active[i]){
+                else {   //session edits
+                    for (int i = 0; i < is_box_active.length; ++i) {
+                        if (is_box_active[i]) {
                             ((GridLayout) (root.getChildAt(INDEX_TIMETABLE + i + 2))).removeAllViews();
-                                                                                // to separate parent
+                            // to separate parent
                             root.removeViewAt(INDEX_TIMETABLE + i + 2);
                             is_box_active[i] = false;
                         }
@@ -723,7 +724,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             case 4:     //from attendance state 1. to time table page. not condensed
                 hideKeyboard();
                 root.getChildAt(INDEX_ATTENDANCE).setVisibility(View.GONE);
-                root.getChildAt(INDEX_ATTENDANCE+1).setVisibility(View.GONE);
+                root.getChildAt(INDEX_ATTENDANCE + 1).setVisibility(View.GONE);
                 for (int i = INDEX_TIMETABLE; i < INDEX_ATTENDANCE; ++i)
                     root.getChildAt(i).setVisibility(View.VISIBLE);
                 --page;
@@ -799,7 +800,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     root.addView(time_view[0], INDEX_SESSIONS + 1);
                 } else {
                     if (sess_guided == 1) {
-                        root.removeViewAt(root.indexOfChild(v)-1);
+                        root.removeViewAt(root.indexOfChild(v) - 1);
                         sess_guided = 2;
                     }
                     root.addView(time_view[0], root.indexOfChild(v));
@@ -945,112 +946,125 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
     @Override
     public boolean onTouch(final View v, MotionEvent event) {
-        int action = event.getActionMasked();// & MotionEvent.ACTION_MASK;     //bitwise and
+        int action = event.getActionMasked();// & MotionEvent.ACTION_MASK;
         int x = (int) event.getRawX();
-
-        // Check if the image view is out of the parent view and report it if it is.
-        float threshold_width = 0.42f * v.getWidth();
+        int y = (int) event.getRawY();
 
         switch (action) {
             case MotionEvent.ACTION_DOWN: {
                 x_touch_origin = x;
+                y_touch_origin = y;
                 sliding_view = v;
                 break;
             }
 
-            case MotionEvent.ACTION_UP: {
+            case MotionEvent.ACTION_MOVE: {
+                int dist_moved_x = x - x_touch_origin;
 
-                sliding_view = null;
-                boolean hasCrossedThreshold = Math.abs(x_touch_origin - x)>threshold_width;
-                if (hasCrossedThreshold) {
-                    float to_move = v.getX();
-                    if (to_move < 0) to_move = -(v.getWidth() + to_move);
-                    v.animate().translationX(to_move).setDuration(200);
-
-                    AlphaAnimation alpha = new AlphaAnimation(1f, 0f);  //to avoid permanent animations
-                    alpha.setDuration(250);
-                    delete_slide.startAnimation(alpha);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            int ind = root.indexOfChild(v);
-                            root.removeViewAt(ind);
-                            if (page == 1) {
-                                int sess_index = ind - INDEX_SESSIONS - 1;
-                                sessions.remove(sess_index);
-                                for (int i = 0; i < 7; ++i) {
-                                    if(tt_spinners[i].size() != 0)
-                                        tt_spinners[i].remove(sess_index);
-                                }
-
-                            }
-                            else if (page == 2) {
-                                int sub_index = ind - INDEX_SUBJECTS - 1;
-                                sub_edits.remove(sub_index);
-                                //Check if sub is selected anywhere
-                                for (LinkedList<Spinner> tt_spin: tt_spinners){
-                                    for(Spinner s: tt_spin){
-                                        if (s != null && s.getSelectedItemPosition()-1 == sub_index)
-                                            s.setSelection(0);
-                                    }
-                                }
-                            }
-
-                            delete_slide.setVisibility(View.GONE);
-
-                        }
-                    }, 250);
-                } else {
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
-                    Transition auto = new AutoTransition();
-                    auto.setDuration(100);
-                    TransitionManager.beginDelayedTransition(root, auto);
-                    lp.leftMargin = tab_margin;
-                    lp.rightMargin = tab_margin;
-                    v.setLayoutParams(lp);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            delete_slide.setVisibility(View.GONE);
-                        }
-                    }, 100);
+                if (moveDirection == -1) {
+                    int trigger_threshold = (int) (2 * density);
+                    int dist_moved_y = y - y_touch_origin;
+                    if (Math.abs(dist_moved_x) > Math.abs(dist_moved_y) && Math.abs(dist_moved_x) > trigger_threshold)
+                        moveDirection = 1;
+                    else if (Math.abs(dist_moved_y) > trigger_threshold)
+                        moveDirection = 0;
                 }
 
-                deleteActive = 0;
+                if (moveDirection == 1) {
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+                    lp.leftMargin = tab_margin + dist_moved_x;
+                    lp.rightMargin = tab_margin - dist_moved_x;
+                    v.setLayoutParams(lp);
+
+                    if (dist_moved_x < 0 && deleteActive != -1) {    //Left Movement
+                        delete_slide.setVisibility(View.VISIBLE);
+                        delete_slide.setX(35 * density + v.getWidth() - delete_slide.getWidth());
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
+                        delete_slide.setY(location[1] - v.getHeight() / 2f);
+                        deleteActive = -1;
+
+                    } else if (dist_moved_x > 0 && deleteActive != 1) {    //Right Movement
+                        delete_slide.setVisibility(View.VISIBLE);
+                        delete_slide.setX(35 * density);
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location);
+                        delete_slide.setY(location[1] - v.getHeight() / 2f);
+                        deleteActive = 1;
+                    }
+                }
                 break;
             }
 
-            case MotionEvent.ACTION_MOVE: {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
-                int dist_moved_x = x - x_touch_origin;
-                lp.leftMargin = tab_margin + dist_moved_x;
-                lp.rightMargin = tab_margin - dist_moved_x;
-                v.setLayoutParams(lp);
+            case MotionEvent.ACTION_UP: {
+                if (moveDirection == 1) {
+                    float threshold_width = 0.42f * v.getWidth();
+                    if (Math.abs(x_touch_origin - x) > threshold_width) {
+                        float to_move = v.getX();
+                        if (to_move < 0)
+                            to_move = -(v.getWidth() + to_move);
+                        v.animate().translationX(to_move).setDuration(200);
 
-                int[] location = new int[2];
-                v.getLocationOnScreen(location);
-                if (dist_moved_x < 0 && deleteActive != -1) {    //Left Movement
-                    delete_slide.setVisibility(View.VISIBLE);
-                    delete_slide.setX(35 * density + v.getWidth() - delete_slide.getWidth());
-                    delete_slide.setY(location[1] - v.getHeight() / 2f);
-                    deleteActive = -1;
+                        AlphaAnimation alpha = new AlphaAnimation(1f, 0f);  //to avoid permanent animations
+                        alpha.setDuration(250);
+                        delete_slide.startAnimation(alpha);
 
-                } else if (dist_moved_x > 0 && deleteActive != 1) {    //Right Movement
-                    delete_slide.setVisibility(View.VISIBLE);
-                    delete_slide.setX(35 * density);
-                    delete_slide.setY(location[1] - v.getHeight() / 2f);
-                    deleteActive = 1;
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                int ind = root.indexOfChild(v);
+                                root.removeViewAt(ind);
+                                if (page == 1) {
+                                    int sess_index = ind - INDEX_SESSIONS - 1;
+                                    sessions.remove(sess_index);
+                                    for (int i = 0; i < 7; ++i) {
+                                        if (tt_spinners[i].size() != 0)
+                                            tt_spinners[i].remove(sess_index);
+                                    }
+
+                                } else if (page == 2) {
+                                    int sub_index = ind - INDEX_SUBJECTS - 1;
+                                    sub_edits.remove(sub_index);
+                                    //Check if sub is selected anywhere
+                                    for (LinkedList<Spinner> tt_spin : tt_spinners) {
+                                        for (Spinner s : tt_spin) {
+                                            if (s != null && s.getSelectedItemPosition() - 1 == sub_index)
+                                                s.setSelection(0);
+                                        }
+                                    }
+                                }
+
+                                delete_slide.setVisibility(View.GONE);
+                            }
+                        }, 250);
+
+                    } else {
+                        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+                        Transition auto = new AutoTransition();
+                        auto.setDuration(100);
+                        TransitionManager.beginDelayedTransition(root, auto);
+                        lp.leftMargin = tab_margin;
+                        lp.rightMargin = tab_margin;
+                        v.setLayoutParams(lp);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                delete_slide.setVisibility(View.GONE);
+                            }
+                        }, 100);
+                    }
+                    deleteActive = 0;
                 }
-                if(scrolling){
-                    delete_slide.setY(location[1] - v.getHeight() / 2f);
-                    scrolling = false;
-                }
+
+                sliding_view = null;
+                moveDirection = -1;
                 break;
             }
         }
         return true;
     }
+
+
 
     void save_data() {
         SharedPreferences.Editor sp_editor = getSharedPreferences(MainActivity.shared_pref_name, MODE_PRIVATE).edit();
@@ -1068,7 +1082,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         //MainActivity will be recreated on result of this activity, thus calling onPause() and hence put_data().
         //So, just save the values in MainActivity and it will be written to the file.
         Subject.session_encoder = new String[sessions.size()][];
-        for(int i = 0; i < sessions.size(); ++i)
+        for (int i = 0; i < sessions.size(); ++i)
             Subject.session_encoder[i] = sessions.get(i);
 
         MainActivity.data = data;
@@ -1078,14 +1092,14 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     public void onBackPressed() {
     }
 
-    public void updateProgressBar(){
-        int progress = (page*100)/6;
-        if(condensed) {
-            if(page == 2)
-                progress =25;
-            else if(page ==3)
+    public void updateProgressBar() {
+        int progress = (page * 100) / 6;
+        if (condensed) {
+            if (page == 2)
+                progress = 25;
+            else if (page == 3)
                 progress = 50;
-            else if(page == 5)
+            else if (page == 5)
                 progress = 75;
             else if (page == 6)
                 progress = 100;
