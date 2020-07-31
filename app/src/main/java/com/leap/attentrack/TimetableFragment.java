@@ -26,7 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.transition.Explode;
@@ -143,9 +142,9 @@ public class TimetableFragment extends Fragment {
             grid.setLayoutParams(gridparams);
             grid.setPadding((int) (density * 5), 0, (int) (density * 5), (int) (density * 2));
             int gridwidth = list.getWidth() - (int) (density * 60),  //60 = padding + margin
-                    color = ViewCompat.getBackgroundTintList(boxes[boxno]).getDefaultColor();
+                    color = boxes[boxno].getBackgroundTintList().getDefaultColor();
             color = color - 0x9f000000;     //Opacity
-            ViewCompat.setBackgroundTintList(grid, ColorStateList.valueOf(color));
+            grid.setBackgroundTintList(ColorStateList.valueOf(color));
             list.addView(grid, boxno + 1);
 
             if (editing) {

@@ -70,8 +70,8 @@
                 android:text="@string/monday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/monday_color"
-                app:backgroundTintMode="multiply"
+                android:backgroundTint="@color/monday_color"
+                android:backgroundTintMode="multiply"
                 app:layout_constraintEnd_toEndOf="@+id/time_table_title"
                 app:layout_constraintStart_toStartOf="@+id/time_table_title"
                 app:layout_constraintTop_toBottomOf="@+id/time_table_title" />
@@ -88,8 +88,8 @@
                 android:text="@string/tuesday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/tuesday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/tuesday_color"
+                android:backgroundTintMode="multiply" />
 
             <TextView
                 android:id="@+id/box_day_3"
@@ -103,8 +103,8 @@
                 android:text="@string/wednesday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/wednesday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/wednesday_color"
+                android:backgroundTintMode="multiply" />
 
             <TextView
                 android:id="@+id/box_day_4"
@@ -118,8 +118,8 @@
                 android:text="@string/thursday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/thursday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/thursday_color"
+                android:backgroundTintMode="multiply" />
 
             <TextView
                 android:id="@+id/box_day_5"
@@ -133,8 +133,8 @@
                 android:text="@string/friday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/friday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/friday_color"
+                android:backgroundTintMode="multiply" />
 
             <TextView
                 android:id="@+id/box_day_6"
@@ -148,8 +148,8 @@
                 android:text="@string/saturday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/saturday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/saturday_color"
+                android:backgroundTintMode="multiply" />
 
             <TextView
                 android:id="@+id/box_day_7"
@@ -163,8 +163,8 @@
                 android:text="@string/sunday_text"
                 android:textColor="@color/colorPrimaryDark"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/sunday_color"
-                app:backgroundTintMode="multiply" />
+                android:backgroundTint="@color/sunday_color"
+                android:backgroundTintMode="multiply" />
 
         </LinearLayout>
     </ScrollView>

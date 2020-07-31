@@ -7,7 +7,7 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:backgroundTintMode="multiply"
+    android:backgroundTintMode="multiply"
     android:background="@drawable/curve_20dp"
     app:layout_constraintStart_toStartOf="parent">
 
@@ -97,7 +97,7 @@
         android:paddingHorizontal="4dp"
         android:text="@string/add_button_text"
         app:autoSizeTextType="uniform"
-        app:backgroundTint="#80ffffff"
+        android:backgroundTint="#80ffffff"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/plus_image"
@@ -115,7 +115,7 @@
         android:paddingVertical="4dp"
         android:text="@string/remove_button_text"
         android:textColor="@color/colorPrimary"
-        app:backgroundTint="#64000000"
+        android:backgroundTint="#64000000"
         app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_button"

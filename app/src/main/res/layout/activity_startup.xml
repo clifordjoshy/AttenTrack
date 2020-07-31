@@ -26,7 +26,6 @@
     <View
         android:id="@+id/elevation_view"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="30dp"
         android:background="@color/startup_bg"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:alpha="0"
+        android:elevation="5dp"
         android:layout_marginTop="10dp"
         android:progress="0"
         android:progressDrawable="@drawable/progress_drawable"
@@ -131,7 +131,7 @@
                 android:background="@drawable/curve_10dp"
                 android:paddingVertical="5dp"
                 android:visibility="gone"
-                app:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimaryDark"
                 android:src="@drawable/plus_icon"
                 android:tint="@color/colorPrimary"
                 android:contentDescription="@string/session_plus_descrip"/>
@@ -169,7 +169,7 @@
                 android:background="@drawable/curve_10dp"
                 android:paddingVertical="5dp"
                 android:visibility="gone"
-                app:backgroundTint="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimaryDark"
                 android:src="@drawable/plus_icon"
                 android:tint="@color/colorPrimary"
                 android:contentDescription="@string/subject_plus_descrip" />
@@ -201,7 +201,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/monday_color" />
+                android:backgroundTint="@color/monday_color" />
 
             <TextView
                 android:id="@+id/box_2"
@@ -217,7 +217,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/tuesday_color" />
+                android:backgroundTint="@color/tuesday_color" />
 
             <TextView
                 android:id="@+id/box_3"
@@ -233,7 +233,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/wednesday_color" />
+                android:backgroundTint="@color/wednesday_color" />
 
             <TextView
                 android:id="@+id/box_4"
@@ -249,7 +249,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/thursday_color" />
+                android:backgroundTint="@color/thursday_color" />
 
             <TextView
                 android:id="@+id/box_5"
@@ -265,7 +265,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/friday_color" />
+                android:backgroundTint="@color/friday_color" />
 
             <TextView
                 android:id="@+id/box_6"
@@ -281,7 +281,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/saturday_color" />
+                android:backgroundTint="@color/saturday_color" />
 
             <TextView
                 android:id="@+id/box_7"
@@ -297,7 +297,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/sunday_color" />
+                android:backgroundTint="@color/sunday_color" />
 
             <TextView
                 android:id="@+id/startup_almost_there"
@@ -368,7 +368,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/startup_bg" />
+                android:backgroundTint="@color/startup_bg" />
 
             <TextView
                 android:id="@+id/semester_hyphen"
@@ -393,7 +393,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:visibility="gone"
                 app:autoSizeTextType="uniform"
-                app:backgroundTint="@color/startup_bg" />
+                android:backgroundTint="@color/startup_bg" />
 
             <RelativeLayout
                 android:id="@+id/buttons_layout"
@@ -415,7 +415,7 @@
                     android:alpha="0"
                     android:fontFamily="@font/poppins_medium"
                     android:background="@drawable/curve_10dp"
-                    app:backgroundTint="#aef3ae" />
+                    android:backgroundTint="#aef3ae" />
 
                 <TextView
                     android:id="@+id/back_btn_startup"
@@ -431,7 +431,7 @@
                     android:alpha="0"
                     android:fontFamily="@font/poppins_medium"
                     android:background="@drawable/curve_10dp"
-                    app:backgroundTint="#ff764d" />
+                    android:backgroundTint="#ff764d" />
             </RelativeLayout>
 
             <TextView

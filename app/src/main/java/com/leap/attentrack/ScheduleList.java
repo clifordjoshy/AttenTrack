@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,10 +79,6 @@ public class ScheduleList {
         data = MainActivity.data;
 
         cancel_tab = root_fragment.findViewById(R.id.cancelled_undo_bar);
-
-        //not working from xml
-        ViewCompat.setElevation(cancel_tab, 5 * context.getResources().getDisplayMetrics().density);
-        ViewCompat.setBackgroundTintList(cancel_tab, ColorStateList.valueOf(MainActivity.dark_mode_on ? 0xff272727 : 0xffffffff));
 
         String[] date_string = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()).split("-");
         today = new int[]{Integer.parseInt(date_string[0]), Integer.parseInt(date_string[1]), Integer.parseInt(date_string[2])};
@@ -156,7 +151,7 @@ public class ScheduleList {
         element_holder.updatePercent(sub.attendance);
         element_holder.updateInfo(sub.total, sub.missed, sub.missable);
 
-        ViewCompat.setBackgroundTintList(element.findViewById(R.id.card_view), ColorStateList.valueOf(sub.color));
+        element.findViewById(R.id.card_view).setBackgroundTintList(ColorStateList.valueOf(sub.color));
 
         addEventListeners(element, element_holder);
         card_details.add(index, element_holder);

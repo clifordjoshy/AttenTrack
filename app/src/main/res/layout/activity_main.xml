@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/bgColor"
-            app:elevation="0dp"
+            android:elevation="0dp"
             android:theme="@style/ToolBarTheme" />
 
         <FrameLayout

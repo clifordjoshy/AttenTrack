@@ -32,7 +32,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 import androidx.transition.AutoTransition;
 import androidx.transition.Explode;
@@ -107,27 +106,25 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {    //scroll elevator
-            final View elevator = findViewById(R.id.elevation_view);
-            elevator.setVisibility(View.VISIBLE);
-            ViewCompat.setElevation(findViewById(R.id.startup_progress), 5 * density);
-            scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                private boolean elevated = false;
 
-                @Override
-                public void onScrollChanged() {
-                    if (scroller.canScrollVertically(-1)) {
-                        if (!elevated) {
-                            elevator.animate().translationZ(5 * density).setDuration(200);
-                            elevated = true;
-                        }
-                    } else if (elevated) {
-                        elevator.animate().translationZ(0).setDuration(200);
-                        elevated = false;
+        final View elevator = findViewById(R.id.elevation_view);
+        scroller.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            private boolean elevated = false;
+
+            @Override
+            public void onScrollChanged() {
+                if (scroller.canScrollVertically(-1)) {
+                    if (!elevated) {
+                        elevator.animate().translationZ(5 * density).setDuration(200);
+                        elevated = true;
                     }
+                } else if (elevated) {
+                    elevator.animate().translationZ(0).setDuration(200);
+                    elevated = false;
                 }
-            });
-        }
+            }
+        });
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {       //status bar colour change
             getWindow().setStatusBarColor(getColor(R.color.startup_bg));
@@ -350,7 +347,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                             e.setSingleLine(true);
                             e.setGravity(Gravity.CENTER);
                             e.setBackgroundResource(R.drawable.curve_10dp);
-                            ViewCompat.setBackgroundTintList(e, ColorStateList.valueOf(colors_subjects.pop()));
+                            e.setBackgroundTintList(ColorStateList.valueOf(colors_subjects.pop()));
                             if (colors_subjects.size() == 0) {
                                 colors_subjects.addAll(Arrays.asList(colors));
                                 Collections.shuffle(colors_subjects);
@@ -404,7 +401,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         break;
                     }
                     subjects[i] = text;
-                    sub_colors[i] = ViewCompat.getBackgroundTintList(sub_edits.get(i)).getDefaultColor();
+                    sub_colors[i] = sub_edits.get(i).getBackgroundTintList().getDefaultColor();
                 }
                 if (!okay) {
                     Toast.makeText(this, R.string.invalid_subjects_toast, Toast.LENGTH_SHORT).show();
@@ -450,7 +447,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         week_views[i].setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                week_clicked(k, is_box_active, ViewCompat.getBackgroundTintList(week_views[k]).getDefaultColor());
+                                week_clicked(k, is_box_active, week_views[k].getBackgroundTintList().getDefaultColor());
                             }
                         });
                     }
@@ -479,7 +476,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     @Override
                     public void onClick(View v) {
                         //To remove error warning red
-                        ViewCompat.setBackgroundTintList(v, ColorStateList.valueOf(0xffffffff));
+                        v.setBackgroundTintList(ColorStateList.valueOf(0xffffffff));
                     }
                 });
 
@@ -543,8 +540,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     semester_d1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
-                            ViewCompat.setBackgroundTintList(v,
-                                    ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
+                            v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
@@ -564,8 +560,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     semester_d2.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View v) {
-                            ViewCompat.setBackgroundTintList(v,
-                                    ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
+                            v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
@@ -591,7 +586,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 if (!condensed) {
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
-                        ViewCompat.setBackgroundTintList(edit_attendance, ColorStateList.valueOf(0xffff8080));
+                        edit_attendance.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
                         Toast.makeText(this, R.string.invalid_percentage_toast, Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -600,12 +595,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
                 String date_string_1 = semester_d1.getText().toString(), date_string_2 = semester_d2.getText().toString();
                 if ("--/--/----".equals(date_string_1)) {
-                    ViewCompat.setBackgroundTintList(semester_d1, ColorStateList.valueOf(0xffff8080));
+                    semester_d1.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
                     Toast.makeText(this, R.string.start_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if ("--/--/----".equals(date_string_2)) {
-                    ViewCompat.setBackgroundTintList(semester_d2, ColorStateList.valueOf(0xffff8080));
+                    semester_d2.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
                     Toast.makeText(this, R.string.end_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -813,7 +808,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private View[] create_session_view(int bg_color) {
         final LinearLayout layout = new LinearLayout(this);
         layout.setBackgroundResource(R.drawable.curve_10dp);
-        ViewCompat.setBackgroundTintList(layout, ColorStateList.valueOf(bg_color));
+        layout.setBackgroundTintList(ColorStateList.valueOf(bg_color));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 (int) (40 * density));
@@ -894,7 +889,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         int gridwidth = root.getWidth() - (int) (density * 50),
                 color = 0x60ffffff + box_color + 1;
 
-        ViewCompat.setBackgroundTintList(grid, ColorStateList.valueOf(color));
+        grid.setBackgroundTintList(ColorStateList.valueOf(color));
         root.addView(grid, add_index);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(StartupActivity.this, android.R.layout.simple_spinner_item);

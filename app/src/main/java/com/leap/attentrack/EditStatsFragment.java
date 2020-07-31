@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
@@ -33,7 +32,7 @@ public class EditStatsFragment extends Fragment {
             View element = getLayoutInflater().inflate(R.layout.element_all_subs, root_layout, false);
             ((TextView)element.findViewById(R.id.subject_text)).setText(s.name);
             update_deets(s, (TextView)element.findViewById(R.id.percent_text), (TextView)element.findViewById(R.id.data_text));
-            ViewCompat.setBackgroundTintList(element, ColorStateList.valueOf(s.color));
+            element.setBackgroundTintList(ColorStateList.valueOf(s.color));
 
             final TextView percent = element.findViewById(R.id.percent_text),
                     data = element.findViewById(R.id.data_text);
