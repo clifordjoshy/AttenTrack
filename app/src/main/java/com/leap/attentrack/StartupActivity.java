@@ -98,12 +98,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         scroller.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                //ScrollView consumes touch events **while scrolling**. So intercept them here and pass on.
-                if (sliding_view != null) {
-                    StartupActivity.this.onTouch(sliding_view, event);
-                    return moveDirection != 0;
-                }
-                return false;
+                //ScrollView consumes touch events **from scrolling**. So intercept them here and pass on.
+                //return true to stop scrolling
+                boolean stopScroll = moveDirection == 1;    //saving moveDirection in case MotionEvent event is ACTION_UP
+                if(sliding_view != null)
+                    StartupActivity.this.onTouch(sliding_view, event);      //will change moveDirection
+                return stopScroll;
             }
         });
 
@@ -1063,8 +1063,6 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         }
         return true;
     }
-
-
 
     void save_data() {
         SharedPreferences.Editor sp_editor = getSharedPreferences(MainActivity.shared_pref_name, MODE_PRIVATE).edit();
