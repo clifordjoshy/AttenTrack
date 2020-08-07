@@ -5,13 +5,16 @@
             <solid
                 android:color="#97f283"/>
             <size
-                android:width="50px"
-                android:height="50px"/>
+                android:width="100px"
+                android:height="100px"/>
         </shape>
     </item>
     <item
+        android:top="30px"
+        android:bottom="30px"
+        android:left="30px"
+        android:right="30px"
         android:drawable="@drawable/plus_icon"
         android:gravity="center">
-
     </item>
 </layer-list>
