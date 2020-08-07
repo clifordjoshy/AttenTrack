@@ -32,6 +32,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.TextViewCompat;
 import androidx.transition.AutoTransition;
 import androidx.transition.Explode;
@@ -339,7 +341,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     subject_plus.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            EditText e = new EditText(StartupActivity.this);
+                            AppCompatEditText e = new AppCompatEditText(StartupActivity.this);
                             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                     (int) (40 * density));
                             lp.setMargins(tab_margin, tab_margin, tab_margin, 0);
@@ -817,10 +819,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
 
         LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
         LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 2f);
-        TextView[] tvs = new TextView[3];
+        AppCompatTextView[] tvs = new AppCompatTextView[3];
 
         for (int i = 0; i < 3; ++i) {
-            tvs[i] = new TextView(this);
+            tvs[i] = new AppCompatTextView(this);
             //tvs[i].setTypeface(ResourcesCompat.getFont(this, R.font.poppins_medium));
             tvs[i].setPadding(0, (int) (2 * density), 0, (int) (2 * density));
             TextViewCompat.setAutoSizeTextTypeWithDefaults(tvs[i], TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
@@ -930,7 +932,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         lparams.width = width;
         lparams.height = (int) (30 * density);
         lparams.setMargins(0, (int) (5 * density), 0, 0);
-        TextView textView = new TextView(this);
+        AppCompatTextView textView = new AppCompatTextView(this);
         textView.setText(text);
         textView.setTextColor(0xff272727);
         textView.setLayoutParams(lparams);

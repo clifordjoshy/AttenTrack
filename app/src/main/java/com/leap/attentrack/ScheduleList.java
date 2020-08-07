@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Handler;
 import android.transition.AutoTransition;
 import android.transition.Transition;
@@ -99,7 +100,7 @@ public class ScheduleList {
             today_subjects.addFirst(demo);
             today_sessions.addFirst(0);
 
-            new Handler().postDelayed(new Runnable() {
+            main_list.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     handle_first_start(1);  //group1
@@ -129,7 +130,6 @@ public class ScheduleList {
                 }
             });
         }
-
     }
 
     private void fillList() {
@@ -151,7 +151,7 @@ public class ScheduleList {
         element_holder.updatePercent(sub.attendance);
         element_holder.updateInfo(sub.total, sub.missed, sub.missable);
 
-        element.findViewById(R.id.card_view).setBackgroundTintList(ColorStateList.valueOf(sub.color));
+        element.setBackgroundTintList(ColorStateList.valueOf(sub.color));
 
         addEventListeners(element, element_holder);
         card_details.add(index, element_holder);
@@ -164,10 +164,14 @@ public class ScheduleList {
             public void onClick(View v) {
                 Transition tr = new AutoTransition();
                 tr.setDuration(150);
-                TransitionManager.beginDelayedTransition(main_list, tr);
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    TransitionManager.beginDelayedTransition(main_list, tr);
 
                 card_details.get(main_list.indexOfChild(element)).toggleVisibility();
 
+                //transition after for api 21 compatibility
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                    TransitionManager.beginDelayedTransition(main_list, tr);
             }
         });
 
@@ -456,6 +460,7 @@ public class ScheduleList {
 
     void handle_first_start(int stage) {
         View demo_sub = main_list.getChildAt(0);
+
         switch (stage) {
 
             //group 1[user deets]

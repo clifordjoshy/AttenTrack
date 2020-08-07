@@ -138,7 +138,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, go_to).commit();
+        //fragments persist rotation
+        if(getSupportFragmentManager().findFragmentByTag("current_fragment") == null)
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.fragment_container, go_to, "current_fragment").commit();
     }
 
     @Override

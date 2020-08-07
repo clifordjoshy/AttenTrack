@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.widget.TextViewCompat;
@@ -188,7 +189,7 @@ public class TimetableFragment extends Fragment {
                         }
                     }
                 }
-                if(isEmpty)
+                if (isEmpty)
                     Toast.makeText(getContext(), R.string.empty_tt_toast, Toast.LENGTH_SHORT).show();
             }
 
@@ -203,7 +204,7 @@ public class TimetableFragment extends Fragment {
         lparams.width = width;
         lparams.height = (int) (30 * density);
         lparams.setMargins(0, (int) (5 * density), 0, 0);
-        TextView textView = new TextView(getContext());
+        AppCompatTextView textView = new AppCompatTextView(getContext());
         textView.setText(text);
         textView.setTypeface(font_med);
         textView.setTextColor(dark ? 0xffffffff : 0xff272727);
@@ -424,7 +425,7 @@ public class TimetableFragment extends Fragment {
 
         Explode explode = new Explode();
         explode.setDuration(400);
-        TransitionManager.beginDelayedTransition((Toolbar)getActivity().findViewById(R.id.toolbar), explode);
+        TransitionManager.beginDelayedTransition((Toolbar) getActivity().findViewById(R.id.toolbar), explode);
         options_menu.findItem(R.id.save_timetable_button).setVisible(false);
         options_menu.findItem(R.id.cancel_timetable_button).setVisible(false);
         options_menu.findItem(R.id.edit_timetable_button).setVisible(true);
@@ -452,12 +453,12 @@ public class TimetableFragment extends Fragment {
         spinner_options = null;
     }
 
-    private void animate_title(){
-        TextView in = editing?edit_title:title, out = editing?title:edit_title;
+    private void animate_title() {
+        TextView in = editing ? edit_title : title, out = editing ? title : edit_title;
         in.setVisibility(View.VISIBLE);
-        in.setX(-in.getWidth()-20*density);
+        in.setX(-in.getWidth() - 20 * density);
         in.animate().translationX(0).setDuration(600);
-        out.animate().translationX(out.getWidth()+20*density).setDuration(600);
+        out.animate().translationX(out.getWidth() + 20 * density).setDuration(600);
     }
 
 
