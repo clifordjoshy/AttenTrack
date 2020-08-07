@@ -1,86 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="?attr/bgColor"
     android:layout_height="match_parent"
+    android:background="?attr/bgColor"
     tools:context=".MainActivity">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
-        android:scrollbars="none"
         android:layout_marginEnd="10dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider"
         app:layout_constraintTop_toBottomOf="@+id/today_text">
 
         <LinearLayout
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:layoutAnimation="@anim/layout_anim_pop_in"
             android:id="@+id/schedule_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_anim_pop_in"
             android:orientation="vertical"
             tools:ignore="ScrollViewSize">
 
             <ImageView
                 android:id="@+id/extra_class_plus"
                 android:layout_width="match_parent"
-                android:paddingTop="8dp"
                 android:layout_height="38dp"
-                android:paddingBottom="8dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/curve_20dp"
                 android:backgroundTint="?attr/textColor"
+                android:contentDescription="@string/schedule_plus_descrip"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:src="@drawable/plus_icon"
-                android:layout_marginBottom="5dp"
-                android:tint="?attr/bgColor"
-                android:contentDescription="@string/schedule_plus_descrip" />
+                android:tint="?attr/bgColor" />
         </LinearLayout>
     </ScrollView>
 
     <TextView
         android:id="@+id/hellotext"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="145dp"
-        android:gravity="bottom"
+        android:layout_height="35dp"
         android:fontFamily="@font/poppins_regular"
         android:text="@string/hi_there"
         android:textColor="?attr/textColor"
         app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="bottom"
+        app:layout_constraintBottom_toTopOf="@+id/name_text"
+        app:layout_constraintEnd_toEndOf="@+id/name_text"
+        app:layout_constraintStart_toStartOf="@+id/name_text"
+        app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
     <TextView
         android:id="@+id/name_text"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:gravity="top"
-        android:layout_marginStart="140dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
         android:fontFamily="@font/poppins_medium"
+        android:gravity="top"
         android:textColor="?attr/textColor"
         app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hellotext" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="40dp"
+        android:background="@drawable/curve_10dp"
+        android:backgroundTint="?attr/drawerSelectedColor"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintStart_toEndOf="@+id/name_text"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2" />
+
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/hellotext"
+        app:layout_constraintEnd_toEndOf="@+id/hellotext"
+        app:layout_constraintStart_toStartOf="@+id/hellotext"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:srcCompat="@drawable/avatar_woman"
         tools:ignore="ContentDescription" />
 
@@ -88,22 +98,20 @@
         android:id="@+id/today_text"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="35dp"
         android:layout_marginEnd="5dp"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/todays_classes_text"
         android:textColor="?attr/textColor"
         app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toStartOf="@+id/cancel_button_main"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_text" />
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/cancel_button_main"
         android:layout_width="70dp"
         android:layout_height="26dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="2dp"
         android:background="@drawable/cancel_all_bg"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
@@ -114,7 +122,7 @@
         app:autoSizeMinTextSize="1dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/today_text"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/scrollView2"
         app:layout_constraintTop_toTopOf="@+id/today_text" />
 
     <LinearLayout
@@ -143,19 +151,19 @@
             android:layout_weight="5"
             android:gravity="center_vertical|start"
             android:textColor="?attr/textColor"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="1dp"/>
+            app:autoSizeMinTextSize="1dp"
+            app:autoSizeTextType="uniform" />
 
         <TextView
             android:id="@+id/undo_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/undo_text"
             android:gravity="center_vertical|end"
+            android:text="@string/undo_text"
             android:textColor="@color/colorAccent"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="1dp"/>
+            app:autoSizeMinTextSize="1dp"
+            app:autoSizeTextType="uniform" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

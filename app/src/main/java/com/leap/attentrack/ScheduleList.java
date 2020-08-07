@@ -458,7 +458,7 @@ public class ScheduleList {
         View demo_sub = main_list.getChildAt(0);
         switch (stage) {
 
-            //group 1[user deets] //from onAttachedToRecyclerView()
+            //group 1[user deets]
             case 1:
                 new GuideView.Builder(context)
                         .setTitle(context.getString(R.string.startup_guide_title_1))
