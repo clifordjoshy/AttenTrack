@@ -480,6 +480,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     public void onClick(View v) {
                         //To remove error warning red
                         v.setBackgroundTintList(ColorStateList.valueOf(0xffffffff));
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                            v.refreshDrawableState();
                     }
                 });
 
@@ -544,6 +546,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         @Override
                         public void onClick(final View v) {
                             v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
+                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                                v.refreshDrawableState();
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
@@ -564,6 +568,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                         @Override
                         public void onClick(final View v) {
                             v.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.startup_bg)));
+                            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                                v.refreshDrawableState();
                             new DatePickerDialog(StartupActivity.this,
                                     new DatePickerDialog.OnDateSetListener() {
                                         @Override
@@ -590,6 +596,8 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     String percent = edit_attendance.getText().toString();
                     if ("".equals(percent) || Integer.parseInt(edit_attendance.getText().toString()) > 100) {
                         edit_attendance.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                            edit_attendance.refreshDrawableState();
                         Toast.makeText(this, R.string.invalid_percentage_toast, Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -599,11 +607,15 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                 String date_string_1 = semester_d1.getText().toString(), date_string_2 = semester_d2.getText().toString();
                 if ("--/--/----".equals(date_string_1)) {
                     semester_d1.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                        semester_d1.refreshDrawableState();
                     Toast.makeText(this, R.string.start_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if ("--/--/----".equals(date_string_2)) {
                     semester_d2.setBackgroundTintList(ColorStateList.valueOf(0xffff8080));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                        semester_d2.refreshDrawableState();
                     Toast.makeText(this, R.string.end_date_toast, Toast.LENGTH_SHORT).show();
                     return;
                 }
