@@ -3,6 +3,8 @@ package com.leap.attentrack;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -32,7 +34,11 @@ public class EditStatsFragment extends Fragment {
             View element = getLayoutInflater().inflate(R.layout.element_all_subs, root_layout, false);
             ((TextView)element.findViewById(R.id.subject_text)).setText(s.name);
             update_deets(s, (TextView)element.findViewById(R.id.percent_text), (TextView)element.findViewById(R.id.data_text));
-            element.setBackgroundTintList(ColorStateList.valueOf(s.color));
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                element.getBackground().setColorFilter(s.color, PorterDuff.Mode.MULTIPLY);
+            else
+                element.setBackgroundTintList(ColorStateList.valueOf(s.color));
 
             final TextView percent = element.findViewById(R.id.percent_text),
                     data = element.findViewById(R.id.data_text);

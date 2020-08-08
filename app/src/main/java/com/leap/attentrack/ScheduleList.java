@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
 import android.transition.AutoTransition;
@@ -39,25 +40,25 @@ public class ScheduleList {
             isOpened = false;
         }
 
-        void toggleVisibility(){
+        void toggleVisibility() {
             toggleVisibility(!isOpened);
         }
 
-        void toggleVisibility(boolean isVisible){
+        void toggleVisibility(boolean isVisible) {
             isOpened = isVisible;
-            int view_visibility =isVisible ? View.VISIBLE : View.GONE;
+            int view_visibility = isVisible ? View.VISIBLE : View.GONE;
             info.setVisibility(view_visibility);
             cancel.setVisibility(view_visibility);
         }
 
-        void updateInfo(int total, int missed, int missable){
+        void updateInfo(int total, int missed, int missable) {
             String extra_text = context.getString(R.string.total_text) + total + "    " +
                     context.getString(R.string.missed_text) + missed + "    " +
                     context.getString(R.string.missable_text) + missable;
             info.setText(extra_text);
         }
 
-        void updatePercent(int percent_value){
+        void updatePercent(int percent_value) {
             percent.setText((percent_value + "%"));
         }
     }
@@ -110,7 +111,7 @@ public class ScheduleList {
 
         fillList();
 
-        if(MainActivity.is_first_start == 0) {
+        if (MainActivity.is_first_start == 0) {
             //custom cancel listener for demo subject
             card_details.getFirst().cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -123,12 +124,12 @@ public class ScheduleList {
 
             main_list.getChildAt(0).findViewById(R.id.minus_image).
                     setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    today_subjects.getFirst().missed_session();
-                    updateListForSubject(today_subjects.getFirst());
-                }
-            });
+                        @Override
+                        public void onClick(View v) {
+                            today_subjects.getFirst().missed_session();
+                            updateListForSubject(today_subjects.getFirst());
+                        }
+                    });
         }
     }
 
@@ -141,17 +142,21 @@ public class ScheduleList {
 
     }
 
-    private void makeSubjectView(LayoutInflater inflater, int index){
+    private void makeSubjectView(LayoutInflater inflater, int index) {
         Subject sub = today_subjects.get(index);
         View element = inflater.inflate(R.layout.element_schedule, main_list, false);
         ExtraViewHolder element_holder = new ExtraViewHolder(element);
 
-        ((TextView)element.findViewById(R.id.subject_text)).setText(sub.name);
-        ((TextView)element.findViewById(R.id.time_text)).setText(Subject.session_encoder[today_sessions.get(index)][0]);
+        ((TextView) element.findViewById(R.id.subject_text)).setText(sub.name);
+        ((TextView) element.findViewById(R.id.time_text)).setText(Subject.session_encoder[today_sessions.get(index)][0]);
         element_holder.updatePercent(sub.attendance);
         element_holder.updateInfo(sub.total, sub.missed, sub.missable);
 
-        element.setBackgroundTintList(ColorStateList.valueOf(sub.color));
+        //backgroundtint doesnt seem to work for api21
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            element.getBackground().setColorFilter(sub.color, PorterDuff.Mode.MULTIPLY);
+        else
+            element.setBackgroundTintList(ColorStateList.valueOf(sub.color));
 
         addEventListeners(element, element_holder);
         card_details.add(index, element_holder);
@@ -164,13 +169,13 @@ public class ScheduleList {
             public void onClick(View v) {
                 Transition tr = new AutoTransition();
                 tr.setDuration(150);
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                     TransitionManager.beginDelayedTransition(main_list, tr);
 
                 card_details.get(main_list.indexOfChild(element)).toggleVisibility();
 
                 //transition after for api 21 compatibility
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
                     TransitionManager.beginDelayedTransition(main_list, tr);
             }
         });
@@ -210,7 +215,7 @@ public class ScheduleList {
                     ++count;
                 }
 
-                if(in_missed){
+                if (in_missed) {
                     final int missed_sess_index = count;
                     AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
                     dialog.setTitle(context.getString(R.string.absence_dialog_title));
@@ -218,7 +223,7 @@ public class ScheduleList {
                     dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            int[] m_sess = ((MainActivity)context).missed_sessions.remove(missed_sess_index);
+                            int[] m_sess = ((MainActivity) context).missed_sessions.remove(missed_sess_index);
                             data[m_sess[3]].unmiss_session();
                             updateListForSubject(data[m_sess[3]]);
                         }
@@ -238,16 +243,20 @@ public class ScheduleList {
         });
     }
 
-    private void showCancelTab(String subject_name){
+    private void showCancelTab(String subject_name) {
         final int display_height = context.getResources().getDisplayMetrics().heightPixels;
 
-        String message =  subject_name + " " + context.getString(R.string.cancelled_undo_text);
+        String message = subject_name + " " + context.getString(R.string.cancelled_undo_text);
         ((TextView) cancel_tab.findViewById(R.id.cancelled_message))
                 .setText(message);
 
         cancel_tab.setY(display_height);
         cancel_tab.setVisibility(View.VISIBLE);
         cancel_tab.animate().translationY(0).setDuration(500);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            cancel_tab.getBackground().setColorFilter(
+                    MainActivity.dark_mode_on ? 0xff272727 : 0xffffffff, PorterDuff.Mode.MULTIPLY);
 
         if (cancel_remover != null)
             cancel_remover.removeCallbacksAndMessages(null);   //cancel old runnable
@@ -357,7 +366,7 @@ public class ScheduleList {
         }
     }
 
-    private void updateItem(int index){
+    private void updateItem(int index) {
         Subject s = today_subjects.get(index);
         ExtraViewHolder h = card_details.get(index);
         h.updatePercent(s.attendance);
@@ -386,7 +395,7 @@ public class ScheduleList {
         deleteItemAt(position);
     }
 
-    private void deleteItemAt(int position){
+    private void deleteItemAt(int position) {
         today_sessions.remove(position);
         today_subjects.remove(position);
         card_details.remove(position);
@@ -395,9 +404,9 @@ public class ScheduleList {
 
     void cancel_all_classes() {
 
-        if(((MainActivity)context).missed_sessions.size() > 0){
+        if (((MainActivity) context).missed_sessions.size() > 0) {
             StringBuilder dialog_message = new StringBuilder(context.getString(R.string.multi_absence_dialog_message_1));
-            for(int[] sess_deets : ((MainActivity)context).missed_sessions){
+            for (int[] sess_deets : ((MainActivity) context).missed_sessions) {
                 dialog_message.append("\n\t").
                         append(Subject.session_encoder[sess_deets[3]][0]).
                         append("\t-\t").
@@ -411,9 +420,9 @@ public class ScheduleList {
             dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    for(int[] sess_deets : ((MainActivity)context).missed_sessions)
+                    for (int[] sess_deets : ((MainActivity) context).missed_sessions)
                         data[sess_deets[4]].unmiss_session();
-                    ((MainActivity)context).missed_sessions.clear();
+                    ((MainActivity) context).missed_sessions.clear();
                 }
             });
 

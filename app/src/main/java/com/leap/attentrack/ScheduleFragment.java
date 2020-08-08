@@ -3,6 +3,8 @@ package com.leap.attentrack;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -33,6 +35,14 @@ public class ScheduleFragment extends Fragment{
 
         final ImageView avatar = fragmentView.findViewById(R.id.avatar);
         avatar.setImageResource(MainActivity.is_male_avatar?R.drawable.avatar_man :R.drawable.avatar_woman);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            View divider = fragmentView.findViewById(R.id.divider);
+            if(divider != null) {   //landscape
+                int color = MainActivity.dark_mode_on ? 0x25ffffff : 0x25272727;
+                divider.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+            }
+        }
 
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override

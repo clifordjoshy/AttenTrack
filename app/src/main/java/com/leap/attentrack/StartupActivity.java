@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -810,7 +811,12 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
     private View[] create_session_view(int bg_color) {
         final LinearLayout layout = new LinearLayout(this);
         layout.setBackgroundResource(R.drawable.curve_10dp);
-        layout.setBackgroundTintList(ColorStateList.valueOf(bg_color));
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            layout.getBackground().setColorFilter(bg_color, PorterDuff.Mode.MULTIPLY);
+        else
+            layout.setBackgroundTintList(ColorStateList.valueOf(bg_color));
+
         layout.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 (int) (40 * density));
@@ -891,7 +897,10 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
         int gridwidth = root.getWidth() - (int) (density * 50),
                 color = 0x60ffffff + box_color + 1;
 
-        grid.setBackgroundTintList(ColorStateList.valueOf(color));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            grid.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        else
+            grid.setBackgroundTintList(ColorStateList.valueOf(color));
         root.addView(grid, add_index);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(StartupActivity.this, android.R.layout.simple_spinner_item);

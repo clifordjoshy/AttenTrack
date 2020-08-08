@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -145,7 +147,12 @@ public class TimetableFragment extends Fragment {
             int gridwidth = list.getWidth() - (int) (density * 60),  //60 = padding + margin
                     color = boxes[boxno].getBackgroundTintList().getDefaultColor();
             color = color - 0x9f000000;     //Opacity
-            grid.setBackgroundTintList(ColorStateList.valueOf(color));
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                grid.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+            else
+                grid.setBackgroundTintList(ColorStateList.valueOf(color));
+
             list.addView(grid, boxno + 1);
 
             if (editing) {
