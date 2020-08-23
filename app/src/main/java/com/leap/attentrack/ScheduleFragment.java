@@ -14,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 public class ScheduleFragment extends Fragment{
@@ -121,8 +121,8 @@ public class ScheduleFragment extends Fragment{
                 AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
                 final Spinner session, subject;
 
-                final LinearLayout dialog_layout = (LinearLayout) LayoutInflater.from(context).
-                        inflate(R.layout.extra_class_dialog_layout, null);
+                final ConstraintLayout dialog_layout = (ConstraintLayout) LayoutInflater.from(context).
+                        inflate(R.layout.dialog_extra_class, null);
                 session = dialog_layout.findViewById(R.id.session_spinner);
                 subject = dialog_layout.findViewById(R.id.subject_spinner);
 

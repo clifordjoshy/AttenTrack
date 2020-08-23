@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -338,7 +339,7 @@ public class ScheduleList {
         add_class_warned = -1;
     }
 
-    boolean handle_class_addition(LinearLayout dialog_layout, int sess_ind, int sub_ind) {
+    boolean handle_class_addition(ConstraintLayout dialog_layout, int sess_ind, int sub_ind) {
 
         if (add_class_warned != sess_ind && today_sessions.contains(sess_ind)) {
             //issue warning
