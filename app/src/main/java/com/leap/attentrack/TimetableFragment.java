@@ -6,10 +6,10 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +28,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.transition.Explode;
 import androidx.transition.TransitionManager;
@@ -51,7 +49,6 @@ public class TimetableFragment extends Fragment {
     private ArrayAdapter<String> spinner_options;
     private int active_box = -1;
     private float density;
-    private Typeface font_med;
     private boolean dark, editing = false;
 
     @Nullable
@@ -67,7 +64,6 @@ public class TimetableFragment extends Fragment {
                 fragmentView.findViewById(R.id.box_day_2), fragmentView.findViewById(R.id.box_day_3),
                 fragmentView.findViewById(R.id.box_day_4), fragmentView.findViewById(R.id.box_day_5),
                 fragmentView.findViewById(R.id.box_day_6), fragmentView.findViewById(R.id.box_day_7)};
-        font_med = ResourcesCompat.getFont(getContext(), R.font.poppins_regular);
         dark = MainActivity.dark_mode_on;
 
         edit_title.post(new Runnable() {
@@ -163,7 +159,7 @@ public class TimetableFragment extends Fragment {
 
                     if (tt_spinners[boxno][i] == null) {
                         GridLayout.LayoutParams lparams = new GridLayout.LayoutParams(GridLayout.spec(i), GridLayout.spec(3));
-                        lparams.height = (int) (30 * density);
+                        lparams.height = GridLayout.LayoutParams.WRAP_CONTENT;
                         lparams.width = 8 * gridwidth / 15;
                         lparams.setGravity(Gravity.BOTTOM);
                         lparams.setMargins(0, (int) (5 * density), 0, 0);
@@ -209,15 +205,14 @@ public class TimetableFragment extends Fragment {
     private TextView createTextView(int row, int column, String text, int width, int gravity) {
         GridLayout.LayoutParams lparams = new GridLayout.LayoutParams(GridLayout.spec(row), GridLayout.spec(column));
         lparams.width = width;
-        lparams.height = (int) (30 * density);
+        lparams.height = GridLayout.LayoutParams.WRAP_CONTENT;
         lparams.setMargins(0, (int) (5 * density), 0, 0);
         AppCompatTextView textView = new AppCompatTextView(getContext());
         textView.setText(text);
-        textView.setTypeface(font_med);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 19);
         textView.setTextColor(dark ? 0xffffffff : 0xff272727);
         textView.setLayoutParams(lparams);
         textView.setGravity(gravity);
-        TextViewCompat.setAutoSizeTextTypeWithDefaults(textView, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
         return textView;
     }
 

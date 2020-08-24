@@ -39,19 +39,18 @@
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:src="@drawable/plus_icon"
-                android:tint="?attr/bgColor" />
+                app:tint="?attr/bgColor" />
         </LinearLayout>
     </ScrollView>
 
     <TextView
         android:id="@+id/hellotext"
         android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_regular"
         android:text="@string/hi_there"
         android:textColor="?attr/textColor"
-        app:autoSizeTextType="uniform"
-        android:gravity="bottom"
+        android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/name_text"
         app:layout_constraintEnd_toEndOf="@+id/name_text"
         app:layout_constraintStart_toStartOf="@+id/name_text"
@@ -60,12 +59,11 @@
     <TextView
         android:id="@+id/name_text"
         android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:fontFamily="@font/poppins_medium"
-        android:gravity="top"
+        android:textSize="25sp"
         android:textColor="?attr/textColor"
-        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hellotext" />
@@ -97,30 +95,29 @@
     <TextView
         android:id="@+id/today_text"
         android:layout_width="0dp"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
+        android:textColor="?attr/textColor"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/todays_classes_text"
-        android:textColor="?attr/textColor"
-        app:autoSizeTextType="uniform"
+        android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/cancel_button_main"
         app:layout_constraintStart_toStartOf="@+id/divider"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/cancel_button_main"
-        android:layout_width="70dp"
-        android:layout_height="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="2dp"
         android:background="@drawable/cancel_all_bg"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="4dp"
-        android:text="@string/cancel_all_text"
+        android:paddingHorizontal="11dp"
         android:textColor="?attr/textColor"
-        app:autoSizeMinTextSize="1dp"
-        app:autoSizeTextType="uniform"
+        android:paddingVertical="6dp"
+        android:text="@string/cancel_all_text"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/today_text"
         app:layout_constraintEnd_toEndOf="@+id/scrollView2"
         app:layout_constraintTop_toTopOf="@+id/today_text" />
@@ -133,12 +130,12 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/curve_10dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="8dp"
         android:backgroundTint="?attr/bgColor"
         android:elevation="5dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -166,4 +163,5 @@
             app:autoSizeTextType="uniform" />
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

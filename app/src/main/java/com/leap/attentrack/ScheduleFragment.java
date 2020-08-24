@@ -12,13 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -60,7 +60,7 @@ public class ScheduleFragment extends Fragment{
             public void onClick(View v) {
                 AlertDialog.Builder edit_dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
                 edit_dialog.setTitle(R.string.username_edit_title);
-                final EditText e = new EditText(context);
+                final AppCompatEditText e = new AppCompatEditText(context);
                 e.setBackgroundColor(0xffb5dfff);
                 e.setHint(MainActivity.name);
                 e.setSingleLine(true);
