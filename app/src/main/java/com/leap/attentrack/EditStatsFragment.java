@@ -113,7 +113,7 @@ public class EditStatsFragment extends Fragment {
                                                     setBackgroundTintList(ColorStateList.valueOf(value));
                                     }
                                 });
-                                animator.setDuration(700);
+                                animator.setDuration(350);
                                 animator.start();
                             }
                         }
