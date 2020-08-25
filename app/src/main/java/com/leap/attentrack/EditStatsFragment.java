@@ -1,5 +1,7 @@
 package com.leap.attentrack;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -97,10 +99,22 @@ public class EditStatsFragment extends Fragment {
                             }
                             int current_color = ((ColorDrawable)e.getBackground()).getColor();
                             if(s.color != current_color){
+                                ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), s.color, current_color);
                                 s.color = current_color;
-                                ((ConstraintLayout)v.getParent()).setBackgroundTintList(ColorStateList.valueOf(s.color));
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-                                    ((ConstraintLayout)v.getParent()).getBackground().setColorFilter(s.color, PorterDuff.Mode.MULTIPLY);
+                                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator animation) {
+                                        int value = (Integer)animation.getAnimatedValue();
+                                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+                                            ((ConstraintLayout)v.getParent()).getBackground().
+                                                    setColorFilter(value, PorterDuff.Mode.MULTIPLY);
+                                        else
+                                            ((ConstraintLayout)v.getParent()).
+                                                    setBackgroundTintList(ColorStateList.valueOf(value));
+                                    }
+                                });
+                                animator.setDuration(700);
+                                animator.start();
                             }
                         }
                     });

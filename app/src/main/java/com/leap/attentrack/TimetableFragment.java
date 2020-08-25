@@ -161,21 +161,20 @@ public class TimetableFragment extends Fragment {
                         GridLayout.LayoutParams lparams = new GridLayout.LayoutParams(GridLayout.spec(i), GridLayout.spec(3));
                         lparams.height = GridLayout.LayoutParams.WRAP_CONTENT;
                         lparams.width = 8 * gridwidth / 15;
-                        lparams.setGravity(Gravity.BOTTOM);
+                        lparams.setGravity(Gravity.CENTER);
                         lparams.setMargins(0, (int) (5 * density), 0, 0);
                         Spinner s = new Spinner(getContext());
                         s.setLayoutParams(lparams);
                         s.setPopupBackgroundDrawable(new ColorDrawable(dark ? 0xff272727 : 0xffffffff));
                         s.setAdapter(spinner_options);
                         tt_spinners[boxno][i] = s;
-                    }
-                    grid.addView(tt_spinners[boxno][i]);
-
-                    for (int j = 0; j < data.length; ++j) {
-                        if (data[j].slots[boxno].contains(i)) {
-                            tt_spinners[boxno][i].setSelection(j + 1);
+                        for (int j = 0; j < data.length; ++j) {
+                            if (data[j].slots[boxno].contains(i)) {
+                                tt_spinners[boxno][i].setSelection(j + 1);
+                            }
                         }
                     }
+                    grid.addView(tt_spinners[boxno][i]);
                 }
 
             } else {
@@ -209,7 +208,7 @@ public class TimetableFragment extends Fragment {
         lparams.setMargins(0, (int) (5 * density), 0, 0);
         AppCompatTextView textView = new AppCompatTextView(getContext());
         textView.setText(text);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 19);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         textView.setTextColor(dark ? 0xffffffff : 0xff272727);
         textView.setLayoutParams(lparams);
         textView.setGravity(gravity);
