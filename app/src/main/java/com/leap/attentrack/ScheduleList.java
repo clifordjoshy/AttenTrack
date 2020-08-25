@@ -218,7 +218,7 @@ public class ScheduleList {
 
                 if (in_missed) {
                     final int missed_sess_index = count;
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                     dialog.setTitle(context.getString(R.string.absence_dialog_title));
                     dialog.setMessage(context.getString(R.string.absence_dialog_message));
                     dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
@@ -414,7 +414,7 @@ public class ScheduleList {
                         append(data[sess_deets[4]].name);
             }
             dialog_message.append("\n\n").append(context.getString(R.string.multi_absence_dialog_message_2));
-            AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
             dialog.setTitle(context.getString(R.string.absence_dialog_title));
             dialog.setMessage(dialog_message);
 

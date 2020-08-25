@@ -48,7 +48,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.TimeZone;
 
 public class StartupActivity extends AppCompatActivity implements View.OnTouchListener {
     //for ease of usage
@@ -540,7 +539,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                     almost_there.setText(R.string.almost_there_text_2);
                     almost_there.setTextColor(getResources().getColor(R.color.colorAccent));
 
-                    final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+                    final Calendar calendar = Calendar.getInstance();
 
                     semester_d1.setOnClickListener(new View.OnClickListener() {
                         @Override

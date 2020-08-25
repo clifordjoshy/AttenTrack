@@ -257,7 +257,7 @@ public class TimetableFragment extends Fragment {
                     save_timetable_changes();
 
                 else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                     dialog.setTitle(R.string.warning_title);
                     final StringBuilder s = new StringBuilder(getString(R.string.time_table_change_warning));
                     for (int i = 0; i < changes.length; ++i) {

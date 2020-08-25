@@ -79,7 +79,7 @@ public class EditStatsFragment extends Fragment {
             element.findViewById(R.id.subject_text).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.ThemedAlertDialog);
+                    AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext());
                     edit_dialog.setTitle(R.string.subject_name_edit_title);
                     final AppCompatEditText e = new AppCompatEditText(getContext());
                     e.setBackgroundColor(s.color);

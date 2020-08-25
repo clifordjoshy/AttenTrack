@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -10,6 +9,8 @@
         <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
         <item name="colorControlHighlight">@android:color/transparent</item>
         <item name="android:listDivider">?attr/drawerSelectedColor</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:alertDialogTheme">@style/ThemedAlertDialog</item>
     </style>
 
     <style name = "ToolBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -24,7 +25,7 @@
         <item name="drawerSelectedColor">@color/drawer_bg_light</item>
         <item name="cancelButtonColor">@color/cancel_light</item>
     </style>
-
+`
     <style name="DarkTheme" parent="AppTheme">
         <item name="textColor">@color/colorPrimary</item>
         <item name="bgColor">@color/colorPrimaryDark</item>
@@ -43,6 +44,7 @@
     <style name="SmallTextStyleDialog" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/poppins_regular</item>
     </style>
+
     <style name="TitleTextStyleDialog" parent="TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/poppins_medium</item>
     </style>

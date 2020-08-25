@@ -58,7 +58,7 @@ public class ScheduleFragment extends Fragment{
         name_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(context);
                 edit_dialog.setTitle(R.string.username_edit_title);
                 final AppCompatEditText e = new AppCompatEditText(context);
                 e.setBackgroundColor(0xffb5dfff);
@@ -100,7 +100,7 @@ public class ScheduleFragment extends Fragment{
         fragmentView.findViewById(R.id.cancel_button_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 dialog.setMessage(R.string.cancel_all_warning);
                 dialog.setCancelable(true);
                 dialog.setPositiveButton(R.string.okay_text, new DialogInterface.OnClickListener() {
@@ -118,7 +118,7 @@ public class ScheduleFragment extends Fragment{
         fragmentView.findViewById(R.id.extra_class_plus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.ThemedAlertDialog);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
                 final Spinner session, subject;
 
                 final ConstraintLayout dialog_layout = (ConstraintLayout) LayoutInflater.from(context).
