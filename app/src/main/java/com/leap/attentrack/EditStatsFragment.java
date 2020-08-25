@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class EditStatsFragment extends Fragment {
     @Nullable
@@ -103,6 +104,7 @@ public class EditStatsFragment extends Fragment {
                             }
                         }
                     });
+                    edit_dialog.setNegativeButton(R.string.cancel_text, null);
                     edit_dialog.setNeutralButton(R.string.change_color_text, null);
                     edit_dialog.show().getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                         int[] valid_colors = new int[]{0xffffbe93, 0xffbbf6bf, 0xffabecff, 0xfffcb1fa, 0xff88acfd,
@@ -112,8 +114,7 @@ public class EditStatsFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             if (color_index == -1) {
-                                for (color_index = 0; valid_colors[color_index] != s.color; ++color_index)
-                                    ;
+                                while(valid_colors[++color_index] != s.color);
                             }
                             color_index = (color_index + 1) % valid_colors.length;
                             e.setBackgroundColor(valid_colors[color_index]);
@@ -147,10 +148,21 @@ public class EditStatsFragment extends Fragment {
             @Override
             public void run() {
                 new GuideView.Builder(getContext())
-                        .setTitle(getString(R.string.edit_stats_guide_title))
-                        .setContentText(getString(R.string.edit_stats_guide_message))
+                        .setTitle(getString(R.string.edit_stats_guide_title_1))
+                        .setContentText(getString(R.string.edit_stats_guide_message_1))
                         .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
                         .setTargetView(root.getChildAt(0))
+                        .setGuideListener(new GuideListener() {
+                            @Override
+                            public void onDismiss(View view) {
+                                new GuideView.Builder(getContext())
+                                        .setTitle(getString(R.string.edit_stats_guide_title_2))
+                                        .setContentText(getString(R.string.edit_stast_guide_message_2))
+                                        .setTargetView(root.getChildAt(0).findViewById(R.id.subject_text))
+                                        .build()
+                                        .show();
+                            }
+                        })
                         .build()
                         .show();
             }
