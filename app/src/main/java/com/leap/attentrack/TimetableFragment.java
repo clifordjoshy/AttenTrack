@@ -323,8 +323,13 @@ public class TimetableFragment extends Fragment {
         try {
             String start_string, end_string;
             SimpleDateFormat string_format = new SimpleDateFormat("dd/MM/yyyy");
-            Date today = Calendar.getInstance().getTime();
-            today = string_format.parse(string_format.format(today));   //set time 00:00
+            Calendar now = Calendar.getInstance();
+            now.set(Calendar.HOUR_OF_DAY, 0);
+            now.set(Calendar.MINUTE, 0);
+            now.set(Calendar.SECOND, 0);
+            now.set(Calendar.MILLISECOND, 0);
+            Date today = now.getTime();
+
             SharedPreferences sp = getActivity().getSharedPreferences(MainActivity.shared_pref_name, Context.MODE_PRIVATE);
             start_string = sp.getString("sem_start_date", null);
             end_string = sp.getString("sem_end_date", null);

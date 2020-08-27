@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -27,11 +28,13 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +43,7 @@ import java.util.LinkedList;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-    static String time_table_file, sec_file, delim_sec = "/", shared_pref_name = "my_data";
+    static String time_table_file, assignments_file, sec_file, delim_sec = "/", shared_pref_name = "my_data";
     static Subject[] data;
     LinkedList<int[]> extra_sessions = new LinkedList<>(), cancelled_sessions = new LinkedList<>(),
             missed_sessions = new LinkedList<>();
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
 
         time_table_file = this.getFilesDir().getPath() + "/schedule_data_serial.txt";
+        assignments_file = this.getFilesDir().getPath() + "/assignments_data_serial.txt";
         sec_file = "secondary.txt";
         is_first_start = getSharedPreferences(shared_pref_name, MODE_PRIVATE).getInt("first_start", -1);
         if (is_first_start == -1) {
@@ -64,11 +68,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
             get_data();
-        }
-        catch (Exception e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
 
-            //data is gone. restart :(
+            //essential data is gone. restart :(
             getSharedPreferences(shared_pref_name, MODE_PRIVATE).edit().remove("first_start").apply();
             is_first_start = -1;    //don't put data
             recreate();
@@ -87,10 +90,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             updateAlarmBroadcastReceiver(true);
 
         drawer = findViewById(R.id.drawer_layout);
+
+        //dark mode smoothening
+        if (getIntent().getBooleanExtra("is_mode_changed", false)) {
+            drawer.openDrawer(GravityCompat.START, false);
+            current_fragment = getIntent().getIntExtra("current_fragment", 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                drawer.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        getWindow().setStatusBarColor(dark_mode_on ? 0xff101010 : 0xff666666);
+                    }
+                });
+            }
+        }
+
         NavigationView navView = findViewById(R.id.nav_view);
         MenuItem notif_item = navView.getMenu().findItem(R.id.notification_message);
         notif_item.setTitle(is_notification_on ? R.string.notif_on_menu : R.string.notif_off_menu);
         notif_item.setIcon(is_notification_on ? R.drawable.icon_notification_on : R.drawable.icon_notifications_off);
+
         navView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
@@ -133,21 +152,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navView.getMenu().findItem(R.id.edit_stats_message).setChecked(true);
                 break;
             case 3:
+                go_to = new AssignmentsFragment();
+                navView.getMenu().findItem(R.id.assignments_message).setChecked(true);
+                break;
+            case 4:
                 go_to = new SupportFragment();
                 navView.getMenu().findItem(R.id.support_message).setChecked(true);
                 break;
         }
 
         //fragments persist rotation
-        if(getSupportFragmentManager().findFragmentByTag("current_fragment") == null)
-            getSupportFragmentManager().beginTransaction().
-                    replace(R.id.fragment_container, go_to, "current_fragment").commit();
+        if (getSupportFragmentManager().findFragmentByTag("current_fragment") == null)
+            getSupportFragmentManager().
+                    beginTransaction().
+                    replace(R.id.fragment_container, go_to, "current_fragment").
+                    commit();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(is_first_start != -1)    //going to startup activity
+        if (is_first_start != -1)    //going to startup activity
+            put_data();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (is_first_start != -1)    //in first startup activity
             put_data();
     }
 
@@ -156,6 +188,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FileOutputStream fos = new FileOutputStream(time_table_file);
             ObjectOutputStream outputStream = new ObjectOutputStream(fos);
             outputStream.writeObject(data);
+            outputStream.close();
+            fos.close();
+
+            fos = new FileOutputStream(assignments_file);
+            outputStream = new ObjectOutputStream(fos);
+            outputStream.writeObject(AssignmentsFragment.assignments_list);
             outputStream.close();
             fos.close();
 
@@ -206,13 +244,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    void get_data() throws Exception {
+    void get_data() throws IOException, ClassNotFoundException {
 
         FileInputStream fis = new FileInputStream(time_table_file);
         ObjectInputStream inputStream = new ObjectInputStream(fis);
         data = (Subject[]) inputStream.readObject();
         inputStream.close();
         fis.close();
+
+        try {       //can work without assignments. so dealt with exceptions
+            fis = new FileInputStream(assignments_file);
+            inputStream = new ObjectInputStream(fis);
+            AssignmentsFragment.assignments_list = (LinkedList<AssignmentsFragment.Assignment>) inputStream.readObject();
+            inputStream.close();
+            fis.close();
+        } catch (IOException ignored) {
+        }
+        if (AssignmentsFragment.assignments_list == null)
+            AssignmentsFragment.assignments_list = new LinkedList<>();
 
         InputStream sec_input = openFileInput(sec_file);
         InputStreamReader reader = new InputStreamReader(sec_input);
@@ -227,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 1; i < line.length; ++i)
                     vals.add(line[i].split("-"));
                 Subject.session_encoder = new String[vals.size()][];
-                for(int i = 0; i < vals.size(); ++i)
+                for (int i = 0; i < vals.size(); ++i)
                     Subject.session_encoder[i] = vals.get(i);
 
             } else if ("extra".equals(line[0])) {
@@ -250,22 +299,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        SimpleDateFormat string_format = new SimpleDateFormat("yyyy-MM-dd");
-        Date today = Calendar.getInstance().getTime();
-        today = string_format.parse(string_format.format(today));   //to get rid of time
+        try {
+            SimpleDateFormat string_format = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar now = Calendar.getInstance();
+            now.set(Calendar.HOUR_OF_DAY, 0);
+            now.set(Calendar.MINUTE, 0);
+            now.set(Calendar.SECOND, 0);
+            now.set(Calendar.MILLISECOND, 0);
+            Date today = now.getTime();
 
-        for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
-            //need to traverse backwards to prevent element upward shift
-            for (int i = sess_list.size() - 1; i >= 0; --i) {
-                int[] sess = sess_list.get(i);
-                String month = (sess[1] < 9 ? "0" : "") + sess[1];
-                String day = (sess[2] < 9 ? "0" : "") + sess[2];
-                Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
-                if (today.after(saved)) {
-                    sess_list.remove(i);
+            for (LinkedList<int[]> sess_list : new LinkedList[]{extra_sessions, cancelled_sessions, missed_sessions}) {
+                //need to traverse backwards to prevent element upward shift
+                for (int i = sess_list.size() - 1; i >= 0; --i) {
+                    int[] sess = sess_list.get(i);
+                    String month = (sess[1] < 9 ? "0" : "") + sess[1];
+                    String day = (sess[2] < 9 ? "0" : "") + sess[2];
+                    Date saved = string_format.parse(sess[0] + "-" + month + "-" + day);
+                    if (today.after(saved)) {
+                        sess_list.remove(i);
+                    }
                 }
             }
-        }
+        } catch (ParseException ignored) {
+        }  //properly formatted
 
         SharedPreferences sp = getSharedPreferences(shared_pref_name, MODE_PRIVATE);
         Subject.req_percentage = sp.getInt("req_percent", 75);
@@ -273,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         name = sp.getString("username", getString(R.string.default_username));
         is_male_avatar = sp.getBoolean("is_male_avatar", false);
         is_notification_on = sp.getBoolean("notifs_on", true);
-
     }
 
     @Override
@@ -308,10 +363,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new EditStatsFragment()).commit();
                 break;
 
+            case R.id.assignments_message:
+                item.setChecked(true);
+                current_fragment = 3;
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AssignmentsFragment()).commit();
+                break;
+
             case R.id.dark_message:
                 dark_mode_on = !dark_mode_on;
-                recreate();
-                break;
+                TransitionManager.beginDelayedTransition((DrawerLayout) findViewById(R.id.drawer_layout));
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra("is_mode_changed", true);
+                intent.putExtra("current_fragment", current_fragment);
+                startActivity(intent);
+                finish();
+                overridePendingTransition(R.anim.fade_in_400, R.anim.fade_out_400);
+                return true;     //don't close drawer
 
             case R.id.notification_message:
                 is_notification_on = !is_notification_on;
@@ -319,7 +387,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 MenuItem notif_item = navView.getMenu().findItem(R.id.notification_message);
                 notif_item.setTitle(is_notification_on ? R.string.notif_on_menu : R.string.notif_off_menu);
                 notif_item.setIcon(is_notification_on ? R.drawable.icon_notification_on : R.drawable.icon_notifications_off);
-//                Toast.makeText(this, "Notifications " + (is_notification_on ? "Enabled" : "Disabled"), Toast.LENGTH_SHORT).show();
                 updateAlarmBroadcastReceiver(is_notification_on);
                 return true;    //don't close drawer
 
@@ -328,7 +395,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.new_sem_warning);
 
-                dialog.setCancelable(true);
                 dialog.setPositiveButton(R.string.confirm_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -347,7 +413,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.reset_warning);
 
-                dialog.setCancelable(true);
                 dialog.setPositiveButton(R.string.confirm_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -359,8 +424,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setNegativeButton(R.string.cancel_text, null);
                 dialog.show();
                 break;
+
             case R.id.support_message:
-                current_fragment = 3;
+                current_fragment = 4;
                 item.setChecked(true);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new SupportFragment()).commit();
@@ -377,7 +443,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (state) {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, 17);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
@@ -395,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             cancelled_sessions.clear();
             extra_sessions.clear();
             missed_sessions.clear();
+            AssignmentsFragment.assignments_list.clear();
             recreate();
         }
     }

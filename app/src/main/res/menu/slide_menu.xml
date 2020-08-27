@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-
     <item android:id="@+id/schedule_message"
         android:icon="@drawable/icon_schedule"
         android:title="@string/schedule_menu"
@@ -15,6 +14,10 @@
     <item android:id="@+id/edit_stats_message"
         android:icon="@drawable/icon_edit_stats"
         android:title="@string/edit_stats_menu"
+        android:checkable="true"/>
+    <item android:id="@+id/assignments_message"
+        android:icon="@drawable/icon_assignments"
+        android:title="@string/assignments_title"
         android:checkable="true"/>
     <item android:id="@+id/dark_message"
         android:icon="@drawable/icon_darkmode"

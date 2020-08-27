@@ -19,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 
@@ -83,8 +82,8 @@ public class ScheduleList {
 
         cancel_tab = root_fragment.findViewById(R.id.cancelled_undo_bar);
 
-        String[] date_string = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()).split("-");
-        today = new int[]{Integer.parseInt(date_string[0]), Integer.parseInt(date_string[1]), Integer.parseInt(date_string[2])};
+        Calendar now = Calendar.getInstance();
+        today = new int[]{now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DAY_OF_MONTH)};
 
         handle_data();    //fills up details, today_sess, all_subs
 
