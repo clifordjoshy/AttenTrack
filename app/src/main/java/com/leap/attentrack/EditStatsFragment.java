@@ -1,6 +1,5 @@
 package com.leap.attentrack;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -100,7 +99,7 @@ public class EditStatsFragment extends Fragment {
                             }
                             int current_color = ((ColorDrawable)e.getBackground()).getColor();
                             if(s.color != current_color){
-                                ValueAnimator animator = ValueAnimator.ofObject(new ArgbEvaluator(), s.color, current_color);
+                                ValueAnimator animator = ValueAnimator.ofArgb(s.color, current_color);
                                 s.color = current_color;
                                 animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                     @Override

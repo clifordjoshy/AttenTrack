@@ -6,9 +6,6 @@ import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
-import android.transition.AutoTransition;
-import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,6 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.transition.AutoTransition;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -90,7 +90,7 @@ public class ScheduleList {
         if (MainActivity.is_first_start == 0) {
             //Add demo subject
             Subject demo = new Subject();
-            demo.name = context.getString(R.string.demo_subject_name);
+            demo.name = context.getString(R.string.subject_text);
             demo.attendance = 96;
             demo.total = 56;
             demo.missed = 2;

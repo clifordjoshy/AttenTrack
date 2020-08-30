@@ -354,7 +354,7 @@ public class StartupActivity extends AppCompatActivity implements View.OnTouchLi
                                 colors_subjects.addAll(Arrays.asList(colors));
                                 Collections.shuffle(colors_subjects);
                             }
-                            e.setHint(R.string.demo_subject_name);
+                            e.setHint(R.string.subject_text);
                             e.setPadding((int) (10 * density), 0, (int) (10 * density), 0);
                             e.setOnTouchListener(swipe_listener);
                             e.requestFocus();
