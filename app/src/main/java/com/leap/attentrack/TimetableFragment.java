@@ -1,6 +1,5 @@
 package com.leap.attentrack;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -167,6 +167,7 @@ public class TimetableFragment extends Fragment {
                         s.setLayoutParams(lparams);
                         s.setPopupBackgroundDrawable(new ColorDrawable(dark ? 0xff272727 : 0xffffffff));
                         s.setAdapter(spinner_options);
+                        s.setBackgroundTintList(ColorStateList.valueOf(0xff808080));
                         tt_spinners[boxno][i] = s;
                         for (int j = 0; j < data.length; ++j) {
                             if (data[j].slots[boxno].contains(i)) {
@@ -257,7 +258,7 @@ public class TimetableFragment extends Fragment {
                     save_timetable_changes();
 
                 else {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
                     dialog.setTitle(R.string.warning_title);
                     final StringBuilder s = new StringBuilder(getString(R.string.time_table_change_warning));
                     for (int i = 0; i < changes.length; ++i) {

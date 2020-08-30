@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#272727</color>
+    <color name="colorAccent">#00609f</color>
     <color name="metaTextColor">#606060</color>
+    <color name="defaultGray">#808080</color>
     <color name="drawer_bg_light">#25272727</color>
     <color name="drawer_bg_dark">#25ffffff</color>
     <color name="cancel_light">#64000000</color>
     <color name="cancel_dark">#80ffffff</color>
-    <color name="colorAccent">#00609f</color>
     <color name="dialogbg">#fffbdb</color>
     <color name="startup_bg">#e2e2e2</color>
     <color name="monday_color">#cf9eec</color>
@@ -18,4 +19,6 @@
     <color name="saturday_color">#ffdb85</color>
     <color name="sunday_color">#ff8f8f</color>
     <color name="dialog_warning">#d32f2f</color>
+<!--    text input layout default box color     -->
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/defaultGray</color>
 </resources>

@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -10,7 +10,6 @@
         <item name="colorControlHighlight">@android:color/transparent</item>
         <item name="android:listDivider">?attr/drawerSelectedColor</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="android:alertDialogTheme">@style/ThemedAlertDialog</item>
     </style>
 
     <style name = "ToolBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -33,7 +32,29 @@
         <item name="cancelButtonColor">@color/cancel_dark</item>
     </style>
 
-    <style name="ThemedAlertDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxStrokeColor">?attr/textColor</item>
+        <item name="android:textColorHint">@color/defaultGray</item>
+        <item name="hintTextColor">?attr/textColor</item>
+        <item name="android:theme">@style/cursorTheme</item>
+    </style>
+    <style name="cursorTheme" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="colorControlActivated">?attr/textColor</item>
+    </style>
+
+    <style name="DropDownMenuStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:theme">@style/MenuBackground</item>
+    </style>
+    <style name="MenuBackground" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="colorSurface">?attr/bgColor</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent= "Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/themed_dialog_bg</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">?attr/textColor</item>

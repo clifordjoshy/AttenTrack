@@ -260,8 +260,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fis.close();
         } catch (IOException ignored) {
         }
-        if (AssignmentsFragment.assignments_list == null)
-            AssignmentsFragment.assignments_list = new LinkedList<>();
 
         InputStream sec_input = openFileInput(sec_file);
         InputStreamReader reader = new InputStreamReader(sec_input);
@@ -298,6 +296,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 missed_sessions.add(vals);
             }
         }
+
+        if(Subject.session_encoder == null)
+            throw new IOException("Session Encoder Lost");
 
         try {
             SimpleDateFormat string_format = new SimpleDateFormat("yyyy-MM-dd");
@@ -391,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;    //don't close drawer
 
             case R.id.start_new_semester_message: {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.ThemedAlertDialog);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.new_sem_warning);
 
@@ -409,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             case R.id.reset_message:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.ThemedAlertDialog);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
                 dialog.setTitle(R.string.warning_title);
                 dialog.setMessage(R.string.reset_warning);
 

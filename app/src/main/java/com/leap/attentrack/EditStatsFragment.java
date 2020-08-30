@@ -2,7 +2,6 @@ package com.leap.attentrack;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -79,11 +79,12 @@ public class EditStatsFragment extends Fragment {
             element.findViewById(R.id.subject_text).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext());
+                    AlertDialog.Builder edit_dialog = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
                     edit_dialog.setTitle(R.string.subject_name_edit_title);
                     final AppCompatEditText e = new AppCompatEditText(getContext());
                     e.setBackgroundColor(s.color);
                     e.setHint(s.name);
+                    e.setHintTextColor(0xff808080);
                     e.setSingleLine(true);
                     e.setGravity(Gravity.CENTER);
                     e.setPadding(20, 20, 20, 20);

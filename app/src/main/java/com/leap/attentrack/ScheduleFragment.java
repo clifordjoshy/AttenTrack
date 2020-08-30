@@ -1,6 +1,5 @@
 package com.leap.attentrack;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -58,7 +58,7 @@ public class ScheduleFragment extends Fragment{
         name_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(context);
+                AlertDialog.Builder edit_dialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
                 edit_dialog.setTitle(R.string.username_edit_title);
                 final AppCompatEditText e = new AppCompatEditText(context);
                 e.setBackgroundColor(0xffb5dfff);
@@ -100,7 +100,7 @@ public class ScheduleFragment extends Fragment{
         fragmentView.findViewById(R.id.cancel_button_main).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
                 dialog.setMessage(R.string.cancel_all_warning);
                 dialog.setCancelable(true);
                 dialog.setPositiveButton(R.string.okay_text, new DialogInterface.OnClickListener() {
@@ -118,7 +118,7 @@ public class ScheduleFragment extends Fragment{
         fragmentView.findViewById(R.id.extra_class_plus).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
                 final Spinner session, subject;
 
                 final ConstraintLayout dialog_layout = (ConstraintLayout) LayoutInflater.from(context).

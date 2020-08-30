@@ -1,6 +1,5 @@
 package com.leap.attentrack;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Calendar;
@@ -217,7 +217,7 @@ public class ScheduleList {
 
                 if (in_missed) {
                     final int missed_sess_index = count;
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
                     dialog.setTitle(context.getString(R.string.absence_dialog_title));
                     dialog.setMessage(context.getString(R.string.absence_dialog_message));
                     dialog.setPositiveButton(context.getString(R.string.undo_text), new DialogInterface.OnClickListener() {
@@ -413,7 +413,7 @@ public class ScheduleList {
                         append(data[sess_deets[4]].name);
             }
             dialog_message.append("\n\n").append(context.getString(R.string.multi_absence_dialog_message_2));
-            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
             dialog.setTitle(context.getString(R.string.absence_dialog_title));
             dialog.setMessage(dialog_message);
 
