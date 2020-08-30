@@ -58,7 +58,7 @@
     <string name="edit_tt_menu">Edit Time Table</string>
     <string name="save_tt_menu">Save Changes</string>
     <string name="cancel_tt_menu">Cancel Changes</string>
-    <string name="delete_slider_text">Delete</string>
+    <string name="delete_text">Delete</string>
     <string name="support_adbutton">WATCH AN AD</string>
     <string name="support_reviewbutton">LEAVE A REVIEW</string>
     <string name="extra_class_dialog_title">Add Extra Class</string>
@@ -81,8 +81,10 @@
     <string name="total_text">Total:</string>
     <string name="missed_text">Missed:</string>
     <string name="missable_text">Missable:</string>
-    <string name="edit_stats_guide_title">Forgot To Mark Something?</string>
-    <string name="edit_stats_guide_message">Not a problem.\n\n (+) &amp; (-) to edit your attendance.\n \"Add\" &amp; \"Remove\" to edit class count. </string>
+    <string name="edit_stats_guide_title_1">Forgot To Mark Something?</string>
+    <string name="edit_stats_guide_message_1">Not a problem.\n\n (+) &amp; (-) to edit your attendance.\n \"Add\" &amp; \"Remove\" to edit class count. </string>
+    <string name="edit_stats_guide_title_2">Don\'t Like The Appearance?</string>
+    <string name="edit_stast_guide_message_2">Click here to edit the subject name or color.</string>
     <string name="startup_guide_title_1">Change Your Avatar</string>
     <string name="startup_guide_title_2">Change Your Username</string>
     <string name="startup_guide_title_3">Here\'s Your Subject Card</string>
@@ -95,7 +97,7 @@
     <string name="startup_guide_message_4">Click here to mark your absence\nand see your percentage changes.</string>
     <string name="startup_guide_message_5">Click here to mark it and see how\nyour attendance changes.</string>
     <string name="startup_guide_message_6">Click here to add classes\nto the schedule.</string>
-    <string name="demo_subject_name">Subject</string>
+    <string name="subject_text">Subject</string>
     <string name="missed_class_toast">Absence Already Marked</string>
     <string name="cancelled_undo_text">Cancelled</string>
     <string name="invalid_sessions_toast">Invalid Sessions</string>
@@ -123,4 +125,25 @@
     <string name="multi_absence_dialog_message_1">The following classes were marked absent:</string>
     <string name="multi_absence_dialog_message_2">Would you like to undo these absences?</string>
     <string name="empty_tt_toast">No Classes Assigned</string>
+    <string name="change_color_text">CHANGE COLOR</string>
+    <string name="no_assignments_text">There are no pending assignments. Use the \'+\' icon to add a new assignment.</string>
+    <string name="assignments_title">Assignments</string>
+    <string name="overdue_text">Overdue</string>
+    <string name="assignment_heading">Your Assignments</string>
+    <string name="mark_as_done_text">MARK AS DONE</string>
+    <string name="mark_as_undone_text">MARK AS UNDONE</string>
+    <string name="due_days_ago_text">Due 0 days ago</string>
+    <string name="due_yesterday_text">Due yesterday</string>
+    <string name="due_today_text">Due today</string>
+    <string name="due_tomorrow_text">Due tomorrow</string>
+    <string name="due_in_days_text">Due in 0 days</string>
+    <string name="delete_assignment_warning">Delete this assignment?</string>
+    <string name="assignment_default_note">&lt;no description provided&gt;</string>
+    <string name="assignment_title_error_message">Please enter a title.</string>
+    <string name="assignment_due_date_error_message">Please pick the due date.</string>
+    <string name="assignment_subject_error_message">Please pick a subject.</string>
+    <string name="title_text">Title</string>
+    <string name="due_date_text">Due Date</string>
+    <string name="description_text">Description</string>
+    <string name="new_assignment_toast">An assignment is already being created.</string>
 </resources>

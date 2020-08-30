@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layoutAnimation="@anim/layout_anim_pop_in"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="60dp">
+
+    <TextView
+        android:id="@+id/expanded_subject_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/curve_10dp"
+        android:backgroundTintMode="multiply"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:text="Subject"
+        android:textColor="@color/metaTextColor"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/day_count_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/curve_10dp"
+        android:backgroundTintMode="multiply"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:text="Due in 3 days"
+        android:textColor="@color/metaTextColor"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/expanded_subject_view"
+        tools:ignore="HardcodedText"/>
+
+    <EditText
+        android:id="@+id/notes_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/curve_10dp"
+        android:backgroundTintMode="multiply"
+        android:enabled="false"
+        android:inputType="text"
+        android:hint="@string/assignment_default_note"
+        android:textColorHint="@color/metaTextColor"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:text="This should be the greatest analysis in the history of analyses."
+        android:textColor="@color/metaTextColor"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/day_count_view"
+        tools:ignore="HardcodedText"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/mark_as_done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple_bg"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="3dp"
+        android:text="@string/mark_as_done_text"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/delete_button" />
+
+    <TextView
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/ripple_bg"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="3dp"
+        android:text="@string/edit_button_text"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/mark_as_done_button"
+        app:layout_constraintTop_toTopOf="@+id/delete_button" />
+
+    <TextView
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/ripple_bg"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="3dp"
+        android:visibility="gone"
+        android:text="@string/cancel_text"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/edit_button"
+        app:layout_constraintTop_toTopOf="@+id/delete_button" />
+
+    <TextView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/ripple_bg"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="3dp"
+        android:text="@string/delete_text"
+        android:textAllCaps="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_button"
+        app:layout_constraintTop_toBottomOf="@+id/notes_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

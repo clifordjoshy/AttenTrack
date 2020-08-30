@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="?attr/bgColor"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center"
+        android:textColor="?attr/textColor"
+        android:text="@string/assignment_heading"
+        android:fontFamily="@font/poppins_medium"
+        app:autoSizeTextType="uniform"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/linear_assignments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_anim_pop_in"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            tools:ignore="ScrollViewSize">
+            <TextView
+                android:id="@+id/no_assignments_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_assignments_text"
+                android:textColor="@color/metaTextColor"
+                android:textSize="20sp"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
