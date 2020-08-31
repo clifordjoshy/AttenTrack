@@ -146,4 +146,8 @@
     <string name="due_date_text">Due Date</string>
     <string name="description_text">Description</string>
     <string name="new_assignment_toast">An assignment is already being created.</string>
+    <string name="assignments_first_title_1">This assignment is overdue</string>
+    <string name="assignments_first_title_2">This one\'s pending submission</string>
+    <string name="assignments_first_title_3">Tap here for more info</string>
+    <string name="assignments_first_description_3">"Your description goes here.\nI\'ll start. Beautiful :)"</string>
 </resources>

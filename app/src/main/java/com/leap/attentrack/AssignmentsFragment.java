@@ -89,6 +89,7 @@ public class AssignmentsFragment extends Fragment {
 
         root = fragmentView.findViewById(R.id.linear_assignments);
 
+        handle_first_start();
         // sort and handle assignments_list
         handleAssignmentsData();
         printAssignments();
@@ -97,28 +98,6 @@ public class AssignmentsFragment extends Fragment {
     }
 
     private void handleAssignmentsData() {
-//        test input
-//        assignments_list = new LinkedList<>();
-//        Calendar base = Calendar.getInstance();
-//        base.set(Calendar.HOUR_OF_DAY, 0);
-//        base.set(Calendar.MINUTE, 0);
-//        base.set(Calendar.SECOND, 0);
-//        base.set(Calendar.MILLISECOND, 0);
-//        Date d = new Date(base.getTimeInMillis() - 86400000);
-//        Assignment test = new Assignment("Yesterday", -1, "hello", d, 0);
-//        assignments_list.add(test);
-//        d = new Date(base.getTimeInMillis());
-//        test = new Assignment("Today", 0, "hello", d, 0);
-//        assignments_list.add(test);
-//        d = new Date(base.getTimeInMillis() + 86400000);
-//        test = new Assignment("Tomorrow", 1, "hello", d, 0);
-//        assignments_list.add(test);
-//        test = new Assignment("Also tomorrow", 0, "hello", d, 0);
-//        assignments_list.add(test);
-//        d = new Date(base.getTimeInMillis() + 2 * 86400000);
-//        test = new Assignment("Day after", 0, "hello", d, 0);
-//        assignments_list.add(test);
-
         //sort
         Collections.sort(assignments_list, new Comparator<Assignment>() {
             @Override
@@ -130,14 +109,12 @@ public class AssignmentsFragment extends Fragment {
         int i = 0;
         while (i < assignments_list.size()) {
             Assignment a = assignments_list.get(i);
-            if (today.after(a.due_date)) {
-                if (a.status == 0)
-                    a.status = -1;     //overdue
-                else if (a.status == 1) {
-                    //remove completed assignments
-                    assignments_list.remove(i);
-                    --i;
-                }
+            if (a.status == 1) {
+                //remove completed assignments
+                assignments_list.remove(i);
+                --i;
+            } else if (a.status == 0 && today.after(a.due_date)) {
+                a.status = -1;     //overdue
             }
             ++i;
         }
@@ -260,7 +237,7 @@ public class AssignmentsFragment extends Fragment {
 
                     }
                 });
-                dialog.setNegativeButton(R.string.nope_text, null);
+                dialog.setNegativeButton(R.string.cancel_text, null);
                 dialog.show();
             }
         });
@@ -297,17 +274,17 @@ public class AssignmentsFragment extends Fragment {
                 changeEditMode(false, due_days, notes, null);
             }
         });
-
-        expanded.findViewById(R.id.mark_as_done_button).setOnClickListener(new View.OnClickListener() {
-            int old_status = 1;
+        TextView mark_as_done_btn = expanded.findViewById(R.id.mark_as_done_button);
+        if (assignment.status == 1)
+            mark_as_done_btn.setText(R.string.mark_as_undone_text);
+        mark_as_done_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(assignment.status != 1) {
-                    old_status = assignment.status;
+                if (assignment.status != 1) {
                     assignment.status = 1;
                     ((TextView) v).setText(R.string.mark_as_undone_text);
                 } else {    //undone
-                    assignment.status = old_status;
+                    assignment.status = assignment.due_date.before(today) ? -1 : 0;
                     ((TextView) v).setText(R.string.mark_as_done_text);
                 }
                 int expanded_index = root.indexOfChild((ConstraintLayout) v.getParent());
@@ -328,10 +305,10 @@ public class AssignmentsFragment extends Fragment {
                 done_btn = parent.findViewById(R.id.mark_as_done_button),
                 delete_btn = parent.findViewById(R.id.delete_button);
 
-        edit_btn.animate().alpha(0f).setDuration(animation_duration/2);
-        cancel_btn.animate().alpha(0f).setDuration(animation_duration/2);
-        done_btn.animate().alpha(0f).setDuration(animation_duration/2);
-        delete_btn.animate().alpha(0f).setDuration(animation_duration/2);
+        edit_btn.animate().alpha(0f).setDuration(animation_duration / 2);
+        cancel_btn.animate().alpha(0f).setDuration(animation_duration / 2);
+        done_btn.animate().alpha(0f).setDuration(animation_duration / 2);
+        delete_btn.animate().alpha(0f).setDuration(animation_duration / 2);
 
         if (shouldEdit) {
             end_width = (int) (2.5 * density);
@@ -377,12 +354,12 @@ public class AssignmentsFragment extends Fragment {
                     cancel_btn.setVisibility(View.VISIBLE);
                     done_btn.setVisibility(View.GONE);
 
-                    edit_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    cancel_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    done_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    delete_btn.animate().alpha(1f).setDuration(animation_duration/2);
+                    edit_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    cancel_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    done_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    delete_btn.animate().alpha(1f).setDuration(animation_duration / 2);
                 }
-            }, animation_duration/2);
+            }, animation_duration / 2);
 
         } else {
             start_width = (int) (2.5 * density);
@@ -401,12 +378,12 @@ public class AssignmentsFragment extends Fragment {
                     cancel_btn.setVisibility(View.GONE);
                     done_btn.setVisibility(View.VISIBLE);
 
-                    edit_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    cancel_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    done_btn.animate().alpha(1f).setDuration(animation_duration/2);
-                    delete_btn.animate().alpha(1f).setDuration(animation_duration/2);
+                    edit_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    cancel_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    done_btn.animate().alpha(1f).setDuration(animation_duration / 2);
+                    delete_btn.animate().alpha(1f).setDuration(animation_duration / 2);
                 }
-            }, animation_duration/2);
+            }, animation_duration / 2);
         }
 
         ValueAnimator animator = ValueAnimator.ofInt(start_width, end_width);
@@ -423,14 +400,14 @@ public class AssignmentsFragment extends Fragment {
 
     }
 
-    private void addAssignment(Assignment assignment){
+    private void addAssignment(Assignment assignment) {
         int assignment_index = getAssignmentAddIndex(assignment),
                 view_index = getViewAddIndex(assignment);
 
-        if(assignment.status != 1)      //repositioning
+        if (assignment.status != 1)      //repositioning
             assignment.status = 0;
 
-        if(assignments_list.size() == 0 || !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
+        if (assignments_list.size() == 0 || !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
             root.addView(createTitleTextView(new SimpleDateFormat("EEEE, MMMM dd").format(assignment.due_date)), view_index);
             ++view_index;
         }
@@ -447,7 +424,7 @@ public class AssignmentsFragment extends Fragment {
         root.removeViewAt(viewIndex);
 
         boolean nothing_on_top, nothing_below;
-        if(removed.status == -1) {
+        if (removed.status == -1) {
             nothing_on_top = assignmentIndex == 0;
             nothing_below = assignmentIndex == assignments_list.size() ||
                     assignments_list.get(assignmentIndex).status != -1;
@@ -465,23 +442,23 @@ public class AssignmentsFragment extends Fragment {
             root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);
     }
 
-    private int getAssignmentAddIndex(Assignment assignment){
+    private int getAssignmentAddIndex(Assignment assignment) {
         int add_index = 0;
-        for(Assignment list_assignment : assignments_list){
-            if(list_assignment.status != -1 && list_assignment.due_date.after(assignment.due_date))
+        for (Assignment list_assignment : assignments_list) {
+            if (list_assignment.status != -1 && list_assignment.due_date.after(assignment.due_date))
                 break;
             ++add_index;
         }
         return add_index;
     }
 
-    private int getViewAddIndex(Assignment assignment){
+    private int getViewAddIndex(Assignment assignment) {
         int add_index = root.indexOfChild(root.findViewById(R.id.no_assignments_message)) +
-                ((assignments_list.size()!=0 && assignments_list.getFirst().status == -1) ? 2 : 1);
+                ((assignments_list.size() != 0 && assignments_list.getFirst().status == -1) ? 2 : 1);
         Date previous_date = null;
-        for(int i = 0; i < assignments_list.size(); ++i){
+        for (int i = 0; i < assignments_list.size(); ++i) {
             Assignment list_assignment = assignments_list.get(i);
-            if(list_assignment.status != -1) {
+            if (list_assignment.status != -1) {
                 if (list_assignment.due_date.after(assignment.due_date))
                     break;
                 if (!list_assignment.due_date.equals(previous_date)) {
@@ -490,7 +467,7 @@ public class AssignmentsFragment extends Fragment {
                 }
             }
             ++add_index;
-            if(is_expanded.get(i))
+            if (is_expanded.get(i))
                 ++add_index;
         }
         return add_index;
@@ -503,7 +480,7 @@ public class AssignmentsFragment extends Fragment {
         else if (status == 1)
             color = 0xff98ec7a;     //green
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && t.getCompoundDrawableTintList()!=null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && t.getCompoundDrawableTintList() != null) {
             ValueAnimator color_changer = ValueAnimator.ofArgb(t.getCompoundDrawableTintList().getDefaultColor(), color);
             color_changer.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -544,9 +521,9 @@ public class AssignmentsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         TransitionManager.beginDelayedTransition(root);
 
-        if(!new_assignment_active) {
+        if (!new_assignment_active) {
             new_assignment_active = true;
-            if(assignments_list.size() == 0)
+            if (assignments_list.size() == 0)
                 root.findViewById(R.id.no_assignments_message).setVisibility(View.GONE);
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -611,28 +588,28 @@ public class AssignmentsFragment extends Fragment {
                     int subject_index = -1;
 
                     boolean title_ok = true;
-                    if("".equals(title)) {
+                    if ("".equals(title)) {
                         title_wrapper.setError(getString(R.string.assignment_title_error_message));
                         title_ok = false;
                     }
 
-                    for(int i = 0; i < subjects.length; ++i){
-                        if(subjects[i].equals(subject)) {
+                    for (int i = 0; i < subjects.length; ++i) {
+                        if (subjects[i].equals(subject)) {
                             subject_index = i;
                             break;
                         }
                     }
-                    if(subject_index == -1){
+                    if (subject_index == -1) {
                         subject_wrapper.setError(getString(R.string.assignment_subject_error_message));
                     }
 
                     boolean date_ok = true;
-                    if(picked[0] == null || picked[0].before(today)) {
+                    if (picked[0] == null || picked[0].before(today)) {
                         date_ok = false;
                         due_wrapper.setError(getString(R.string.assignment_due_date_error_message));
                     }
 
-                    if(title_ok && subject_index != -1 && date_ok){
+                    if (title_ok && subject_index != -1 && date_ok) {
                         TransitionManager.beginDelayedTransition(root);
                         Assignment to_add = new Assignment(title, 0, description, picked[0], subject_index);
                         root.removeViewAt(0);
@@ -648,7 +625,7 @@ public class AssignmentsFragment extends Fragment {
                     TransitionManager.beginDelayedTransition(root);
                     root.removeViewAt(0);
                     new_assignment_active = false;
-                    if(assignments_list.size() == 0)
+                    if (assignments_list.size() == 0)
                         root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);
                 }
             });
@@ -664,5 +641,30 @@ public class AssignmentsFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         imm.hideSoftInputFromWindow(root.getWindowToken(), 0);
+    }
+
+    private void handle_first_start() {
+        boolean first = getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
+                getBoolean("assignments_first_start", true);
+        if (!first)
+            return;
+        Calendar base = Calendar.getInstance();
+        base.set(Calendar.HOUR_OF_DAY, 0);
+        base.set(Calendar.MINUTE, 0);
+        base.set(Calendar.SECOND, 0);
+        base.set(Calendar.MILLISECOND, 0);
+        Date d = new Date(base.getTimeInMillis() - 86400000);
+        Assignment to_add = new Assignment(getString(R.string.assignments_first_title_1), -1, "", d, 0);
+        assignments_list.add(to_add);
+        d = new Date(base.getTimeInMillis());
+        to_add = new Assignment(getString(R.string.assignments_first_title_2), 0, "", d, 0);
+        assignments_list.add(to_add);
+        d = new Date(base.getTimeInMillis() + 86400000);
+        to_add = new Assignment(getString(R.string.assignments_first_title_3), 0,
+                getString(R.string.assignments_first_description_3), d, 0);
+        assignments_list.add(to_add);
+
+        getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
+                edit().putBoolean("assignments_first_start", false).apply();
     }
 }

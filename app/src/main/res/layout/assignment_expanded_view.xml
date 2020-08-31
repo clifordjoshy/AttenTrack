@@ -46,7 +46,7 @@
         android:background="@drawable/curve_10dp"
         android:backgroundTintMode="multiply"
         android:enabled="false"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:hint="@string/assignment_default_note"
         android:textColorHint="@color/metaTextColor"
         android:paddingHorizontal="10dp"
