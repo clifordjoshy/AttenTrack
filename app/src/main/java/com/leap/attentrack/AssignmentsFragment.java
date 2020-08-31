@@ -234,7 +234,8 @@ public class AssignmentsFragment extends Fragment {
                                 view_index = root.indexOfChild((ConstraintLayout) v.getParent()) - 1;
                         TransitionManager.beginDelayedTransition(root);
                         deleteAssignment(assignment_index, view_index);
-
+                        if (assignments_list.size() == 0)
+                            root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);
                     }
                 });
                 dialog.setNegativeButton(R.string.cancel_text, null);
@@ -397,7 +398,6 @@ public class AssignmentsFragment extends Fragment {
         });
         animator.setDuration(animation_duration);
         animator.start();
-
     }
 
     private void addAssignment(Assignment assignment) {
@@ -437,9 +437,6 @@ public class AssignmentsFragment extends Fragment {
 
         if (nothing_on_top && nothing_below)
             root.removeViewAt(viewIndex - 1);
-
-        if (assignments_list.size() == 0)
-            root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);
     }
 
     private int getAssignmentAddIndex(Assignment assignment) {
