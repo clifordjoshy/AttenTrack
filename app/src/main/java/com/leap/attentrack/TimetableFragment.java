@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ public class TimetableFragment extends Fragment {
     private TextView[] boxes;
     private LinearLayout list;
     private Menu options_menu;
-    private TextView title, edit_title;
+    TextSwitcher title;
     private Subject[] data;
     private Spinner[][] tt_spinners;
     private ArrayAdapter<String> spinner_options;
@@ -57,8 +58,6 @@ public class TimetableFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_timetable, container, false);
 
         density = getContext().getResources().getDisplayMetrics().density;
-        title = fragmentView.findViewById(R.id.time_table_title);
-        edit_title = fragmentView.findViewById(R.id.time_table_editor_title);
         list = fragmentView.findViewById(R.id.linear_timetable);
         boxes = new TextView[]{fragmentView.findViewById(R.id.box_day_1),
                 fragmentView.findViewById(R.id.box_day_2), fragmentView.findViewById(R.id.box_day_3),
@@ -66,12 +65,10 @@ public class TimetableFragment extends Fragment {
                 fragmentView.findViewById(R.id.box_day_6), fragmentView.findViewById(R.id.box_day_7)};
         dark = MainActivity.dark_mode_on;
 
-        edit_title.post(new Runnable() {
-            @Override
-            public void run() {
-                edit_title.setVisibility(View.GONE);    //cant start with gone. need width
-            }
-        });
+        title = fragmentView.findViewById(R.id.time_table_title);
+        title.setCurrentText(getString(R.string.time_table_title));
+        title.setInAnimation(getContext(), android.R.anim.slide_in_left);
+        title.setOutAnimation(getContext(), android.R.anim.slide_out_right);
 
         boxes[0].setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,7 +231,7 @@ public class TimetableFragment extends Fragment {
                     active_box = -1;
                 }
                 editing = true;
-                animate_title();
+                title.setText(getString(R.string.time_table_edit));
 
                 Explode explode = new Explode();
                 explode.setDuration(400);
@@ -298,7 +295,7 @@ public class TimetableFragment extends Fragment {
                 }
 
                 editing = false;
-                animate_title();
+                title.setText(getString(R.string.time_table_title));
 
                 Explode explode = new Explode();
                 explode.setDuration(400);
@@ -428,7 +425,7 @@ public class TimetableFragment extends Fragment {
         }
 
         editing = false;
-        animate_title();
+        title.setText(getString(R.string.time_table_title));
 
         Explode explode = new Explode();
         explode.setDuration(400);
@@ -458,14 +455,6 @@ public class TimetableFragment extends Fragment {
         }
         tt_spinners = null;
         spinner_options = null;
-    }
-
-    private void animate_title() {
-        TextView in = editing ? edit_title : title, out = editing ? title : edit_title;
-        in.setVisibility(View.VISIBLE);
-        in.setX(-in.getWidth() - 20 * density);
-        in.animate().translationX(0).setDuration(600);
-        out.animate().translationX(out.getWidth() + 20 * density).setDuration(600);
     }
 
 

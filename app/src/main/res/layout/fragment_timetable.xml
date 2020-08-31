@@ -9,35 +9,30 @@
     android:background="?attr/bgColor"
     android:orientation="vertical">
 
-    <TextView
+    <TextSwitcher
         android:id="@+id/time_table_title"
         android:layout_width="0dp"
         android:layout_height="75dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:text="@string/time_table_title"
-        android:textColor="?attr/textColor"
-        android:fontFamily="@font/poppins_medium"
-        app:autoSizeTextType="uniform"
+        android:layout_marginHorizontal="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="?attr/textColor"
+            android:fontFamily="@font/poppins_medium"
+            app:autoSizeTextType="uniform"/>
 
-    <TextView
-        android:id="@+id/time_table_editor_title"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:fontFamily="@font/poppins_medium"
-        android:gravity="center"
-        android:text="@string/time_table_edit"
-        android:textColor="?attr/textColor"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="?attr/textColor"
+            android:fontFamily="@font/poppins_medium"
+            app:autoSizeTextType="uniform"/>
+    </TextSwitcher>
 
     <ScrollView
         android:id="@+id/time_table_scrollView"
