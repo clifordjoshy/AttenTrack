@@ -168,10 +168,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //fragments persist rotation
         if (getSupportFragmentManager().findFragmentByTag("current_fragment") == null)
-            getSupportFragmentManager().
-                    beginTransaction().
-                    replace(R.id.fragment_container, go_to, "current_fragment").
-                    commit();
+            startFragment(go_to);
+    }
+
+    void startFragment(Fragment fragment){
+        getSupportFragmentManager().
+                beginTransaction().
+                replace(R.id.fragment_container, fragment, "current_fragment").
+                commit();
     }
 
     @Override
@@ -461,7 +465,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             missed_sessions.clear();
             AssignmentsFragment.assignments_list.clear();
             put_data();
-            activityOnCreate(null);
+            if(requestCode == 23)   //after first start
+                activityOnCreate(null);
+            else if(requestCode == 31)      //reset details
+                startFragment(new ScheduleFragment());      //no need to reload activity and data
         }
     }
 
