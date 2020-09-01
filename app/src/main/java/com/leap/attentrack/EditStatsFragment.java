@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.transition.TransitionManager;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
@@ -31,12 +32,12 @@ public class EditStatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragment_view = inflater.inflate(R.layout.fragment_all_classes, container, false);
-        LinearLayout root_layout = fragment_view.findViewById(R.id.all_subs_root_layout);
+        final LinearLayout root_layout = fragment_view.findViewById(R.id.all_subs_root_layout);
 
         for (int i = 0; i < MainActivity.data.length; ++i) {
             final Subject s = MainActivity.data[i];
             View element = getLayoutInflater().inflate(R.layout.element_all_subs, root_layout, false);
-            ((TextView) element.findViewById(R.id.subject_text)).setText(s.name);
+            setSubjectText((TextView)element.findViewById(R.id.subject_text), s.name);
             update_deets(s, (TextView) element.findViewById(R.id.percent_text), (TextView) element.findViewById(R.id.data_text));
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
@@ -95,7 +96,8 @@ public class EditStatsFragment extends Fragment {
                             String temp = e.getText().toString();
                             if (!"".equals(temp)) {
                                 s.name = temp;
-                                ((TextView) v).setText(temp);
+                                TransitionManager.beginDelayedTransition(root_layout);
+                                setSubjectText((TextView)v, temp);
                             }
                             int current_color = ((ColorDrawable)e.getBackground()).getColor();
                             if(s.color != current_color){
@@ -185,5 +187,13 @@ public class EditStatsFragment extends Fragment {
         getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
                 edit().putBoolean("edit_stats_first_start", false).apply();
 
+    }
+
+    void setSubjectText(TextView subject, String text){
+        if(text.indexOf(' ') == -1)   //if single word
+            subject.setMaxLines(1);
+        else
+            subject.setMaxLines(2);
+        subject.setText(text);
     }
 }
