@@ -56,16 +56,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //need this to put data
         time_table_file = this.getFilesDir().getPath() + "/schedule_data_serial.txt";
         assignments_file = this.getFilesDir().getPath() + "/assignments_data_serial.txt";
         sec_file = "secondary.txt";
+
         is_first_start = getSharedPreferences(shared_pref_name, MODE_PRIVATE).getInt("first_start", -1);
         if (is_first_start == -1) {
             Intent intent = new Intent(this, StartupActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION); //direct from splash screen
             startActivityForResult(intent, 23);
-            return;
-        }
+        } else
+            activityOnCreate(savedInstanceState);
+    }
 
+    void activityOnCreate(Bundle savedInstanceState) {
         try {
             get_data();
         } catch (IOException | ClassNotFoundException e) {
@@ -172,14 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        if (is_first_start != -1)    //going to startup activity
-            put_data();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (is_first_start != -1)    //in first startup activity
+        if (is_first_start != -1)    //if not going to startup activity
             put_data();
     }
 
@@ -297,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
 
-        if(Subject.session_encoder == null)
+        if (Subject.session_encoder == null)
             throw new IOException("Session Encoder Lost");
 
         try {
@@ -462,7 +460,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             extra_sessions.clear();
             missed_sessions.clear();
             AssignmentsFragment.assignments_list.clear();
-            recreate();
+            put_data();
+            activityOnCreate(null);
         }
     }
 

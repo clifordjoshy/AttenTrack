@@ -9,20 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5022247600598681~1959626655"/>
-        <activity android:name="com.leap.attentrack.StartupActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-        </activity>
-        <activity android:name="com.leap.attentrack.MainActivity">
+            android:value="ca-app-pub-5022247600598681~1959626655" />
+
+        <activity android:name=".SplashScreenActivity"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="com.leap.attentrack.AlarmBroadcastReceiver">
-        </receiver>
+
+        <activity
+            android:name=".StartupActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".MainActivity"/>
+
+        <receiver android:name=".AlarmBroadcastReceiver" />
     </application>
 
 </manifest>
