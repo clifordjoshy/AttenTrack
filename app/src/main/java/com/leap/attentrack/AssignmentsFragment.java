@@ -89,7 +89,6 @@ public class AssignmentsFragment extends Fragment {
 
         root = fragmentView.findViewById(R.id.linear_assignments);
 
-        handle_first_start();
         // sort and handle assignments_list
         handleAssignmentsData();
         printAssignments();
@@ -638,30 +637,5 @@ public class AssignmentsFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         imm.hideSoftInputFromWindow(root.getWindowToken(), 0);
-    }
-
-    private void handle_first_start() {
-        boolean first = getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
-                getBoolean("assignments_first_start", true);
-        if (!first)
-            return;
-        Calendar base = Calendar.getInstance();
-        base.set(Calendar.HOUR_OF_DAY, 0);
-        base.set(Calendar.MINUTE, 0);
-        base.set(Calendar.SECOND, 0);
-        base.set(Calendar.MILLISECOND, 0);
-        Date d = new Date(base.getTimeInMillis() - 86400000);
-        Assignment to_add = new Assignment(getString(R.string.assignments_first_title_1), -1, "", d, 0);
-        assignments_list.add(to_add);
-        d = new Date(base.getTimeInMillis());
-        to_add = new Assignment(getString(R.string.assignments_first_title_2), 0, "", d, 0);
-        assignments_list.add(to_add);
-        d = new Date(base.getTimeInMillis() + 86400000);
-        to_add = new Assignment(getString(R.string.assignments_first_title_3), 0,
-                getString(R.string.assignments_first_description_3), d, 0);
-        assignments_list.add(to_add);
-
-        getActivity().getSharedPreferences(MainActivity.shared_pref_name, MainActivity.MODE_PRIVATE).
-                edit().putBoolean("assignments_first_start", false).apply();
     }
 }
