@@ -113,14 +113,15 @@
         android:background="@drawable/cancel_all_bg"
         android:fontFamily="@font/poppins_medium"
         android:gravity="center"
-        android:paddingHorizontal="11dp"
+        android:paddingHorizontal="7dp"
+        android:paddingVertical="4dp"
         android:textColor="?attr/textColor"
-        android:paddingVertical="6dp"
         android:text="@string/cancel_all_text"
-        android:textSize="13sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/today_text"
         app:layout_constraintEnd_toEndOf="@+id/scrollView2"
-        app:layout_constraintTop_toTopOf="@+id/today_text" />
+        app:layout_constraintTop_toTopOf="@+id/today_text"
+        app:layout_constraintVertical_bias="0.25" />
 
     <LinearLayout
         android:id="@+id/cancelled_undo_bar"
