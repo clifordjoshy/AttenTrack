@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (savedInstanceState == null) {   //fragments persist rotation
             MenuItem item = null;
-            switch (current_fragment){
+            switch (current_fragment) {
                 case SCHEDULE_FRAGMENT:
                     item = navView.getMenu().findItem(R.id.schedule_message);
                     break;
@@ -169,15 +169,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    void goToFragment(int fragment){
+    void goToFragment(int fragment) {
         current_fragment = fragment;
         Fragment go_to = null;
 
-        switch(fragment){
-            case SCHEDULE_FRAGMENT :
+        switch (fragment) {
+            case SCHEDULE_FRAGMENT:
                 go_to = new ScheduleFragment();
                 break;
-            case EDIT_STATS_FRAGMENT :
+            case EDIT_STATS_FRAGMENT:
                 go_to = new EditStatsFragment();
                 break;
             case TIME_TABLE_FRAGMENT:
@@ -192,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.fragment_container, go_to)
-            .commit();
+                .replace(R.id.fragment_container, go_to)
+                .commit();
     }
 
     @Override
@@ -359,10 +359,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (current_fragment != SCHEDULE_FRAGMENT) {
             Explode transition = new Explode();
             transition.setDuration(200);
-            TransitionManager.beginDelayedTransition((FrameLayout)findViewById(R.id.fragment_container), transition);
+            TransitionManager.beginDelayedTransition((FrameLayout) findViewById(R.id.fragment_container), transition);
             current_fragment = SCHEDULE_FRAGMENT;
             goToFragment(current_fragment);
-            ((NavigationView)findViewById(R.id.nav_view)).getMenu().
+            ((NavigationView) findViewById(R.id.nav_view)).getMenu().
                     findItem(R.id.schedule_message).setChecked(true);
         } else {
             super.onBackPressed();
@@ -374,35 +374,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.schedule_message:
                 item.setChecked(true);
-                if(current_fragment != SCHEDULE_FRAGMENT) {
+                if (current_fragment != SCHEDULE_FRAGMENT) {
                     goToFragment(SCHEDULE_FRAGMENT);
                 }
                 break;
 
             case R.id.time_table_message:
                 item.setChecked(true);
-                if(current_fragment != TIME_TABLE_FRAGMENT) {
+                if (current_fragment != TIME_TABLE_FRAGMENT) {
                     goToFragment(TIME_TABLE_FRAGMENT);
                 }
                 break;
 
             case R.id.edit_stats_message:
                 item.setChecked(true);
-                if(current_fragment != EDIT_STATS_FRAGMENT) {
+                if (current_fragment != EDIT_STATS_FRAGMENT) {
                     goToFragment(EDIT_STATS_FRAGMENT);
                 }
                 break;
 
             case R.id.assignments_message:
                 item.setChecked(true);
-                if(current_fragment != ASSIGNMENTS_FRAGMENT) {
+                if (current_fragment != ASSIGNMENTS_FRAGMENT) {
                     goToFragment(ASSIGNMENTS_FRAGMENT);
                 }
                 break;
 
             case R.id.support_message:
                 item.setChecked(true);
-                if(current_fragment != SUPPORT_FRAGMENT) {
+                if (current_fragment != SUPPORT_FRAGMENT) {
                     goToFragment(SUPPORT_FRAGMENT);
                 }
                 break;
@@ -492,9 +492,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             missed_sessions.clear();
             AssignmentsFragment.assignments_list.clear();
             put_data();
-            if(requestCode == 23)   //after first start
+            if (requestCode == 23)   //after first start
                 activityOnCreate(null);
-            else if(requestCode == 31)      //reset details
+            else if (requestCode == 31)      //reset details
                 goToFragment(SCHEDULE_FRAGMENT);      //no need to reload activity and data
         }
     }

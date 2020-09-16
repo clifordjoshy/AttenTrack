@@ -406,12 +406,8 @@ public class AssignmentsFragment extends Fragment {
         if (assignment.status != 1)      //repositioning
             assignment.status = 0;
 
-
-
-        if (assignment_index == 0 ||
-                !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
-            root.addView(createTitleTextView(
-                    new SimpleDateFormat("EEEE, MMMM dd").format(assignment.due_date)), view_index);
+        if (assignment_index == 0 || !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
+            root.addView(createTitleTextView(new SimpleDateFormat("EEEE, MMMM dd").format(assignment.due_date)), view_index);
             ++view_index;
         }
 
