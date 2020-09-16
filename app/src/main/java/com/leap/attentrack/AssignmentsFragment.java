@@ -608,6 +608,7 @@ public class AssignmentsFragment extends Fragment {
                     if (title_ok && subject_index != -1 && date_ok) {
                         TransitionManager.beginDelayedTransition(root);
                         Assignment to_add = new Assignment(title, 0, description, picked[0], subject_index);
+                        hideKeyboard();
                         root.removeViewAt(0);
                         new_assignment_active = false;
                         addAssignment(to_add);
@@ -620,6 +621,7 @@ public class AssignmentsFragment extends Fragment {
                 public void onClick(View v) {
                     TransitionManager.beginDelayedTransition(root);
                     root.removeViewAt(0);
+                    hideKeyboard();
                     new_assignment_active = false;
                     if (assignments_list.size() == 0)
                         root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);

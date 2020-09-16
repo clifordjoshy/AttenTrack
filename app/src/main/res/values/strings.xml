@@ -76,8 +76,8 @@
     <string name="username_edit_title">"Enter New Username"</string>
     <string name="cancel_all_text">Cancel All</string>
     <string name="undo_text">UNDO</string>
-    <string name="notif_title">Miss Any Classes Today?</string>
-    <string name="notif_content">Tap to update your attendance</string>
+    <string name="main_notif_title">Miss Any Classes Today?</string>
+    <string name="main_notif_content">Tap to update your attendance</string>
     <string name="total_text">Total:</string>
     <string name="missed_text">Missed:</string>
     <string name="missable_text">Missable:</string>
@@ -146,4 +146,5 @@
     <string name="due_date_text">Due Date</string>
     <string name="description_text">Description</string>
     <string name="new_assignment_toast">An assignment is already being created.</string>
+    <string name="assignment_notification_content">Due Tomorrow</string>
 </resources>
