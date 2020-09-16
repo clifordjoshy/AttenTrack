@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.transition.Explode;
 import androidx.transition.TransitionManager;
 
 import com.google.android.gms.ads.MobileAds;
@@ -43,14 +45,17 @@ import java.util.LinkedList;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+
     static String time_table_file, assignments_file, sec_file, delim_sec = "/", shared_pref_name = "my_data";
     static Subject[] data;
     LinkedList<int[]> extra_sessions = new LinkedList<>(), cancelled_sessions = new LinkedList<>(),
             missed_sessions = new LinkedList<>();
     static boolean dark_mode_on, is_male_avatar, is_notification_on;
-    private int current_fragment = 0;
     static String name;
     static int is_first_start;
+
+    private final int SCHEDULE_FRAGMENT = 0, TIME_TABLE_FRAGMENT = 1, EDIT_STATS_FRAGMENT = 2, ASSIGNMENTS_FRAGMENT = 3, SUPPORT_FRAGMENT = 4;
+    private int current_fragment = SCHEDULE_FRAGMENT;   //default
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, StartupActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION); //direct from splash screen
             startActivityForResult(intent, 23);
-        } else
+        } else {
             activityOnCreate(savedInstanceState);
+        }
     }
 
     void activityOnCreate(Bundle savedInstanceState) {
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //dark mode smoothening
         if (getIntent().getBooleanExtra("is_mode_changed", false)) {
             drawer.openDrawer(GravityCompat.START, false);
-            current_fragment = getIntent().getIntExtra("current_fragment", 0);
+            current_fragment = getIntent().getIntExtra("current_fragment", SCHEDULE_FRAGMENT);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 drawer.post(new Runnable() {
                     @Override
@@ -139,43 +145,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MobileAds.initialize(this);
 
-        if (savedInstanceState != null)
-            current_fragment = savedInstanceState.getInt("current_fragment", 0);
+        if (savedInstanceState == null) {   //fragments persist rotation
+            MenuItem item = null;
+            switch (current_fragment){
+                case SCHEDULE_FRAGMENT:
+                    item = navView.getMenu().findItem(R.id.schedule_message);
+                    break;
+                case TIME_TABLE_FRAGMENT:
+                    item = navView.getMenu().findItem(R.id.time_table_message);
+                    break;
+                case EDIT_STATS_FRAGMENT:
+                    item = navView.getMenu().findItem(R.id.edit_stats_message);
+                    break;
+                case ASSIGNMENTS_FRAGMENT:
+                    item = navView.getMenu().findItem(R.id.assignments_message);
+                    break;
+                case SUPPORT_FRAGMENT:
+                    item = navView.getMenu().findItem(R.id.support_message);
+                    break;
+            }
+            item.setChecked(true);
+            goToFragment(current_fragment);
+        }
+    }
 
+    void goToFragment(int fragment){
+        current_fragment = fragment;
         Fragment go_to = null;
-        switch (current_fragment) {
-            case 0:
+
+        switch(fragment){
+            case SCHEDULE_FRAGMENT :
                 go_to = new ScheduleFragment();
-                navView.getMenu().findItem(R.id.schedule_message).setChecked(true);
                 break;
-            case 1:
-                go_to = new TimetableFragment();
-                navView.getMenu().findItem(R.id.time_table_message).setChecked(true);
-                break;
-            case 2:
+            case EDIT_STATS_FRAGMENT :
                 go_to = new EditStatsFragment();
-                navView.getMenu().findItem(R.id.edit_stats_message).setChecked(true);
                 break;
-            case 3:
+            case TIME_TABLE_FRAGMENT:
+                go_to = new TimetableFragment();
+                break;
+            case ASSIGNMENTS_FRAGMENT:
                 go_to = new AssignmentsFragment();
-                navView.getMenu().findItem(R.id.assignments_message).setChecked(true);
                 break;
-            case 4:
+            case SUPPORT_FRAGMENT:
                 go_to = new SupportFragment();
-                navView.getMenu().findItem(R.id.support_message).setChecked(true);
                 break;
         }
 
-        //fragments persist rotation
-        if (getSupportFragmentManager().findFragmentByTag("current_fragment") == null)
-            startFragment(go_to);
-    }
-
-    void startFragment(Fragment fragment){
-        getSupportFragmentManager().
-                beginTransaction().
-                replace(R.id.fragment_container, fragment, "current_fragment").
-                commit();
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, go_to)
+            .commit();
     }
 
     @Override
@@ -338,6 +356,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (current_fragment != SCHEDULE_FRAGMENT) {
+            Explode transition = new Explode();
+            transition.setDuration(200);
+            TransitionManager.beginDelayedTransition((FrameLayout)findViewById(R.id.fragment_container), transition);
+            current_fragment = SCHEDULE_FRAGMENT;
+            goToFragment(current_fragment);
+            ((NavigationView)findViewById(R.id.nav_view)).getMenu().
+                    findItem(R.id.schedule_message).setChecked(true);
         } else {
             super.onBackPressed();
         }
@@ -348,29 +374,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.schedule_message:
                 item.setChecked(true);
-                current_fragment = 0;
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ScheduleFragment()).commit();
+                if(current_fragment != SCHEDULE_FRAGMENT) {
+                    goToFragment(SCHEDULE_FRAGMENT);
+                }
                 break;
+
             case R.id.time_table_message:
                 item.setChecked(true);
-                current_fragment = 1;
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new TimetableFragment()).commit();
+                if(current_fragment != TIME_TABLE_FRAGMENT) {
+                    goToFragment(TIME_TABLE_FRAGMENT);
+                }
                 break;
 
             case R.id.edit_stats_message:
                 item.setChecked(true);
-                current_fragment = 2;
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new EditStatsFragment()).commit();
+                if(current_fragment != EDIT_STATS_FRAGMENT) {
+                    goToFragment(EDIT_STATS_FRAGMENT);
+                }
                 break;
 
             case R.id.assignments_message:
                 item.setChecked(true);
-                current_fragment = 3;
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AssignmentsFragment()).commit();
+                if(current_fragment != ASSIGNMENTS_FRAGMENT) {
+                    goToFragment(ASSIGNMENTS_FRAGMENT);
+                }
+                break;
+
+            case R.id.support_message:
+                item.setChecked(true);
+                if(current_fragment != SUPPORT_FRAGMENT) {
+                    goToFragment(SUPPORT_FRAGMENT);
+                }
                 break;
 
             case R.id.dark_message:
@@ -427,13 +461,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 dialog.setNegativeButton(R.string.cancel_text, null);
                 dialog.show();
                 break;
-
-            case R.id.support_message:
-                current_fragment = 4;
-                item.setChecked(true);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SupportFragment()).commit();
-                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -468,13 +495,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(requestCode == 23)   //after first start
                 activityOnCreate(null);
             else if(requestCode == 31)      //reset details
-                startFragment(new ScheduleFragment());      //no need to reload activity and data
+                goToFragment(SCHEDULE_FRAGMENT);      //no need to reload activity and data
         }
     }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("current_fragment", current_fragment);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        current_fragment = savedInstanceState.getInt("current_fragment");
     }
 }

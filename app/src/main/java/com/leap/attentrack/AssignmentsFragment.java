@@ -233,7 +233,7 @@ public class AssignmentsFragment extends Fragment {
                                 view_index = root.indexOfChild((ConstraintLayout) v.getParent()) - 1;
                         TransitionManager.beginDelayedTransition(root);
                         deleteAssignment(assignment_index, view_index);
-                        if (assignments_list.size() == 0)
+                        if (assignments_list.size() == 0 && !new_assignment_active)
                             root.findViewById(R.id.no_assignments_message).setVisibility(View.VISIBLE);
                     }
                 });
@@ -406,8 +406,12 @@ public class AssignmentsFragment extends Fragment {
         if (assignment.status != 1)      //repositioning
             assignment.status = 0;
 
-        if (assignments_list.size() == 0 || !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
-            root.addView(createTitleTextView(new SimpleDateFormat("EEEE, MMMM dd").format(assignment.due_date)), view_index);
+
+
+        if (assignment_index == 0 ||
+                !assignment.due_date.equals(assignments_list.get(assignment_index - 1).due_date)) {
+            root.addView(createTitleTextView(
+                    new SimpleDateFormat("EEEE, MMMM dd").format(assignment.due_date)), view_index);
             ++view_index;
         }
 
