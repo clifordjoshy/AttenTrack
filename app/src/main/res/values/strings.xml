@@ -146,5 +146,4 @@
     <string name="due_date_text">Due Date</string>
     <string name="description_text">Description</string>
     <string name="new_assignment_toast">An assignment is already being created.</string>
-    <string name="assignment_notification_content">Due Tomorrow</string>
 </resources>

@@ -36,7 +36,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             notif_text = context.getString(R.string.main_notif_content);
         } else {
             notif_title = pending;
-            notif_text = context.getString(R.string.assignment_notification_content);
+            notif_text = context.getString(R.string.due_tomorrow_text);
         }
 
         mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)

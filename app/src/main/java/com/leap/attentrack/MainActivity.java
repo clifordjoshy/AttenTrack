@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.transition.Explode;
+import androidx.transition.Slide;
 import androidx.transition.TransitionManager;
 
 import com.google.android.gms.ads.MobileAds;
@@ -357,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (current_fragment != SCHEDULE_FRAGMENT) {
-            Explode transition = new Explode();
+            Slide transition = new Slide();
             transition.setDuration(200);
             TransitionManager.beginDelayedTransition((FrameLayout) findViewById(R.id.fragment_container), transition);
             current_fragment = SCHEDULE_FRAGMENT;
@@ -472,15 +472,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, _intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (state) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.HOUR_OF_DAY, 17);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.add(Calendar.DATE, 1);     //postpone by a day when app opened.
+            Calendar notif_time = Calendar.getInstance();
+            notif_time.set(Calendar.HOUR_OF_DAY, 17);
+            notif_time.set(Calendar.MINUTE, 0);
+            notif_time.set(Calendar.SECOND, 0);
 
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-        } else
+            Calendar now = Calendar.getInstance();
+            now.add(Calendar.DATE, 1);  //tomorrow
+            now.set(Calendar.HOUR_OF_DAY, 0);
+            now.set(Calendar.MINUTE, 0);
+            now.set(Calendar.SECOND, 0);
+            now.set(Calendar.MILLISECOND, 0);
+            Date tomorrow = now.getTime();
+
+            boolean hasPendingAssignment = false;
+            for(AssignmentsFragment.Assignment a: AssignmentsFragment.assignments_list){
+                if(a.due_date.equals(tomorrow)){
+                    hasPendingAssignment = true;
+                    break;
+                }
+            }
+            if(!hasPendingAssignment){
+                notif_time.add(Calendar.DATE, 1);     //postpone by a day
+            }
+
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, notif_time.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        } else {
             alarmManager.cancel(pendingIntent);
+        }
     }
 
     @Override
